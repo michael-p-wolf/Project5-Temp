@@ -72,27 +72,6 @@ public class Seller extends Person{
 
     // Need a Method to view sales history???
 
-    // selling a product
-    public void sell(Product product) {
-        if (product.getQuantity() > 0) {
-            for (int i = 0; i < products.size(); i++) {
-                //iterating through the list to find matching product
-                if (products.get(i).equals(product)) {
-                    soldProducts.add(products.get(i));
-                    products.remove(i);
-                    break;
-                }
-            }
-        } else {
-            System.out.println("This item is out of stock");
-            return;
-        }
-
-    }
-    public void salesHistory() {
-
-    }
-
 
     // Getters and Setters
     public int getSellerId() {
