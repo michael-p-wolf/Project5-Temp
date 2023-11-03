@@ -58,7 +58,7 @@ public class Seller extends Person{
         for(Product product : products) {
             if(product.getName().equals(name)) {
                 products.remove(product);
-                return
+                return;
             }
         }
         System.out.println("Product not found. Deletion failed.");
