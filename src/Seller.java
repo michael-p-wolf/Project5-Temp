@@ -16,8 +16,19 @@ public class Seller {
         products.add(newProduct);
     }
 
-    public void editProduct(int productId, String name, String description, int quantity, double price, String filename) {
+    public void editProduct(String updatedName, String updatedDescription, int updatedQuantity, double updatedPrice, String filename) {
         // Find and update the product with the given productId
+        for(Product product: products) {
+            if(product.getName().equals(updatedName)) {
+`               product.setName(updatedName);
+                product.setDescription(updatedDescription);
+                product.setQuantity(updatedQuantity);
+                product.setPrice(updatedPrice);
+                product.setFilename(filename);
+                return; // exit the loop once the product is found and fixed
+            }
+        }
+        System.out.println("Product not found. Editing failed.");
     }
 
     public void deleteProduct(String name) {
