@@ -12,6 +12,12 @@ public class Seller {
     // Method to create, edit, and delete products
     public void createProduct(String name, String description, int quantity, double price, String filename) {
         // Create a new Product object and add it to the products list
+        boolean foundProduct = false;
+        for(Product product : products) {
+            if(product.getName().equals(name)) {
+
+            }
+        }
         Product newProduct = new Product(name, description, quantity, price, filename);
         products.add(newProduct);
     }
@@ -33,6 +39,13 @@ public class Seller {
 
     public void deleteProduct(String name) {
         // Find and remove the product with the given productId
+        for(Product product : products) {
+            if(product.getName().equals(name)) {
+                products.remove(product);
+                return
+            }
+        }
+        System.out.println("Product not found. Deletion failed.");
     }
 
     // Need a Method to view sales history???
