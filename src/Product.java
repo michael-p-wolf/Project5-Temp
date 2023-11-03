@@ -2,18 +2,18 @@ import java.util.List;
 
 public class Product {
     private String name;
+    private String storeSelling;
     private String description;
     private int quantity;
     private double price;
-    private String filename;
-    private List<Store> storesSelling;
 
-    public Product(String name, String description, int quantity, double price, String filename) {
+
+    public Product(String name, String storeSelling, String description, int quantity, double price) {
         this.name = name;
+        this.storeSelling = storeSelling;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
-        this.filename = filename;
     }
 
     public String getName() {
@@ -48,14 +48,13 @@ public class Product {
         this.price = price;
     }
 
-    public String getFilename() {
-        return filename;
+    public void setStoreSelling(String storeSelling) {
+        this.storeSelling = storeSelling;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public String getStoreSelling() {
+        return storeSelling;
     }
-
 
     public String toString() {
         return String.format("%s,%s,%d,%f", this.name, this.description, this.price,this.quantity);
