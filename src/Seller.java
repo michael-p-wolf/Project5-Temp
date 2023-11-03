@@ -7,6 +7,7 @@ public class Seller extends Person{
     private String password;
     private ArrayList<Store> stores;
     private List<Product> products; // A list to manage the seller's products
+    private List<Product> soldProducts; //keeping track of sold products
 
 
 
@@ -16,21 +17,38 @@ public class Seller extends Person{
         this.sellerId = sellerId;
         this.stores = stores;
         this.products = products;
+        this.soldProducts = new ArrayList<>();
     }
 
 
-    // Method to create, edit, and delete products
+    // Method to create a new product
     public void createProduct(String name, String description, int quantity, double price, String filename) {
         // Create a new Product object and add it to the products list
-        Product newProduct = new Product(name, description, quantity, price, filename);
-        products.add(newProduct);
+        boolean foundProduct = false;
+        for(Product product : products) {
+            if(product.getName().equals(name)) {
+                foundProduct = true;
+                System.out.println("A product with the same name already exists. Please rename your Product!");
+                return;
+            }
+        }
+        if(foundProduct == false) {
+            Product newProduct = new Product(name, description, quantity, price, filename);
+            products.add(newProduct);
+        } else  {
+            System.out.println("A product with the same name already exists. Please rename your Product!");
+        }
     }
-
+    // method to edit a new product
     public void editProduct(String updatedName, String updatedDescription, int updatedQuantity, double updatedPrice, String filename) {
         // Find and update the product with the given productId
         for(Product product: products) {
             if(product.getName().equals(updatedName)) {
+<<<<<<< HEAD
                product.setName(updatedName);
+=======
+                product.setName(updatedName);
+>>>>>>> fcf7991069cd26e6022bd9b2ac3f81f4854cb052
                 product.setDescription(updatedDescription);
                 product.setQuantity(updatedQuantity);
                 product.setPrice(updatedPrice);
@@ -40,13 +58,40 @@ public class Seller extends Person{
         }
         System.out.println("Product not found. Editing failed.");
     }
-
+    // method to delete a product
     public void deleteProduct(String name) {
         // Find and remove the product with the given productId
+        for(Product product : products) {
+            if(product.getName().equals(name)) {
+                products.remove(product);
+                return;
+            }
+        }
+        System.out.println("Product not found. Deletion failed.");
     }
 
     // Need a Method to view sales history???
 
+    // selling a product
+    public void sell(Product product) {
+        if (product.getQuantity() > 0) {
+            for (int i = 0; i < products.size(); i++) {
+                //iterating through the list to find matching product
+                if (products.get(i).equals(product)) {
+                    soldProducts.add(products.get(i));
+                    products.remove(i);
+                    break;
+                }
+            }
+        } else {
+            System.out.println("This item is out of stock");
+            return;
+        }
+
+    }
+    public void salesHistory() {
+
+    }
 
 
     // Getters and Setters
