@@ -60,4 +60,13 @@ public class Product {
         return String.format("%s,%s,%d,%f", this.name, this.description, this.price,this.quantity);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Product) {
+            Product p = (Product) obj;
+            return p.getName().equals(this.name);
+        } else {
+            return false;
+        }
+    }
 }
