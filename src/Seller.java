@@ -19,24 +19,30 @@ public class Seller extends Person{
     }
 
 
-    // Method to create, edit, and delete products
+    // Method to create a new product
     public void createProduct(String name, String description, int quantity, double price, String filename) {
         // Create a new Product object and add it to the products list
         boolean foundProduct = false;
         for(Product product : products) {
             if(product.getName().equals(name)) {
-
+                foundProduct = true;
+                System.out.println("A product with the same name already exists. Please rename your Product!");
+                return;
             }
         }
-        Product newProduct = new Product(name, description, quantity, price, filename);
-        products.add(newProduct);
+        if(foundProduct == false) {
+            Product newProduct = new Product(name, description, quantity, price, filename);
+            products.add(newProduct);
+        } else  {
+            System.out.println("A product with the same name already exists. Please rename your Product!");
+        }
     }
-
+    // method to edit a new product
     public void editProduct(String updatedName, String updatedDescription, int updatedQuantity, double updatedPrice, String filename) {
         // Find and update the product with the given productId
         for(Product product: products) {
             if(product.getName().equals(updatedName)) {
- `               product.setName(updatedName);
+                product.setName(updatedName);
                 product.setDescription(updatedDescription);
                 product.setQuantity(updatedQuantity);
                 product.setPrice(updatedPrice);
@@ -46,7 +52,7 @@ public class Seller extends Person{
         }
         System.out.println("Product not found. Editing failed.");
     }
-
+    // method to delete a product
     public void deleteProduct(String name) {
         // Find and remove the product with the given productId
         for(Product product : products) {
