@@ -44,7 +44,11 @@ public class Seller extends Person{
         // Find and update the product with the given productId
         for(Product product: products) {
             if(product.getName().equals(updatedName)) {
+<<<<<<< HEAD
+               product.setName(updatedName);
+=======
                 product.setName(updatedName);
+>>>>>>> fcf7991069cd26e6022bd9b2ac3f81f4854cb052
                 product.setDescription(updatedDescription);
                 product.setQuantity(updatedQuantity);
                 product.setPrice(updatedPrice);
