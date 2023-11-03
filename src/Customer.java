@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Customer extends Person {
-    private int customerID;
     private ArrayList<Product> cart;
     private ArrayList<Product> purchaseHistory;
 
@@ -61,8 +61,10 @@ public class Customer extends Person {
 
     public void buy(Product p) {
         purchaseHistory.add(p);
-
     }
+    // check
+
+
 
     // buy method
 }
