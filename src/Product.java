@@ -1,9 +1,12 @@
+import java.util.List;
+
 public class Product {
     private String name;
     private String description;
     private int quantity;
     private double price;
     private String filename;
+    private List<Store> storesSelling;
 
     public Product(String name, String description, int quantity, double price, String filename) {
         this.name = name;
@@ -52,6 +55,7 @@ public class Product {
     public void setFilename(String filename) {
         this.filename = filename;
     }
+
 
     public String toString() {
         return String.format("%s,%s,%d,%f", this.name, this.description, this.price,this.quantity);
