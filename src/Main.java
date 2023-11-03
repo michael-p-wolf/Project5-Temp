@@ -51,14 +51,5 @@ public class Main {
             }
         } while (input == 0);
 
-=======
-        // Press Ctrl+R or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
-t
-            // Press Ctrl+D to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Cmd+F8.
-            System.out.println("i = " + i);
-        }
->>>>>>> 59b9d6c785bc7d91f6cc7ed28e56a2476b3bb60d
     }
 }
