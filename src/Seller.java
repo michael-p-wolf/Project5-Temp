@@ -7,6 +7,7 @@ public class Seller extends Person{
     private String password;
     private ArrayList<Store> stores;
     private List<Product> products; // A list to manage the seller's products
+    private List<Product> soldProducts; //keeping track of sold products
 
 
 
@@ -16,6 +17,7 @@ public class Seller extends Person{
         this.sellerId = sellerId;
         this.stores = stores;
         this.products = products;
+        this.soldProducts = new ArrayList<>();
     }
 
 
@@ -30,7 +32,7 @@ public class Seller extends Person{
         // Find and update the product with the given productId
         for(Product product: products) {
             if(product.getName().equals(updatedName)) {
-`               product.setName(updatedName);
+                product.setName(updatedName);
                 product.setDescription(updatedDescription);
                 product.setQuantity(updatedQuantity);
                 product.setPrice(updatedPrice);
@@ -47,6 +49,26 @@ public class Seller extends Person{
 
     // Need a Method to view sales history???
 
+    // selling a product
+    public void sell(Product product) {
+        if (product.getQuantity() > 0) {
+            for (int i = 0; i < products.size(); i++) {
+                //iterating through the list to find matching product
+                if (products.get(i).equals(product)) {
+                    soldProducts.add(products.get(i));
+                    products.remove(i);
+                    break;
+                }
+            }
+        } else {
+            System.out.println("This item is out of stock");
+            return;
+        }
+
+    }
+    public void salesHistory() {
+
+    }
 
 
     // Getters and Setters
