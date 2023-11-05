@@ -19,27 +19,23 @@ public class Store {
 
     }
 
-    public void sell(Product product, Customer customer) throws IOException {
+    public void sell(Product product, Customer customer, int sellQuantity) throws IOException {
         try {
 
 
             File f = new File(filename);
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(f)));
             int counter = 0; // this is for seeing if the store hold the product it gets incremented when product is found
-            if (product.getQuantity() > 0) {
+            if (product.getQuantity() > 0 && (product.getQuantity() - sellQuantity) > -1) {
                 for (int i = 0; i < products.size(); i++) {
                     //iterating through the list to find matching product
                     if (products.get(i).equals(product)) {
                         counter++;
                         soldProducts.add(products.get(i)); // adding all sold products to an array list
-                        printWriter.write(customer.getEmail() + "," + product.getName() + "," + product.getPrice()); //writing Customer email, product name, product price
+                        printWriter.write(customer.getEmail() + "," + product.getName() + "," + product.getPrice()*sellQuantity + "," + sellQuantity); //writing Customer email, product name, product price
                         product.setQuantity(product.getQuantity() - 1);
                         break;
                     }
-                }
-
-                if (product.getQuantity() == 0) { //checking to see if the product is out of stock then removing it from the array list
-                    products.remove(product);
                 }
 
                 if (counter == 0) {
