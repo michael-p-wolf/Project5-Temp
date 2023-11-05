@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Objects;
 
 /**
  * Project 4
@@ -19,6 +20,13 @@ public class Person {
         this.email = email;
         this.password = password;
         this.accountType = accountType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person person)) return false;
+        return Objects.equals(getEmail(), person.getEmail());
     }
 
     public String getEmail() {
