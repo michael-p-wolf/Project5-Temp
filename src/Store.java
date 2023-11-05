@@ -10,7 +10,7 @@ public class Store {
     private List<Product> soldProducts; //keeping track of sold products
 
 
-    public Store(String storeName, String owner, String filename, List<Product> products) {
+    public Store(String storeName, Seller seller, String owner, String filename, List<Product> products) {
         this.storeName = storeName;
         this.seller = seller;
         this.filename = filename;
