@@ -22,7 +22,7 @@ public class Seller extends Person{
 
 
     // Method to create a new product
-    public void createProduct(String name, String description, int quantity, double price, String filename) {
+    public void createProduct(String name, String storeSelling, String description, int quantity, double price) {
         // Create a new Product object and add it to the products list
         boolean foundProduct = false;
         for(Product product : products) {
@@ -32,28 +32,24 @@ public class Seller extends Person{
                 return;
             }
         }
-        if(foundProduct == false) {
-            Product newProduct = new Product(name, description, quantity, price, filename);
+        if(!foundProduct) {
+            Product newProduct = new Product(name, storeSelling, description, quantity, price);
             products.add(newProduct);
         } else  {
             System.out.println("A product with the same name already exists. Please rename your Product!");
         }
     }
     // method to edit a new product
-    public void editProduct(String updatedName, String updatedDescription, int updatedQuantity, double updatedPrice, String filename) {
+    public void editProduct(String updatedName, String updatedStoreSelling, String updatedDescription, int updatedQuantity, double updatedPrice) {
         // Find and update the product with the given productId
         for(Product product: products) {
             if(product.getName().equals(updatedName)) {
-<<<<<<< HEAD
                product.setName(updatedName);
-=======
-                product.setName(updatedName);
->>>>>>> fcf7991069cd26e6022bd9b2ac3f81f4854cb052
-                product.setDescription(updatedDescription);
-                product.setQuantity(updatedQuantity);
-                product.setPrice(updatedPrice);
-                product.setFilename(filename);
-                return; // exit the loop once the product is found and fixed
+               product.setStoreSelling(updatedStoreSelling);
+               product.setDescription(updatedDescription);
+               product.setQuantity(updatedQuantity);
+               product.setPrice(updatedPrice);
+               return; // exit the loop once the product is found and fixed
             }
         }
         System.out.println("Product not found. Editing failed.");
@@ -71,27 +67,6 @@ public class Seller extends Person{
     }
 
     // Need a Method to view sales history???
-
-    // selling a product
-    public void sell(Product product) {
-        if (product.getQuantity() > 0) {
-            for (int i = 0; i < products.size(); i++) {
-                //iterating through the list to find matching product
-                if (products.get(i).equals(product)) {
-                    soldProducts.add(products.get(i));
-                    products.remove(i);
-                    break;
-                }
-            }
-        } else {
-            System.out.println("This item is out of stock");
-            return;
-        }
-
-    }
-    public void salesHistory() {
-
-    }
 
 
     // Getters and Setters

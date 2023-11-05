@@ -1,10 +1,9 @@
 import java.io.*;
+import java.util.Objects;
 
 /**
  * Project 4
- *
  * Person Class - Holds Account Info for Customers and Sellers
- *
  *
  * @author Jacob Stamper L36
  * @version 11/2/23
@@ -21,6 +20,13 @@ public class Person {
         this.email = email;
         this.password = password;
         this.accountType = accountType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person person)) return false;
+        return Objects.equals(getEmail(), person.getEmail());
     }
 
     public String getEmail() {
@@ -54,19 +60,29 @@ public class Person {
     }
 
     // Checks if email is in valid format
+    // Valid Format: no spaces, one "@", name and domain exist, and exactly one "." not at beginning/end of domain
     public static boolean isValid(String email) {
 
-        int indexAt = email.indexOf("@");
-        int indexDot = email.indexOf(".");
+        // Checks if there are no spaces
+        if (!(email.contains(" "))) {
 
-        // There must be a username
-        // Username cannot contain "." or "@"
-        // There must be something between "@" and "."
-        if ((indexAt != 1) && (indexDot - indexAt > 1)) {
+            // Checks if there is exactly one "@"
+            if ((email.split("@", -1).length == 2)) {
 
-            // There must be non-space characters between "@" and "."
-            if (!email.substring(indexAt + 1, indexDot - 2).contains(" ")) {
-                return true;
+                // Checks if name and domain exist
+                if (((email.split("@", -1)[0]) != "") && ((email.split("@", -1)[1]) != "")) {
+
+                    String domain = email.split("@", -1)[1];
+
+                    // Checks if "." is at the beginning or end of email
+                    if (!(domain.charAt(0) == '.') && !(domain.charAt(domain.length() - 1) == '.')) {
+
+                        // Checks if only one "." in domain
+                        if (domain.split("\\.", -1).length == 2) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
         return false;
@@ -98,6 +114,7 @@ public class Person {
         }
     }
 
+    // Adds the information of a Person object to Accounts.txt
     public void writeAccountToFile() {
 
         try {
