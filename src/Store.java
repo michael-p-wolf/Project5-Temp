@@ -32,7 +32,7 @@ public class Store {
                     if (products.get(i).equals(product)) {
                         counter++;
                         soldProducts.add(products.get(i)); // adding all sold products to an array list
-                        printWriter.write(customer.getEmail() + "," + product.getName() + "," + product.getPrice()*sellQuantity + "," + sellQuantity); //writing Customer email, product name, product price
+                        printWriter.write(customer.getEmail() + "," + product.getName() + "," + product.getPrice()*sellQuantity + "," + sellQuantity); //writing Customer email, product name, product price, and product amount bought
                         product.setQuantity(product.getQuantity() - 1);
                         break;
                     }
