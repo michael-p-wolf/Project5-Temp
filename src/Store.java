@@ -6,6 +6,47 @@ public class Store {
     private String storeName;
     private Seller seller;
     private String filename;
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<Product> getSoldProducts() {
+        return soldProducts;
+    }
+
+    public void setSoldProducts(List<Product> soldProducts) {
+        this.soldProducts = soldProducts;
+    }
+
     private List<Product> products; // keeping tracks fo products
     private List<Product> soldProducts; //keeping track of sold products
 
@@ -18,7 +59,6 @@ public class Store {
         this.soldProducts = new ArrayList<>();
 
     }
-
     public void sell(Product product, Customer customer, int sellQuantity) throws IOException {
         try {
 

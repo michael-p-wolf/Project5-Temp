@@ -57,7 +57,7 @@ public class Product {
     }
 
     public String toString() {
-        return String.format("%s,%s,%d,%f", this.name, this.description, this.price,this.quantity);
+        return String.format("%s,%s,%s,%f,%d", this.name, this.storeSelling, this.description, this.price,this.quantity);
     }
 
     @Override
