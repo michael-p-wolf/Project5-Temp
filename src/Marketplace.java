@@ -1,3 +1,4 @@
+import javax.lang.model.type.ArrayType;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,7 +11,6 @@ public class Marketplace {
 
 
     public static void main(String[] args) {
-
         Scanner scan = new Scanner(System.in);
 
         int input = 0;
