@@ -70,7 +70,7 @@ public class Person {
 
     // Checks if email is in valid format
     // Valid Format: no spaces, no semicolons, one "@", name and domain exist,
-    // and exactly one "." in domain that cannot at beginning/end of domain
+    // and at least one "." in domain, but none can be at beginning/end of domain
     public static boolean isValidFormat(String email) {
 
         // Checks if there are no semicolons (will break system if they do)
@@ -88,8 +88,8 @@ public class Person {
                     // Checks if "." is at the beginning or end of email
                     if (!(domain.charAt(0) == '.') && !(domain.charAt(domain.length() - 1) == '.')) {
 
-                        // Checks if only one "." in domain
-                        if (domain.split("\\.", -1).length == 2) {
+                        // Checks if at least one "." in domain
+                        if (domain.split("\\.", -1).length > 1) {
                             return true;
                         }
                     }
@@ -97,91 +97,6 @@ public class Person {
             }
         }
         return false;
-    }
-
-    // Adds the information of the calling Person object to Accounts.txt
-    public void saveAccount() {
-
-        try {
-            File file = new File("Accounts.txt");
-            FileOutputStream fos = new FileOutputStream(file, true);
-            PrintWriter pw = new PrintWriter(fos);
-            pw.println(this);
-            pw.flush();
-            pw.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    // Removes the Person object that called the method from Accounts.txt
-    public void deleteAccount() {
-
-        ArrayList<String> accountInfo = new ArrayList<>();
-        String accountToRemove = this.toString();
-
-        try {
-            // Gets all info in Accounts.txt except account of "this"
-            File file = new File("Accounts.txt");
-            FileReader fr = new FileReader(file);
-            BufferedReader bfr = new BufferedReader(fr);
-            String line = bfr.readLine();
-            while (line != null) {
-                if (!(line.equals(accountToRemove)))
-                    accountInfo.add(line);
-                line = bfr.readLine();
-            }
-
-            // Prints all info in Accounts.txt except account of "this"
-            FileOutputStream fos = new FileOutputStream(file, false);
-            PrintWriter pw = new PrintWriter(fos);
-            for (int i = 0; i < accountInfo.size(); i++) {
-                pw.println(accountInfo.get(i));
-            }
-            pw.flush();
-            pw.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Updates the Account.txt file with updated account info
-    // Used in login sequence; don't use otherwise
-    // Instead use deleteAccount and saveAccount
-    public void updateAccount(String oldAccount) {
-
-        ArrayList<String> accountInfo = new ArrayList<>();
-
-        try {
-            // Gets all info in Accounts.txt except account of "this"
-            File file = new File("Accounts.txt");
-            FileReader fr = new FileReader(file);
-            BufferedReader bfr = new BufferedReader(fr);
-            String line = bfr.readLine();
-            while (line != null) {
-                if (line.equals(oldAccount)) {
-                    accountInfo.add(this.toString());
-                }
-                else {
-                    accountInfo.add(line);
-                }
-                line = bfr.readLine();
-            }
-
-            // Prints all info in Accounts.txt except account of "this"
-            FileOutputStream fos = new FileOutputStream(file, false);
-            PrintWriter pw = new PrintWriter(fos);
-            for (int i = 0; i < accountInfo.size(); i++) {
-                pw.println(accountInfo.get(i));
-            }
-            pw.flush();
-            pw.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // Retrieves the account info for a specific email
@@ -210,6 +125,54 @@ public class Person {
         }
     }
 
+    // Adds the account info to Accounts.txt
+    // Use this.toString() to add a Person object's info
+    public static void saveAccount(String accountInfo) {
+
+        try {
+            File file = new File("Accounts.txt");
+            FileOutputStream fos = new FileOutputStream(file, true);
+            PrintWriter pw = new PrintWriter(fos);
+            pw.println(accountInfo);
+            pw.flush();
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Removes the account's info from Accounts.txt
+    // Use this.toString() to remove a Person object's account info
+    public static void deleteAccount(String accountToRemove) {
+
+        ArrayList<String> allAccountInfo = new ArrayList<>();
+
+        try {
+            // Gets all info in Accounts.txt except account of "this"
+            File file = new File("Accounts.txt");
+            FileReader fr = new FileReader(file);
+            BufferedReader bfr = new BufferedReader(fr);
+            String line = bfr.readLine();
+            while (line != null) {
+                if (!(line.equals(accountToRemove)))
+                    allAccountInfo.add(line);
+                line = bfr.readLine();
+            }
+
+            // Prints all info in Accounts.txt except account of "this"
+            FileOutputStream fos = new FileOutputStream(file, false);
+            PrintWriter pw = new PrintWriter(fos);
+            for (int i = 0; i < allAccountInfo.size(); i++) {
+                pw.println(allAccountInfo.get(i));
+            }
+            pw.flush();
+            pw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Allows the user to change the email and password of their own account
     public void editAccount(Scanner scanner) {
 
@@ -227,7 +190,8 @@ public class Person {
                         String accountOnFile = Person.retrieveAccountInfo(newEmail);
                         if (Person.isValidFormat(newEmail) && (accountOnFile.isEmpty())) {
                             this.setEmail(newEmail);
-                            this.updateAccount(oldAccount);
+                            Person.deleteAccount(oldAccount);
+                            Person.saveAccount(this.toString());
                             System.out.println("\nYour email has been changed.");
                         } else if (Person.isValidFormat(newEmail))
                             System.out.println("\nThis email is already taken.");
@@ -243,7 +207,8 @@ public class Person {
                             if (!(newPassword.contains(" ")) && !(newPassword.contains(";"))
                                     && !(newPassword.isEmpty())) {
                                 this.setPassword(newPassword);
-                                this.updateAccount(oldAccount);
+                                Person.deleteAccount(oldAccount);
+                                Person.saveAccount(this.toString());
                                 System.out.println("\nYour password has been changed.");
                             }
                             else
@@ -336,7 +301,7 @@ public class Person {
                                     scanner.nextLine();
                                     if (accountType.equals("C") || accountType.equals("S")) {
                                         Person person = new Person(email.toLowerCase(), password, accountType);
-                                        person.saveAccount();
+                                        Person.saveAccount(person.toString());
                                         return person;
                                     } else
                                         System.out.println("\nInvalid Input");
