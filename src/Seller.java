@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +11,23 @@ public class Seller extends Person {
     public Seller(String email, String password) {
         super(email, password, "S"); // Call the super constructor
         this.stores = new ArrayList<>();
+        File file = new File("Accounts.txt");
+
+        if (file.exists()) {
+            try (BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"))) {
+                String line = bfr.readLine();
+                while (line != null) {
+                    String[] info = line.split(";");
+                    // if this user is the user we are creating
+                    if (info[2].equals("S") && info[0].equals(email)) {
+                        // but account doesn't hold any of the info so what do i do
+                    }
+                    line = bfr.readLine();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public List<Store> getStores() {
