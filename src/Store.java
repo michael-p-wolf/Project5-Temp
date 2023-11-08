@@ -4,60 +4,18 @@ import java.util.List;
 
 public class Store {
     private String storeName;
-    private Seller seller;
+    private String seller;
     private String filename;
-
-    public String getStoreName() {
-        return storeName;
-    }
-
-    public void setStoreName(String storeName) {
-        this.storeName = storeName;
-    }
-
-    public Seller getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public List<Product> getSoldProducts() {
-        return soldProducts;
-    }
-
-    public void setSoldProducts(List<Product> soldProducts) {
-        this.soldProducts = soldProducts;
-    }
-
-    private List<Product> products; // keeping tracks fo products
+    private List<Product> products;
     private List<Product> soldProducts; //keeping track of sold products
 
 
-    public Store(String storeName, Seller seller, String owner, String filename, List<Product> products) {
-        this.storeName = storeName;
+    public Store(String name, String seller, String filename) {
+        this.storeName = name;
         this.seller = seller;
         this.filename = filename;
-        this.products = products;
+        this.products = new ArrayList<>();
         this.soldProducts = new ArrayList<>();
-
     }
     public void sell(Product product, Customer customer, int sellQuantity) throws IOException {
         try {
@@ -88,6 +46,70 @@ public class Store {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public String getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = String.valueOf(seller);
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<Product> getSoldProducts() {
+        return soldProducts;
+    }
+
+    public void setSoldProducts(List<Product> soldProducts) {
+        this.soldProducts = soldProducts;
+    }
+    // Method to add a product to the store
+    public void createProduct(String name, String description, double price, int quantity) {
+        Product product = new Product(name, this.storeName, description, quantity, price);
+        products.add(product);
+    }
+
+    // Method to edit a product's information
+    public void editProduct(String productName, String description, double price, int quantity) {
+        for (Product product : products) {
+            if (product.getName().equals(productName)) {
+                product.setDescription(description);
+                product.setPrice(price);
+                product.setQuantity(quantity);
+            }
+        }
+    }
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
+
+    public void removeProduct(Product product) {
+        products.remove(product);
     }
 
 }
