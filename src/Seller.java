@@ -9,8 +9,22 @@ public class Seller extends Person {
         super(email, password, "Seller"); // Call the super constructor
         this.stores = new ArrayList<>();
         File sellerFile = new File("sellers.txt");
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(sellerFile)));
-        pw.write(email + ";");
+        PrintWriter pw = new PrintWriter(new FileOutputStream(sellerFile,true));
+        BufferedReader bfr = new BufferedReader(new FileReader("sellers.txt"));
+
+        String line = bfr.readLine();
+        boolean random = false;
+        while(line != null) {
+            String[] split = line.split(";");
+            if(split[0].equals(super.getEmail())) {
+                random = true;
+                break;
+            }
+            line = bfr.readLine();
+        }
+        if(random == false) {
+            pw.append("\n" + email + ";");
+        }
         pw.flush();
         pw.close();
     }
@@ -35,24 +49,59 @@ public class Seller extends Person {
         store.removeProduct(product);
     }
 
+    public String toString() {
+
+        String toWrite = this.getEmail();
+        for (int i = 0; i < this.stores.size(); i++) {
+            toWrite += (";" + stores.get(i).getStoreName());
+        }
+        return toWrite;
+    }
+
+
+    public void createStore(String storeName) throws IOException {
+        Store newStore = new Store(storeName, this.getEmail());
+        String oldPerson = this.toString();
+        stores.add(newStore);
+        Person.deleteAccount(oldPerson, "sellers.txt");
+        Person.saveAccount(this.toString(), "sellers.txt");
+    }
+
+    /**
     public void createStore(String storeName) throws IOException {
         Store newStore = new Store(storeName, this.getEmail());
         File sellerFile = new File("sellers.txt");
-        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(sellerFile)));
-        BufferedReader bfr = new BufferedReader(new FileReader(sellerFile));
-        String line = bfr.readLine();
-        while(line != null) {
-            String[] split = line.split(";", 0);
-            if(split[0].equals(super.getEmail())) {
-                pw.write(newStore.getStoreName() + ";");
+        stores.add(newStore);
+
+        // Read all existing data
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader bfr = new BufferedReader(new FileReader(sellerFile))) {
+            String line = bfr.readLine();
+            while (line != null) {
+                lines.add(line);
+                line = bfr.readLine();
+            }
+        }
+
+        // Find and update the line associated with the current seller's email
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            String[] split = line.split(";");
+            if (split.length > 0 && split[0].equals(super.getEmail())) {
+                lines.set(i, split[0] + newStore.getStoreName() + ";");
                 break;
             }
-            line = bfr.readLine();
         }
-        pw.flush();
-        pw.close();
-        stores.add(newStore);
+
+        // Write the updated data back to the file
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(sellerFile, false))) {
+            for (String line : lines) {
+                pw.println(line);
+            }
+        }
     }
+**/
+
 
     public void removeStore(String storeName) {
         Store storeToRemove = null;

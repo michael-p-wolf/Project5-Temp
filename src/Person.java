@@ -290,7 +290,7 @@ public class Person {
                         if (pass.equals(confirmPass)) {
                             switch (input) {
                                 case 1:
-                                    System.out.printf("Create customer account with email: %s?\n[1]Confirm\n[2]Cancel", email);
+                                    System.out.printf("Create customer account with email: %s?\n[1]Confirm\n[2]Cancel\n", email);
                                     try {
                                         input2String = scanner.nextLine();
                                         input2 = Integer.parseInt(input2String);

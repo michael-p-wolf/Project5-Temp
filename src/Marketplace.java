@@ -70,8 +70,9 @@ public class Marketplace {
                             if (activeUser.getAccountType().equals("C")) {
                                 Customer activeCustomer = new Customer(activeUser.getEmail(),activeUser.getPassword());
                                 customerHome(scan, activeCustomer);
-                            } else if (pass.equals("Seller")/*Account Type = Seller */) {
-                                //run seller home
+                            } else if (activeUser.getAccountType().equals("S")) {
+                                Seller activeSeller = new Seller(activeUser.getEmail(),activeUser.getPassword());
+                                sellerHome(scan, activeSeller);
                             } else if (activeUser == null){/*Login failed*/
                                 System.out.println("Login failed!\n[1]Try Again\n[2]Exit");
                                 String input2String = scan.nextLine();
@@ -170,6 +171,7 @@ public class Marketplace {
                     case 1:
                         String storeName = scan.nextLine();
                         seller.createStore(storeName);
+                        break;
                     case 2:
                         ;
                     case 3:

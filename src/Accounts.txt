@@ -1,3 +1,2 @@
-test@test.com;test;C
-seller@test.com;test;S
-test@test.co;test;S
+seller1@test.com;test;S
+seller2@test.com;test;S
