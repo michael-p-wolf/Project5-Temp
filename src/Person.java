@@ -129,10 +129,10 @@ public class Person {
 
     // Adds the account info to Accounts.txt
     // Use this.toString() to add a Person object's info
-    public static void saveAccount(String accountInfo) {
+    public static void saveAccount(String accountInfo, String fileName) {
 
         try {
-            File file = new File("/Users/michaelw/IdeaProjects/Project4/src/Accounts.txt");
+            File file = new File(fileName);
             FileOutputStream fos = new FileOutputStream(file, true);
             PrintWriter pw = new PrintWriter(fos);
             pw.println(accountInfo);
