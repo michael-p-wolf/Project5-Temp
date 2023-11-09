@@ -6,7 +6,7 @@ public class Marketplace {
     private static ArrayList<Customer> customers;
     public static final String WELCOME = "Home Screen\n[1] Sign In\n[2] Create Account\n[3] Exit";
     public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1]Customer Account\n[2]Seller Account\n[3]Go Back";
-    public static final String CUSTOMER_HOME = "Customer Home Screen\n[1]Marketplace\n[2]Edit Account\n[3]Search For Product\n[4]Store Dashboard\n[5]Shopping Cart\n[6]Purchase History\n[7]Sign Out\n";
+    public static final String CUSTOMER_HOME = "[1]Marketplace\n[2]Edit Account\n[3]Search For Product\n[4]Store Dashboard\n[5]Shopping Cart\n[6]Purchase History\n[7]Delete Account\n[8]Sign Out";
     public static final String SELLER_HOME = "Seller Home Screen\n[1]Create Store\n[2]Edit Account\n[2]Access Store List\n[4]Dashboard\n[5]Shopping Cart\n[6]Sign Out\n";
 
     public static void main(String[] args) {
@@ -60,165 +60,67 @@ public class Marketplace {
                 int input = Integer.parseInt(inputString);
                 switch (input) {
                     case 1:
-                        if (email.equals("Customer")/*Account Type = Customer */) {
-                            //customerHome(scan, customer);
-                        } else if (pass.equals("Seller")/*Account Type = Seller */) {
-                            //run seller home
-                        } else {/*Login failed*/
-                            System.out.println("Login failed!\n[1]Try Again\n[2]Exit");
-                            String input2String = scan.nextLine();
-                            try {
-                                int input2 = Integer.parseInt(input2String);
-                                switch (input2) {
-                                    case 1: break;
-                                    case 2: return;
-                                    default:
-                                        System.out.println("Invalid Input!");
-                                        return;
+                        try {
+                            Person activeUser = Person.login(email, pass);
+                            if (activeUser.getAccountType().equals("C")) {
+                                Customer activeCustomer = new Customer(activeUser.getEmail(),activeUser.getPassword());
+                                customerHome(scan, activeCustomer);
+                            } else if (pass.equals("Seller")/*Account Type = Seller */) {
+                                //run seller home
+                            } else if (activeUser == null){/*Login failed*/
+                                System.out.println("Login failed!\n[1]Try Again\n[2]Exit");
+                                String input2String = scan.nextLine();
+                                try {
+                                    int input2 = Integer.parseInt(input2String);
+                                    switch (input2) {
+                                        case 1: break;
+                                        case 2: return;
+                                        default:
+                                            System.out.println("Invalid Input!");
+                                            return;
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("Invalid input!");
+                                    return;
                                 }
-                            } catch (Exception e) {
-                                System.out.println("Invalid input!");
-                                return;
-                            }
 
+                            }
+                        } catch (NullPointerException e) {
+                            return;
                         }
+
                     case 2:
                         return;
                     default:
                         System.out.println("Invalid Input!");
+                        return;
                 }
             } catch (Exception e) {
                 System.out.println("Invalid Input!");
+                e.printStackTrace();
+                return;
             }
         } while (true);
 
     }
 
+
     public static void createAccountScreen (Scanner scan) {
-        int input = 0;
-        int input2 = 0;
-        String email;
-        String pass;
-        do {
-            System.out.println(CREATE_ACCOUNT_SCREEN);
-            try {
-                String inputString = scan.nextLine();
-                input = Integer.parseInt(inputString);
-                if (input == 1 || input == 2) {
-                    System.out.println("Email:");
-                    email = scan.nextLine();
-                    if (!Person.isValid(email)) {
-                        System.out.println("Invalid Email!");
-                        break;
-                    } else if (Person.isDuplicate(email)) {
-                        System.out.println("Email is already in use!");
-                        break;
-                    }
-                    System.out.println("Password:");
-                    pass = scan.nextLine();
-                    System.out.println("Confirm Password:");
-                    if (scan.nextLine().equals(pass)) {
-                        String input2String;
-                        switch (input) {
-                            case 1:
-                                System.out.printf("Create customer account with email: %s?\n[1]Confirm\n[2]Cancel\n", email);
-                                input2String = scan.nextLine();
-                                try {
-                                    input2 = Integer.parseInt(input2String);
-                                    switch (input2) {
-                                        case 1:
-                                            System.out.println("Success! Account created");
-                                            customers.add(new Customer(email,pass));
-                                            //sign in with the email and password
-                                            //customerHome(scan, customer^);
-                                        case 2: return;
-                                        default:
-                                            System.out.println("Invalid Input!");
-                                            break;
-                                    }
-                                } catch (Exception e) {
-                                    System.out.println("Invalid Input!");
-                                }
-                            case 2:
-                                System.out.printf("Create seller account with email: %s?\n[1]Confirm\n[2]Cancel\n", email);
-                                input2String = scan.nextLine();
-                                try {
-                                    input2 = Integer.parseInt(input2String);
-                                    switch (input2) {
-                                        case 1:
-                                            System.out.println("Success! Account created");
-                                            //sellers.add(new Seller(email,pass));
-                                            //sign in with the email and password
-                                            //sellerHome(scan, seller^);
-                                        case 2: return;
-                                        default:
-                                            System.out.println("Invalid Input!");
-                                            break;
-                                    }
-                                } catch (Exception e) {
-                                    System.out.println("Invalid Input!");
-                                }
-                        }
+        Person currentUser = Person.createAccount(scan);
+        if (currentUser != null) {
+            if (currentUser.getAccountType().equals("C")) {
+                Customer currentCustomer = new Customer(currentUser.getEmail(),currentUser.getPassword());
+                customerHome(scan, currentCustomer);
+            } else if (currentUser.getAccountType().equals("S")) {
 
-
-                    } else {
-                        System.out.println("Passwords did not match!");
-                        break;
-                    }
-                } else if (input ==3) {
-
-                } else {
-                    System.out.println("Invalid Input!");
-                }
-
-
-                        //Create Seller Account
-                        System.out.println("Email:");
-                        email = scan.nextLine();
-                        if (!Person.isValid(email)) {
-                            System.out.println("Invalid Email!");
-                            break;
-                        }
-                        System.out.println("Password:");
-                        pass = scan.nextLine();
-                        System.out.println("Confirm Password:");
-                        if (scan.nextLine().equals(pass)) {
-                            System.out.printf("Create seller account with email: %s?\n[1]Confirm\n[2]Cancel\n", email);
-                            String input2String = scan.nextLine();
-                            try {
-                                input2 = Integer.parseInt(input2String);
-                                switch (input2) {
-                                    case 1:
-                                        System.out.println("Success! Account created");
-                                        //sellers.add(new Seller(email,pass));
-                                        //sign in with the email and password
-                                        //sellerHome(scan, seller^);
-                                    case 2: return;
-                                    default:
-                                        System.out.println("Invalid Input!");
-                                        break;
-                                }
-                            } catch (Exception e) {
-                                System.out.println("Invalid Input!");
-                            }
-
-                        } else {
-                            System.out.println("Passwords did not match!");
-                        }
-
-
-
-
-            } catch (Exception e){
-                System.out.println("Invalid Input!");
             }
-        } while (true);
+        }
 
     }
     public static void customerHome(Scanner scan, Customer customer) {
         int input = 0;
         do {
-            System.out.println(CUSTOMER_HOME);
+            System.out.println(customer.getEmail() + " Customer Homepage\n" + CUSTOMER_HOME);
             try {
                 String inputString = scan.nextLine();
                 input = Integer.parseInt(inputString);
@@ -226,7 +128,8 @@ public class Marketplace {
                     case 1:
                         ;
                     case 2:
-                        ;
+                        customer.editAccount(scan);
+                        break;
                     case 3:
                         ;
                     case 4:
@@ -236,12 +139,15 @@ public class Marketplace {
                     case 6:
                         ;
                     case 7:
+                        //How do I call the person toString for a customer?
+                        //customer.deleteAccount(customer.toString());
+                    case 8:
                         return;
-                    default:
-                        System.out.println("Invalid Input!");
+                    default: System.out.println("Invalid Input!");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input!");
+                e.printStackTrace();
             }
 
         } while (true);
