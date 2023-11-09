@@ -10,7 +10,6 @@ public class Seller extends Person {
 
     public Seller(String email, String password) {
         super(email, password, "S"); // Call the super constructor
-        this.stores = new ArrayList<>();
         File file = new File("Accounts.txt");
 
         if (file.exists()) {
@@ -27,6 +26,8 @@ public class Seller extends Person {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            this.stores = new ArrayList<>();
         }
     }
 
