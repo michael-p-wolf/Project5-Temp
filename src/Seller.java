@@ -1,34 +1,18 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Seller extends Person {
     private List<Store> stores;
 
-    public Seller(String email, String password) {
-        super(email, password, "S"); // Call the super constructor
-        File file = new File("Accounts.txt");
-
-        if (file.exists()) {
-            try (BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"))) {
-                String line = bfr.readLine();
-                while (line != null) {
-                    String[] info = line.split(";");
-                    // if this user is the user we are creating
-                    if (info[2].equals("S") && info[0].equals(email)) {
-                        // but account doesn't hold any of the info so what do i do
-                    }
-                    line = bfr.readLine();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            this.stores = new ArrayList<>();
-        }
+    public Seller(String email, String password) throws IOException {
+        super(email, password, "Seller"); // Call the super constructor
+        this.stores = new ArrayList<>();
+        File sellerFile = new File("sellers.txt");
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(sellerFile)));
+        pw.write(email + ";");
+        pw.flush();
+        pw.close();
     }
 
     public List<Store> getStores() {
@@ -51,8 +35,22 @@ public class Seller extends Person {
         store.removeProduct(product);
     }
 
-    public void createStore(String storeName, String fileName) {
-        Store newStore = new Store(storeName, this.getEmail(), fileName);
+    public void createStore(String storeName) throws IOException {
+        Store newStore = new Store(storeName, this.getEmail());
+        File sellerFile = new File("sellers.txt");
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(sellerFile)));
+        BufferedReader bfr = new BufferedReader(new FileReader(sellerFile));
+        String line = bfr.readLine();
+        while(line != null) {
+            String[] split = line.split(";", 0);
+            if(split[0].equals(super.getEmail())) {
+                pw.write(newStore.getStoreName() + ";");
+                break;
+            }
+            line = bfr.readLine();
+        }
+        pw.flush();
+        pw.close();
         stores.add(newStore);
     }
 

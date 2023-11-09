@@ -10,10 +10,9 @@ public class Store {
     private List<Product> soldProducts; //keeping track of sold products
 
 
-    public Store(String name, String seller, String filename) {
+    public Store(String name, String seller) {
         this.storeName = name;
         this.seller = seller;
-        this.filename = filename;
         this.products = new ArrayList<>();
         this.soldProducts = new ArrayList<>();
     }
