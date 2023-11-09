@@ -29,12 +29,13 @@ public class Customer extends Person {
     public Customer(String email, String password) {
         // we use our super constructor
         super(email, password, "Customer");
-        File file = new File("");
-
-        // if the file exists
+        File file = new File("Customer.txt");
+        // a flag representing whetehr the user exists
+        boolean flag = false;
+        // if the file exists and the file is not empty
         // we get the preexisting data for this user
-        if (file.exists()) {
-            try (BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"))) {
+        if (file.exists() || file.length() != 0) {
+            try (BufferedReader bfr = new BufferedReader(new FileReader("Customer.txt"))) {
                 String line = bfr.readLine();
                 while (line != null) {
                     String[] info = line.split(";");
@@ -42,25 +43,59 @@ public class Customer extends Person {
                     if (info[2].equals("Customer") && info[0].equals(email)) {
                         // we get the cart, purchase history, and store information
                         // from the file
+                        flag = true;
                         this.cart = convert(info[3]);
                         this.purchaseHistory = convert(info[4]);
-                        String s = info[5].substring(1, info[5].length() - 1);
-                        String[] items = s.split(", ");
-                        ArrayList<String> stores = new ArrayList<>();
-                        Collections.addAll(stores, items);
-                        this.stores = stores;
+                        this.stores = convertStringToArrayList(info[5]);
                     }
                     line = bfr.readLine();
+                }
+                try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Customer.txt", true)))) {
+                    if (!flag) {
+                        // if we did not have that user's data in here before
+                        // we print the object
+                        this.cart = new ArrayList<>();
+                        this.purchaseHistory = new ArrayList<>();
+                        this.stores = new ArrayList<>();
+                        pw.println(this);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            // no existing data so we create blank array lists
+            // if the file is empty or does not exist we
+            // print our first user
             this.cart = new ArrayList<>();
             this.purchaseHistory = new ArrayList<>();
             this.stores = new ArrayList<>();
+            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Customer.txt")))) {
+                pw.println(this);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+    }
+
+    /**
+     * Converts an ArrayList of String's
+     * toString() representation back to
+     * an ArrayList of Strings
+     * @param str - the toString representation
+     * @return list - An ArrayList of Strings
+     */
+    private static ArrayList<String> convertStringToArrayList(String str) {
+        // Check if the list is empty
+        if (str.equals("[]")) {
+            return new ArrayList<>();
+        }
+        // Remove square brackets and split the string by commas
+        String[] elements = str.substring(1, str.length() - 1).split(", ");
+        // Convert the array to an ArrayList
+        List<String> list = Arrays.asList(elements);
+        return new ArrayList<>(list);
     }
 
     /**
@@ -71,18 +106,22 @@ public class Customer extends Person {
      * @return products - An ArrayList of Products
      */
     private ArrayList<Product> convert(String line) {
-        String l = line.substring(1, line.length() - 1);
-        // we use comma space to differentiate between products, not fields
-        // within products
-        String[] items = l.split(", ");
-        ArrayList<Product> ans = new ArrayList<>();
-        for (String s : items) {
-            // only a comma to differentiate fields
-            String[] data = s.split(",");
-            Product p3 = new Product(data[0], data[1], data[2], Integer.parseInt(data[4]), Double.parseDouble(data[3]));
-            ans.add(p3);
+        if (!line.equalsIgnoreCase("[]")) {
+            String l = line.substring(1, line.length() - 2);
+            // we use comma space to differentiate between products, not fields
+            // within products
+            String[] items = l.split(", ");
+            ArrayList<Product> ans = new ArrayList<>();
+            for (String s : items) {
+                // only a comma to differentiate fields
+                String[] data = s.split(",");
+                Product p3 = new Product(data[0], data[1], data[2], Integer.parseInt(data[4]), Double.parseDouble(data[3]));
+                ans.add(p3);
+            }
+            return ans;
+        } else {
+            return new ArrayList<Product>();
         }
-        return ans;
     }
 
     /**

@@ -106,7 +106,7 @@ public class Person {
     public static String retrieveAccountInfo(String email) {
 
         try {
-            File file = new File("/Users/michaelw/IdeaProjects/Project4/src/Accounts.txt");
+            File file = new File("Accounts.txt");
             FileReader fr = new FileReader(file);
             BufferedReader bfr = new BufferedReader(fr);
             String line = bfr.readLine();
@@ -192,7 +192,7 @@ public class Person {
                         if (Person.isValidFormat(newEmail) && (accountOnFile.isEmpty())) {
                             this.setEmail(newEmail);
                             Person.deleteAccount(oldAccount,"Accounts.txt");
-                            Person.saveAccount(super.toString());
+                            Person.saveAccount(super.toString(), "Accounts.txt");
                             System.out.println("\nYour email has been changed.");
                         } else if (Person.isValidFormat(newEmail))
                             System.out.println("\nThis email is already taken.");
@@ -209,7 +209,7 @@ public class Person {
                                     && !(newPassword.isEmpty())) {
                                 this.setPassword(newPassword);
                                 Person.deleteAccount(oldAccount, "Accounts.txt");
-                                Person.saveAccount(super.toString());
+                                Person.saveAccount(super.toString(), "Accounts.txt");
                                 System.out.println("Your password has been changed.");
                             } else
                                 System.out.println("Your password isn't in the correct format.\n" +
@@ -298,7 +298,7 @@ public class Person {
                                             case 1:
                                                 accountType = "C";
                                                 Person person = new Person(email.toLowerCase(), pass, accountType);
-                                                Person.saveAccount(person.toString());
+                                                Person.saveAccount(person.toString(), "Accounts.txt");
                                                 return person;
                                             case 2:
                                                 return null;
@@ -319,7 +319,7 @@ public class Person {
                                             case 1:
                                                 accountType = "S";
                                                 Person person = new Person(email.toLowerCase(), pass, accountType);
-                                                Person.saveAccount(person.toString());
+                                                Person.saveAccount(person.toString(), "Accounts.txt");
                                                 return person;
                                             case 2:
                                                 return null;
