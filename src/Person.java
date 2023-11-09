@@ -106,7 +106,7 @@ public class Person {
     public static String retrieveAccountInfo(String email) {
 
         try {
-            File file = new File("/Users/michaelw/IdeaProjects/Project4/src/Accounts.txt");
+            File file = new File("Accounts.txt");
             FileReader fr = new FileReader(file);
             BufferedReader bfr = new BufferedReader(fr);
             String line = bfr.readLine();
@@ -132,7 +132,7 @@ public class Person {
     public static void saveAccount(String accountInfo) {
 
         try {
-            File file = new File("/Users/michaelw/IdeaProjects/Project4/src/Accounts.txt");
+            File file = new File("Accounts.txt");
             FileOutputStream fos = new FileOutputStream(file, true);
             PrintWriter pw = new PrintWriter(fos);
             pw.println(accountInfo);
