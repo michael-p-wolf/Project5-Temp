@@ -1,3 +1,0 @@
-seller1@test.com;test;S
-seller2@test.com;test;S
-seller3@test.com;test;S
