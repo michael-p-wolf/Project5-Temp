@@ -1,3 +1,6 @@
 
-seller1@test.comstoreeeee;
-seller2@test.com;asdfads;2222222;HELP;
+seller1@test.com;;store1;store2;store2;store4;POWER
+
+seller2@test.com;;store1;ASDFASDF
+
+seller3@test.com;lkjh;asdf

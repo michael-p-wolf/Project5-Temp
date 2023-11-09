@@ -23,7 +23,7 @@ public class Seller extends Person {
             line = bfr.readLine();
         }
         if(random == false) {
-            pw.append("\n" + email + ";");
+            pw.append("\n" + email);
         }
         pw.flush();
         pw.close();
@@ -58,7 +58,7 @@ public class Seller extends Person {
         return toWrite;
     }
 
-
+    /**
     public void createStore(String storeName) throws IOException {
         Store newStore = new Store(storeName, this.getEmail());
         String oldPerson = this.toString();
@@ -66,41 +66,37 @@ public class Seller extends Person {
         Person.deleteAccount(oldPerson, "sellers.txt");
         Person.saveAccount(this.toString(), "sellers.txt");
     }
+     **/
 
-    /**
+
     public void createStore(String storeName) throws IOException {
         Store newStore = new Store(storeName, this.getEmail());
-        File sellerFile = new File("sellers.txt");
         stores.add(newStore);
 
         // Read all existing data
         List<String> lines = new ArrayList<>();
-        try (BufferedReader bfr = new BufferedReader(new FileReader(sellerFile))) {
+        try (BufferedReader bfr = new BufferedReader(new FileReader("sellers.txt"))) {
             String line = bfr.readLine();
             while (line != null) {
+                String[] split = line.split(";");
+                if (split.length > 0 && split[0].equals(super.getEmail())) {
+                    // Append the new store name to the existing line
+                    line += ";" + newStore.getStoreName();
+                }
                 lines.add(line);
                 line = bfr.readLine();
             }
         }
 
-        // Find and update the line associated with the current seller's email
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            String[] split = line.split(";");
-            if (split.length > 0 && split[0].equals(super.getEmail())) {
-                lines.set(i, split[0] + newStore.getStoreName() + ";");
-                break;
-            }
-        }
-
         // Write the updated data back to the file
-        try (PrintWriter pw = new PrintWriter(new FileOutputStream(sellerFile, false))) {
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream("sellers.txt", false))) {
             for (String line : lines) {
                 pw.println(line);
             }
         }
     }
-**/
+
+
 
 
     public void removeStore(String storeName) {
