@@ -191,7 +191,7 @@ public class Person {
                         String accountOnFile = Person.retrieveAccountInfo(newEmail);
                         if (Person.isValidFormat(newEmail) && (accountOnFile.isEmpty())) {
                             this.setEmail(newEmail);
-                            Person.deleteAccount(oldAccount);
+                            Person.deleteAccount(oldAccount,"Accounts.txt");
                             Person.saveAccount(super.toString());
                             System.out.println("\nYour email has been changed.");
                         } else if (Person.isValidFormat(newEmail))
@@ -208,7 +208,7 @@ public class Person {
                             if (!(newPassword.contains(" ")) && !(newPassword.contains(";"))
                                     && !(newPassword.isEmpty())) {
                                 this.setPassword(newPassword);
-                                Person.deleteAccount(oldAccount);
+                                Person.deleteAccount(oldAccount, "Accounts.txt");
                                 Person.saveAccount(super.toString());
                                 System.out.println("Your password has been changed.");
                             } else
