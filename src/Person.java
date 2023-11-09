@@ -145,13 +145,13 @@ public class Person {
 
     // Removes the account's info from Accounts.txt
     // Use this.toString() to remove a Person object's account info
-    public static void deleteAccount(String accountToRemove) {
+    public static void deleteAccount(String accountToRemove, String fileName) {
 
         ArrayList<String> allAccountInfo = new ArrayList<>();
 
         try {
             // Gets all info in Accounts.txt except account of "this"
-            File file = new File("Accounts.txt");
+            File file = new File(fileName);
             FileReader fr = new FileReader(file);
             BufferedReader bfr = new BufferedReader(fr);
             String line = bfr.readLine();
