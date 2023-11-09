@@ -29,7 +29,7 @@ public class Customer extends Person {
     public Customer(String email, String password) {
         // we use our super constructor
         super(email, password, "Customer");
-        File file = new File("Accounts.txt");
+        File file = new File("");
 
         // if the file exists
         // we get the preexisting data for this user

@@ -12,6 +12,8 @@ import java.util.Scanner;
  */
 
 public class Person {
+    public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1]Customer Account\n[2]Seller Account\n[3]Go Back";
+
 
     private String email;
     private String password;
@@ -104,7 +106,7 @@ public class Person {
     public static String retrieveAccountInfo(String email) {
 
         try {
-            File file = new File("Accounts.txt");
+            File file = new File("/Users/michaelw/IdeaProjects/Project4/src/Accounts.txt");
             FileReader fr = new FileReader(file);
             BufferedReader bfr = new BufferedReader(fr);
             String line = bfr.readLine();
@@ -130,7 +132,7 @@ public class Person {
     public static void saveAccount(String accountInfo) {
 
         try {
-            File file = new File("Accounts.txt");
+            File file = new File("/Users/michaelw/IdeaProjects/Project4/src/Accounts.txt");
             FileOutputStream fos = new FileOutputStream(file, true);
             PrintWriter pw = new PrintWriter(fos);
             pw.println(accountInfo);
@@ -175,10 +177,9 @@ public class Person {
 
     // Allows the user to change the email and password of their own account
     public void editAccount(Scanner scanner) {
-
         boolean exit = false;
         while (!exit) {
-            String oldAccount = this.toString();
+            String oldAccount = super.toString();
             System.out.println("\nWhat would you like to edit?\n[1] Email\n[2] Password\n[3] Exit");
             if (scanner.hasNextInt()) {
                 int option = scanner.nextInt();
@@ -191,12 +192,12 @@ public class Person {
                         if (Person.isValidFormat(newEmail) && (accountOnFile.isEmpty())) {
                             this.setEmail(newEmail);
                             Person.deleteAccount(oldAccount);
-                            Person.saveAccount(this.toString());
+                            Person.saveAccount(super.toString());
                             System.out.println("\nYour email has been changed.");
                         } else if (Person.isValidFormat(newEmail))
                             System.out.println("\nThis email is already taken.");
                         else
-                            System.out.println("\nYour password isn't in the correct format." +
+                            System.out.println("\nYour email isn't in the correct format." +
                                     " No spaces and no semicolons.");
                         break;
                     case 2:
@@ -208,120 +209,151 @@ public class Person {
                                     && !(newPassword.isEmpty())) {
                                 this.setPassword(newPassword);
                                 Person.deleteAccount(oldAccount);
-                                Person.saveAccount(this.toString());
-                                System.out.println("\nYour password has been changed.");
-                            }
-                            else
-                                System.out.println("\nYour password isn't in the correct format.\n" +
+                                Person.saveAccount(super.toString());
+                                System.out.println("Your password has been changed.");
+                            } else
+                                System.out.println("Your password isn't in the correct format.\n" +
                                         " No spaces and no semicolons.");
-                        }
-                        else
-                            System.out.println("\nPassword is incorrect.");
+                        } else
+                            System.out.println("Password is incorrect.");
                         break;
                     case 3:
                         exit = true;
                         break;
                     default:
-                        System.out.println("\nInvalid Input");
+                        System.out.println("Invalid Input!");
                         scanner.nextLine();
                 }
+            } else {
+                System.out.println("Invalid Input!");
             }
         }
     }
 
     // Runs at the start of program
     // Allows user to log in to an existing account or create a new one
-    public static Person loginSequence(Scanner scanner) {
 
-        String email = "";
-        String password = "";
-        String accountType = "";
-        String accountOnFile = "";
 
-        while (true) {
-            System.out.println("\nWould you like to:\n[1] Log In\n[2] Create Account");
-            if (scanner.hasNextInt()) {
-                int option = scanner.nextInt();
-                scanner.nextLine();
-                switch (option) {
-                    case 1:
-                        // Log In
-                        // If email is on file, proceed
-                        while (true) {
-                            System.out.println("\nType \"back\" to go back.\nEnter your email:");
-                            email = scanner.nextLine().toLowerCase();
-                            if (email.equalsIgnoreCase("back"))
-                                break;
-                            accountOnFile = Person.retrieveAccountInfo(email);
-                            if (!accountOnFile.isEmpty()) {
-                                // If password matches account info, proceed
-                                System.out.println("\nEnter your password:");
-                                password = scanner.nextLine();
-                                if (accountOnFile.split(";", -1)[1].equals(password)) {
-                                    return new Person(accountOnFile.split(";", -1)[0],
-                                            accountOnFile.split(";", -1)[1],
-                                            accountOnFile.split(";", -1)[2]);
-                                } else
-                                    System.out.println("\nYour password is incorrect.");
-                            } else
-                                System.out.println("\nThis email isn't associated to any account.");
-                        }
-                        break;
-
-                    case 2:
-                        // Create Account
-                        // If input is empty, go back
-                        // If email is in valid format and is not registered, proceed
-                        while (true) {
-                            System.out.println("\nType \"back\" to go back.\nEnter your email:");
-                            email = scanner.nextLine().toLowerCase();
-                            if (email.equalsIgnoreCase("back"))
-                                break;
-                            accountOnFile = Person.retrieveAccountInfo(email);
-                            if (Person.isValidFormat(email) && (accountOnFile.isEmpty())) {
-                                // If input is empty, go back
-                                // If password is in valid format, proceed
-                                System.out.println("\nEnter your password:");
-                                password = scanner.nextLine();
-                                if (!(password.contains(" ")) && !(password.contains(";")) && !(password.isEmpty())) {
-                                    // If input is empty, go back
-                                    // If account type is input correctly, proceed
-                                    System.out.println("\nEnter your account type:\n[1] Customer\n[2] Seller");
-                                    if (scanner.hasNextInt()) {
-                                        switch (scanner.nextInt()) {
-                                            case 1:
-                                                accountType = "C";
-                                                break;
-                                            case 2:
-                                                accountType = "S";
-                                                break;
-                                            default:
-                                        }
-                                    }
-                                    scanner.nextLine();
-                                    if (accountType.equals("C") || accountType.equals("S")) {
-                                        Person person = new Person(email.toLowerCase(), password, accountType);
-                                        Person.saveAccount(person.toString());
-                                        return person;
-                                    } else
-                                        System.out.println("\nInvalid Input");
-                                } else
-                                    System.out.println("\nYour password isn't in the correct format.\n" +
-                                            "No spaces and no semicolons.");
-                            } else if (Person.isValidFormat(email))
-                                System.out.println("\nThis email is already associated with an account.");
-                            else
-                                System.out.println("\nYour email isn't in the correct format.\n" +
-                                        "No spaces and no semicolons.");
-                        }
-                        break;
-                    default:
-                        System.out.println("\nInvalid Input");
+    public static Person login(String email, String pass) {
+        do {
+            String accountType = "";
+            String accountOnFile = "";
+            // Log In
+            // If email is on file, proceed
+            accountOnFile = Person.retrieveAccountInfo(email);
+            if (!accountOnFile.isEmpty()) {
+                // If password matches account info, proceed
+                if (accountOnFile.split(";", -1)[1].equals(pass)) {
+                    return new Person(accountOnFile.split(";", -1)[0],
+                            accountOnFile.split(";", -1)[1],
+                            accountOnFile.split(";", -1)[2]);
+                } else {
+                    System.out.println("\nYour password is incorrect.");
+                    return null;
                 }
             } else {
-                System.out.println("\nInvalid Input");
-                scanner.nextLine();
+                System.out.println("\nThis email isn't associated to any account.");
+                return null;
             }
+
+        } while (true);
+    }
+
+    public static Person createAccount(Scanner scanner) {
+        String accountType = "";
+        String accountOnFile = "";
+        String inputString = "";
+        String input2String = "";
+        int input = 0;
+        int input2 = 0;
+        String email = "";
+        String pass = "";
+        String confirmPass = "";
+
+        System.out.println(CREATE_ACCOUNT_SCREEN);
+        try {
+            inputString = scanner.nextLine();
+            input = Integer.parseInt(inputString);
+
+            if (input == 1 || input == 2) {
+                System.out.println("Email:");
+                email = scanner.nextLine();
+                accountOnFile = Person.retrieveAccountInfo(email);
+                if (Person.isValidFormat(email) && (accountOnFile.isEmpty())) {
+                    // If input is empty, go back
+                    // If password is in valid format, proceed
+                    System.out.println("Password:");
+                    pass = scanner.nextLine();
+                    if (!(pass.contains(" ")) && !(pass.contains(";")) && !(pass.isEmpty())) {
+                        System.out.println("Confirm Password:");
+                        confirmPass = scanner.nextLine();
+                        if (pass.equals(confirmPass)) {
+                            switch (input) {
+                                case 1:
+                                    System.out.printf("Create customer account with email: %s?\n[1]Confirm\n[2]Cancel", email);
+                                    try {
+                                        input2String = scanner.nextLine();
+                                        input2 = Integer.parseInt(input2String);
+                                        switch (input2) {
+                                            case 1:
+                                                accountType = "C";
+                                                Person person = new Person(email.toLowerCase(), pass, accountType);
+                                                Person.saveAccount(person.toString());
+                                                return person;
+                                            case 2:
+                                                return null;
+                                            default:
+                                                System.out.println("Invalid Input");
+                                        }
+
+                                    } catch (Exception e) {
+                                        System.out.println("Invalid Input!");
+                                    }
+
+                                case 2:
+                                    System.out.printf("Create seller account with email: %s?\n[1]Confirm\n [2]Cancel");
+                                    try {
+                                        input2String = scanner.nextLine();
+                                        input2 = Integer.parseInt(input2String);
+                                        switch (input2) {
+                                            case 1:
+                                                accountType = "S";
+                                                Person person = new Person(email.toLowerCase(), pass, accountType);
+                                                Person.saveAccount(person.toString());
+                                                return person;
+                                            case 2:
+                                                return null;
+                                            default:
+                                                System.out.println("Invalid Input");
+                                        }
+
+                                    } catch (Exception e) {
+                                        System.out.println("Invalid Input!");
+                                    }
+                            }
+                        }
+                        // If input is empty, go back
+                        // If account type is input correctly, proceed
+
+                    } else {
+                        System.out.println("\nYour password isn't in the correct format.\n" +
+                                "No spaces and no semicolons.");
+                    }
+
+                } else if (Person.isValidFormat(email)) {
+                    System.out.println("\nThis email is already associated with an account.");
+                } else {
+                    System.out.println("\nYour email isn't in the correct format.\n" +
+                            "No spaces and no semicolons, must contain '@' and '.'");
+                }
+            } else if (input == 3) {
+                return null;
+            } else {
+                System.out.println("Invalid Input!");
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid Input!");
         }
+        return null;
     }
 }
