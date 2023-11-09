@@ -1,4 +1,5 @@
 import javax.lang.model.type.ArrayType;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class Marketplace {
@@ -7,7 +8,7 @@ public class Marketplace {
     public static final String WELCOME = "Home Screen\n[1] Sign In\n[2] Create Account\n[3] Exit";
     public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1]Customer Account\n[2]Seller Account\n[3]Go Back";
     public static final String CUSTOMER_HOME = "[1]Marketplace\n[2]Edit Account\n[3]Search For Product\n[4]Store Dashboard\n[5]Shopping Cart\n[6]Purchase History\n[7]Delete Account\n[8]Sign Out";
-    public static final String SELLER_HOME = "Seller Home Screen\n[1]Create Store\n[2]Edit Account\n[2]Access Store List\n[4]Dashboard\n[5]Shopping Cart\n[6]Sign Out\n";
+    public static final String SELLER_HOME = "Seller Home Screen\n[1]Create Store\n[2]Edit Account\n[3]Access Store List\n[4]Dashboard\n[5]Shopping Cart\n[6]Sign Out\n";
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
@@ -25,7 +26,11 @@ public class Marketplace {
 
 
                 case 2:
-                    createAccountScreen(scan);
+                    try {
+                        createAccountScreen(scan);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
 
                 case 3:
@@ -105,14 +110,15 @@ public class Marketplace {
     }
 
 
-    public static void createAccountScreen (Scanner scan) {
+    public static void createAccountScreen (Scanner scan) throws IOException {
         Person currentUser = Person.createAccount(scan);
         if (currentUser != null) {
             if (currentUser.getAccountType().equals("C")) {
                 Customer currentCustomer = new Customer(currentUser.getEmail(),currentUser.getPassword());
                 customerHome(scan, currentCustomer);
             } else if (currentUser.getAccountType().equals("S")) {
-
+                Seller currentSeller = new Seller(currentUser.getEmail(),currentUser.getPassword());
+                sellerHome(scan, currentSeller);
             }
         }
 
@@ -162,7 +168,8 @@ public class Marketplace {
                 input = Integer.parseInt(inputString);
                 switch (input) {
                     case 1:
-                        ;
+                        String storeName = scan.nextLine();
+                        seller.createStore(storeName);
                     case 2:
                         ;
                     case 3:

@@ -311,7 +311,7 @@ public class Person {
                                     }
 
                                 case 2:
-                                    System.out.printf("Create seller account with email: %s?\n[1]Confirm\n [2]Cancel");
+                                    System.out.printf("Create seller account with email: %s?\n[1]Confirm\n[2]Cancel", email);
                                     try {
                                         input2String = scanner.nextLine();
                                         input2 = Integer.parseInt(input2String);
