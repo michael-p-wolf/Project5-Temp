@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,26 +16,22 @@ public class Store {
         this.seller = seller;
         this.products = new ArrayList<>();
         this.soldProducts = new ArrayList<>();
-        this.storeFile = "stores.txt";
+        this.storeFile = storeName + ".txt";
+
+        File file = new File(storeFile);
 
         PrintWriter pw = new PrintWriter(new FileOutputStream(storeFile,true));
         BufferedReader bfr = new BufferedReader(new FileReader(storeFile));
 
-        String line = bfr.readLine();
-        boolean random = false;
-        while(line != null) {
-            String[] split = line.split(";");
-            if(split[0].equals(storeName)) {
-                random = true;
-                break;
-            }
-            line = bfr.readLine();
-        }
-        if(random == false) {
-            pw.append("\n" + storeName);
-
-        }
+        pw.println(storeName);
         pw.flush();
+
+        for (int i = 0; i < products.size(); i++) {
+            Product temp = products.get(i);
+            pw.println(temp.getName() + ";" + temp.getQuantity() + ";" + temp.getPrice() + ";" + temp.getDescription());
+            pw.flush();
+        }
+
         pw.close();
     }
 
@@ -47,7 +44,7 @@ public class Store {
         try {
 
 
-            File f = new File(storeName);
+            File f = new File(storeFile);
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(f)));
             int counter = 0; // this is for seeing if the store hold the product it gets incremented when product is found
             if (product.getQuantity() > 0 && (product.getQuantity() - sellQuantity) > -1) {
