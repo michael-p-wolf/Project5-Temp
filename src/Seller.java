@@ -10,22 +10,21 @@ public class Seller extends Person {
         super(email, password, "Seller"); // Call the super constructor
         this.stores = new ArrayList<>();
         File sellerFile = new File("sellers.txt");
-        PrintWriter pw = new PrintWriter(new FileOutputStream(sellerFile,true));
+        PrintWriter pw = new PrintWriter(new FileOutputStream(sellerFile, true));
         BufferedReader bfr = new BufferedReader(new FileReader("sellers.txt"));
 
         String line = bfr.readLine();
         boolean random = false;
-        while(line != null) {
+        while (line != null) {
             String[] split = line.split(";");
-            if(split[0].equals(super.getEmail())) {
+            if (split[0].equals(super.getEmail())) {
                 random = true;
                 break;
             }
             line = bfr.readLine();
         }
-        if(random == false) {
+        if (!random) {
             pw.append("\n" + email);
-
         }
         pw.flush();
         pw.close();
@@ -53,11 +52,6 @@ public class Seller extends Person {
         // Create a new store
         Store newStore = new Store(storeName, this.getEmail());
         stores.add(newStore);
-
-        // Append the new store name to the store.txt file
-        try (PrintWriter pw = new PrintWriter(new FileWriter("store.txt", true))) {
-            pw.println(storeName);
-        }
 
         // Read all existing data
         List<String> sellerLines = new ArrayList<>();
@@ -87,17 +81,6 @@ public class Seller extends Person {
         if (!isStoreNameExists(storeName)) {
             System.out.println("Store not found. Check the store name and try again.");
             return;
-        }
-
-        // Remove the store name from the store.txt file
-        List<String> existingStoreLines = getExistingStoreLines();
-        existingStoreLines.remove(storeName);
-        try (PrintWriter pw = new PrintWriter(new FileWriter("store.txt", false))) {
-            for (String line : existingStoreLines) {
-                pw.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         Store storeToRemove = null;
@@ -150,7 +133,6 @@ public class Seller extends Person {
         }
     }
 
-
     private boolean isStoreNameExists(String storeName) {
         for (String line : getExistingStoreLines()) {
             if (line.equals(storeName)) {
@@ -173,8 +155,8 @@ public class Seller extends Person {
         }
         return existingStoreLines;
     }
+
     public void switchCurrentStore(String storeName) {
-        // Find and set the current store based on the provided storeName
         for (Store store : stores) {
             if (store.getStoreName().equals(storeName)) {
                 currentStore = store;
@@ -183,16 +165,4 @@ public class Seller extends Person {
         }
         System.out.println("Store not found.");
     }
-    /**
-    public void createProduct(String productName) {
-        // Check if the current store is set
-        if (currentStore == null) {
-            System.out.println("Please select a store first.");
-            return;
-        }
-
-        // Call the createProduct method from the current Store instance
-        currentStore.createProduct(productName);
-    }
-     **/
 }
