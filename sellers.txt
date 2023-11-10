@@ -1,3 +1,0 @@
-seller1@test.com;sad;anry
-
-simi@test.com;happyish

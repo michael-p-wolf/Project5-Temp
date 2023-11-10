@@ -4,4 +4,3 @@ pnandkeo@purdue.edu;hello;C
 vrinda@purdue.edu;hi;C
 arav@purdue.edu;hi;C
 seller1@test.com;test;S
-simi@test.com;test;S
