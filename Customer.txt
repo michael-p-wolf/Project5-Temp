@@ -1,3 +1,4 @@
 pnandkeo@purdue.edu;hello;Customer;[];[];[]
 vrinda@purdue.edu;hi;Customer;[];[];[]
 arav@purdue.edu;hi;Customer;[];[];[]
+test@test.com;test;Customer;[];[];[]

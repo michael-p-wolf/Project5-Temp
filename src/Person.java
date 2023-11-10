@@ -180,7 +180,7 @@ public class Person {
         boolean exit = false;
         while (!exit) {
             String oldAccount = super.toString();
-            System.out.println("\nWhat would you like to edit?\n[1] Email\n[2] Password\n[3] Exit");
+            System.out.println("\nWhat would you like to edit?\n[1]Email\n[2]Password\n[3]Exit");
             if (scanner.hasNextInt()) {
                 int option = scanner.nextInt();
                 scanner.nextLine();
@@ -311,7 +311,7 @@ public class Person {
                                     }
 
                                 case 2:
-                                    System.out.printf("Create seller account with email: %s?\n[1]Confirm\n[2]Cancel", email);
+                                    System.out.printf("Create seller account with email: %s?\n[1]Confirm\n[2]Cancel\n", email);
                                     try {
                                         input2String = scanner.nextLine();
                                         input2 = Integer.parseInt(input2String);
