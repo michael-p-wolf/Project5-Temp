@@ -7,7 +7,7 @@ public class Seller extends Person {
 
     public Seller(String email, String password) throws IOException {
         super(email, password, "Seller"); // Call the super constructor
-        this.stores = new ArrayList<>();
+        this.stores = new ArrayList<Store>();
         File sellerFile = new File("sellers.txt");
         PrintWriter pw = new PrintWriter(new FileOutputStream(sellerFile,true));
         BufferedReader bfr = new BufferedReader(new FileReader("sellers.txt"));
@@ -18,6 +18,9 @@ public class Seller extends Person {
             String[] split = line.split(";");
             if(split[0].equals(super.getEmail())) {
                 random = true;
+                for (int i = 1; i < split.length; i++) {
+                    stores.add(new Store(split[i]));
+                }
                 break;
             }
             line = bfr.readLine();

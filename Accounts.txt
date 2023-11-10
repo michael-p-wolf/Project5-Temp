@@ -3,3 +3,5 @@ Customer@33c7353a
 pnandkeo@purdue.edu;hello;C
 vrinda@purdue.edu;hi;C
 arav@purdue.edu;hi;C
+seller1@test.com;test;S
+1@1.com;test;S

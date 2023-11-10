@@ -16,6 +16,12 @@ public class Store {
         this.products = new ArrayList<>();
         this.soldProducts = new ArrayList<>();
     }
+
+    public Store(String name) {
+        this.storeName = name;
+        this.products = new ArrayList<>();
+        this.soldProducts = new ArrayList<>();
+    }
     public void sell(Product product, Customer customer, int sellQuantity) throws IOException {
         try {
 
