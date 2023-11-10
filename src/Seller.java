@@ -195,6 +195,6 @@ public class Seller extends Person {
         }
 
         // Call the createProduct method from the current Store instance
-        currentStore.createProduct(productName);
+
     }
 }

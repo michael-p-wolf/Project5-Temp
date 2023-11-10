@@ -176,23 +176,19 @@ public class Marketplace {
                             switch (storeInput) {
                                 case 1:
                                     String storeName = scan.nextLine();
-                                    seller.createStore(storeName);
                                     break;
                                 case 2:
                                     break;
                                 case 3:
                                     System.out.println("Invalid input!");
+                                    break;
                             }
-
                         } catch (Exception e) {
                             System.out.println("Invalid input!");
                         }
                         break;
                     case 2:
                         seller.editAccount(scan);
-                        String createStoreName = scan.nextLine();
-                        seller.createStore(createStoreName);
-                      
                         break;
                     case 3:
                         List<Store> stores = seller.getStores();
@@ -206,7 +202,7 @@ public class Marketplace {
                             if (storeInput == 1) {
                                 break;
                             } else if (storeInput <= stores.size() + 1) {
-                                System.out.println(stores.get(storeInput-2).getStoreName());
+                                System.out.println(stores.get(storeInput-2).getStoreName() + "\n[1]");
                                 break;
                             } else {
                                 System.out.println("Invalid input!");
