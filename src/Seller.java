@@ -172,4 +172,25 @@ public class Seller extends Person {
         }
         return existingStoreLines;
     }
+    public void switchCurrentStore(String storeName) {
+        // Find and set the current store based on the provided storeName
+        for (Store store : stores) {
+            if (store.getStoreName().equals(storeName)) {
+                currentStore = store;
+                return;
+            }
+        }
+        System.out.println("Store not found.");
+    }
+
+    public void createProduct(String productName) {
+        // Check if the current store is set
+        if (currentStore == null) {
+            System.out.println("Please select a store first.");
+            return;
+        }
+
+        // Call the createProduct method from the current Store instance
+        currentStore.createProduct(productName);
+    }
 }
