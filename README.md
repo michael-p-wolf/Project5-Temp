@@ -1,7 +1,7 @@
 # Project 4
 Made by L36 Group 2
   <br>
-<details open>
+<details>
 <summary>How to Run and Compile🚀</summary>
   <br>
 <ol>
