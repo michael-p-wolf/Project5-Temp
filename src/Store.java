@@ -34,32 +34,37 @@ public class Store {
 
         pw.close();
     }
-    public void sell(Product product, Customer customer, int sellQuantity) throws IOException {
+    public void sell(Product product, int sellQuantity) throws IOException {
         try {
-
-
             File f = new File(storeFile);
-            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(f)));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f)));
+            BufferedReader bfr = new BufferedReader(new FileReader(f));
+
             int counter = 0; // this is for seeing if the store hold the product it gets incremented when product is found
-            if (product.getQuantity() > 0 && (product.getQuantity() - sellQuantity) > -1) {
-                for (int i = 0; i < products.size(); i++) {
-                    //iterating through the list to find matching product
-                    if (products.get(i).equals(product)) {
-                        counter++;
-                        soldProducts.add(products.get(i)); // adding all sold products to an array list
-                        printWriter.write(customer.getEmail() + "," + product.getName() + "," + product.getPrice()*sellQuantity + "," + sellQuantity); //writing Customer email, product name, product price, and product amount bought
-                        product.setQuantity(product.getQuantity() - 1);
-                        break;
-                    }
+            String line = bfr.readLine(); // skipping the first line because it is the store name
+            while (line != null) {
+                line = bfr.readLine();
+                if (line == null) {
+                    System.out.println("This store does not have this product");
+                    break;
                 }
 
-                if (counter == 0) {
-                    System.out.println("This store does not sell this product");
+                String[] theProduct = line.split(";");
+
+                if (theProduct[0].equals(product.getName())) {
+                    counter++;
+                    if(Integer.parseInt(theProduct[1]) >= sellQuantity) {
+                        int quantity = Integer.parseInt(theProduct[1]) - sellQuantity;
+                        pw.write(theProduct[0] + ";" + quantity + ";" + theProduct[2] + ";" + theProduct[3]);
+                    } else {
+                        System.out.println("There is not enough stock of this product");
+                        pw.write(line);
+                    }
+                } else {
+                    pw.write(line);
                 }
-            } else {
-                System.out.println("This item is out of stock");
-                return;
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
