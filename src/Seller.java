@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Seller extends Person {
     private List<Store> stores;
+    private Store currentStore;
 
     public Seller(String email, String password) throws IOException {
         super(email, password, "Seller"); // Call the super constructor
