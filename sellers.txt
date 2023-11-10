@@ -1,6 +1,1 @@
-
-seller1@test.com;;store1;store2;store2;store4;POWER
-
-seller2@test.com;;store1;ASDFASDF
-
-seller3@test.com;lkjh;asdf
+seller1@test.com;sad;anry

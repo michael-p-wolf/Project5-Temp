@@ -24,6 +24,7 @@ public class Seller extends Person {
         }
         if(random == false) {
             pw.append("\n" + email);
+
         }
         pw.flush();
         pw.close();
@@ -33,24 +34,7 @@ public class Seller extends Person {
         return stores;
     }
 
-    public void addStore(Store store) {
-        stores.add(store);
-    }
-
-    public void removeStore(Store store) {
-        stores.remove(store);
-    }
-
-    public void addProduct(Store store, Product product) {
-        store.addProduct(product);
-    }
-
-    public void removeProduct(Store store, Product product) {
-        store.removeProduct(product);
-    }
-
     public String toString() {
-
         String toWrite = this.getEmail();
         for (int i = 0; i < this.stores.size(); i++) {
             toWrite += (";" + stores.get(i).getStoreName());
@@ -58,23 +42,24 @@ public class Seller extends Person {
         return toWrite;
     }
 
-    /**
     public void createStore(String storeName) throws IOException {
-        Store newStore = new Store(storeName, this.getEmail());
-        String oldPerson = this.toString();
-        stores.add(newStore);
-        Person.deleteAccount(oldPerson, "sellers.txt");
-        Person.saveAccount(this.toString(), "sellers.txt");
-    }
-     **/
+        // Check if the store name is already taken
+        if (isStoreNameExists(storeName)) {
+            System.out.println("Store name already taken. Choose a different name.");
+            return;
+        }
 
-
-    public void createStore(String storeName) throws IOException {
+        // Create a new store
         Store newStore = new Store(storeName, this.getEmail());
         stores.add(newStore);
+
+        // Append the new store name to the store.txt file
+        try (PrintWriter pw = new PrintWriter(new FileWriter("store.txt", true))) {
+            pw.println(storeName);
+        }
 
         // Read all existing data
-        List<String> lines = new ArrayList<>();
+        List<String> sellerLines = new ArrayList<>();
         try (BufferedReader bfr = new BufferedReader(new FileReader("sellers.txt"))) {
             String line = bfr.readLine();
             while (line != null) {
@@ -83,23 +68,37 @@ public class Seller extends Person {
                     // Append the new store name to the existing line
                     line += ";" + newStore.getStoreName();
                 }
-                lines.add(line);
+                sellerLines.add(line);
                 line = bfr.readLine();
             }
         }
 
-        // Write the updated data back to the file
+        // Write the updated data back to the sellers.txt file
         try (PrintWriter pw = new PrintWriter(new FileOutputStream("sellers.txt", false))) {
-            for (String line : lines) {
+            for (String line : sellerLines) {
                 pw.println(line);
             }
         }
     }
 
-
-
-
     public void removeStore(String storeName) {
+        // Check if the store name exists before attempting to remove
+        if (!isStoreNameExists(storeName)) {
+            System.out.println("Store not found. Check the store name and try again.");
+            return;
+        }
+
+        // Remove the store name from the store.txt file
+        List<String> existingStoreLines = getExistingStoreLines();
+        existingStoreLines.remove(storeName);
+        try (PrintWriter pw = new PrintWriter(new FileWriter("store.txt", false))) {
+            for (String line : existingStoreLines) {
+                pw.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Store storeToRemove = null;
         for (Store store : stores) {
             if (store.getStoreName().equals(storeName)) {
@@ -107,17 +106,70 @@ public class Seller extends Person {
                 break;
             }
         }
+
         if (storeToRemove != null) {
             stores.remove(storeToRemove);
         }
+
+        // Update the seller's data in the sellers.txt file
+        String sellerDataFileName = "sellers.txt";
+        List<String> sellerLines = new ArrayList<>();
+
+        try (BufferedReader bfr = new BufferedReader(new FileReader(sellerDataFileName))) {
+            String line = bfr.readLine();
+            while (line != null) {
+                String[] split = line.split(";");
+                if (split.length > 0 && split[0].equals(getEmail())) {
+                    // Remove the store name from the existing line
+                    StringBuilder updatedLine = new StringBuilder();
+                    for (int i = 0; i < split.length; i++) {
+                        if (!split[i].equals(storeName)) {
+                            updatedLine.append(split[i]);
+                            if (i < split.length - 1) {
+                                updatedLine.append(";");
+                            }
+                        }
+                    }
+                    line = updatedLine.toString();
+                }
+                sellerLines.add(line);
+                line = bfr.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Write the updated data back to the sellers.txt file
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(sellerDataFileName, false))) {
+            for (String line : sellerLines) {
+                pw.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Store findStore(String storeName) {
-        for (Store store : stores) {
-            if (store.getStoreName().equals(storeName)) {
-                return store;
+
+    private boolean isStoreNameExists(String storeName) {
+        for (String line : getExistingStoreLines()) {
+            if (line.equals(storeName)) {
+                // Store name exists
+                return true;
             }
         }
-        return null;
+        return false;
+    }
+
+    private List<String> getExistingStoreLines() {
+        List<String> existingStoreLines = new ArrayList<>();
+        try (BufferedReader bfr = new BufferedReader(new FileReader("store.txt"))) {
+            String line;
+            while ((line = bfr.readLine()) != null) {
+                existingStoreLines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return existingStoreLines;
     }
 }

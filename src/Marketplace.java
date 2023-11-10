@@ -169,11 +169,13 @@ public class Marketplace {
                 input = Integer.parseInt(inputString);
                 switch (input) {
                     case 1:
-                        String storeName = scan.nextLine();
-                        seller.createStore(storeName);
+                        String createStoreName = scan.nextLine();
+                        seller.createStore(createStoreName);
                         break;
                     case 2:
-                        ;
+                        String removeStoreName = scan.nextLine();
+                        seller.removeStore(removeStoreName);
+                        break;
                     case 3:
                         ;
                     case 4:
