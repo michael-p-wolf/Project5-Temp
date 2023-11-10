@@ -28,7 +28,7 @@ public class Customer extends Person {
      */
     public Customer(String email, String password) {
         // we use our super constructor
-        super(email, password, "Customer");
+        super(email, password, "C");
         File file = new File("Customer.txt");
         // a flag representing whetehr the user exists
         boolean flag = false;
@@ -40,7 +40,7 @@ public class Customer extends Person {
                 while (line != null) {
                     String[] info = line.split(";");
                     // if this user is the user we are creating
-                    if (info[2].equals("Customer") && info[0].equals(email)) {
+                    if (info[2].equals("C") && info[0].equals(email)) {
                         // we get the cart, purchase history, and store information
                         // from the file
                         flag = true;
@@ -199,7 +199,7 @@ public class Customer extends Person {
             while (line != null) {
                 String[] data = line.split(";");
                 // we only change the line for this user
-                if (data[2].equals("Customer") && data[0].equals(this.getEmail())) {
+                if (data[2].equals("C") && data[0].equals(this.getEmail())) {
                     // we do this by updating the value to the new cart
                     data[3] = cart.toString();
                     line = Arrays.toString(data);
@@ -255,7 +255,7 @@ public class Customer extends Person {
                     while (line != null) {
                         String[] data = line.split(";");
                         // we get the correct customer
-                        if (data[2].equals("Customer") && data[0].equals(this.getEmail())) {
+                        if (data[2].equals("C") && data[0].equals(this.getEmail())) {
                             data[4] = purchaseHistory.toString();
                             data[5] = stores.toString();
                             // we rewrite the history
@@ -436,4 +436,9 @@ public class Customer extends Person {
         return super.toString() + String.format(";%s;%s;%s",
                 cart.toString(),purchaseHistory.toString(), stores.toString());
     }
+
+    public String getPersonToString() {
+        return super.toString();
+    }
+
 }
