@@ -41,7 +41,7 @@ public class Store {
         try {
 
 
-            File f = new File(filename);
+            File f = new File(storeName);
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(f)));
             int counter = 0; // this is for seeing if the store hold the product it gets incremented when product is found
             if (product.getQuantity() > 0 && (product.getQuantity() - sellQuantity) > -1) {
@@ -85,11 +85,11 @@ public class Store {
     }
 
     public String getFilename() {
-        return filename;
+        return storeFile;
     }
 
     public void setFilename(String filename) {
-        this.filename = filename;
+        this.storeFile = filename;
     }
 
     public List<Product> getProducts() {
