@@ -1,6 +1,7 @@
 import javax.lang.model.type.ArrayType;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 public class Marketplace {
     private static ArrayList<Seller> sellers;
@@ -8,7 +9,7 @@ public class Marketplace {
     public static final String WELCOME = "Home Screen\n[1] Sign In\n[2] Create Account\n[3] Exit";
     public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1]Customer Account\n[2]Seller Account\n[3]Go Back";
     public static final String CUSTOMER_HOME = "[1]Marketplace\n[2]Edit Account\n[3]Search For Product\n[4]Store Dashboard\n[5]Shopping Cart\n[6]Purchase History\n[7]Delete Account\n[8]Sign Out";
-    public static final String SELLER_HOME = "Seller Home Screen\n[1]Create Store\n[2]Edit Account\n[3]Access Store List\n[4]Dashboard\n[5]Shopping Cart\n[6]Sign Out\n";
+    public static final String SELLER_HOME = "Seller Home Screen\n[1]Create Store\n[2]Edit Account\n[3]Access Store List\n[4]Dashboard\n[5]Shopping Cart\n[6]Sign Out";
 
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
@@ -169,15 +170,48 @@ public class Marketplace {
                 input = Integer.parseInt(inputString);
                 switch (input) {
                     case 1:
-                        String createStoreName = scan.nextLine();
-                        seller.createStore(createStoreName);
+                        try {
+                            System.out.println("[1]Create new Store\n[2]Back");
+                            int storeInput = Integer.parseInt(scan.nextLine());
+                            switch (storeInput) {
+                                case 1:
+                                    String storeName = scan.nextLine();
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+                                    System.out.println("Invalid input!");
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid input!");
+                        }
                         break;
                     case 2:
-                        String removeStoreName = scan.nextLine();
-                        seller.removeStore(removeStoreName);
+                        seller.editAccount(scan);
                         break;
                     case 3:
-                        ;
+                        List<Store> stores = seller.getStores();
+                        System.out.println("[1]Go Back");
+                        for (int i = 0; i < stores.size(); i++) {
+                            int index = i;
+                            System.out.println("[" + (index+2) +"]" + stores.get(i).getStoreName());
+                        }
+                        try {
+                            int storeInput = Integer.parseInt(scan.nextLine());
+                            if (storeInput == 1) {
+                                break;
+                            } else if (storeInput <= stores.size() + 1) {
+                                System.out.println(stores.get(storeInput-2).getStoreName() + "\n[1]");
+                                break;
+                            } else {
+                                System.out.println("Invalid input!");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid input!");
+                            e.printStackTrace();
+                        }
+                        break;
                     case 4:
                         ;
                     case 5:

@@ -179,8 +179,13 @@ public class Person {
     public void editAccount(Scanner scanner) {
         boolean exit = false;
         while (!exit) {
-            String oldAccount = super.toString();
-            System.out.println("\nWhat would you like to edit?\n[1] Email\n[2] Password\n[3] Exit");
+            String oldAccount = "";
+            if (this instanceof Customer) {
+                Customer c = (Customer) this;
+                oldAccount = c.getPersonToString();
+            }
+            String old = this.toString();
+            System.out.println("\nWhat would you like to edit?\n[1]Email\n[2]Password\n[3]Exit");
             if (scanner.hasNextInt()) {
                 int option = scanner.nextInt();
                 scanner.nextLine();
@@ -192,7 +197,14 @@ public class Person {
                         if (Person.isValidFormat(newEmail) && (accountOnFile.isEmpty())) {
                             this.setEmail(newEmail);
                             Person.deleteAccount(oldAccount,"Accounts.txt");
-                            Person.saveAccount(super.toString(), "Accounts.txt");
+                            String newPerson = "";
+                            if (this instanceof Customer) {
+                                Customer c = (Customer) this;
+                                newPerson = c.getPersonToString();
+                                Person.saveAccount(newPerson, "Accounts.txt");
+                                Person.deleteAccount(old, "Customer.txt");
+                                Person.saveAccount(c.toString(), "Customer.txt");
+                            }
                             System.out.println("\nYour email has been changed.");
                         } else if (Person.isValidFormat(newEmail))
                             System.out.println("\nThis email is already taken.");
@@ -209,7 +221,14 @@ public class Person {
                                     && !(newPassword.isEmpty())) {
                                 this.setPassword(newPassword);
                                 Person.deleteAccount(oldAccount, "Accounts.txt");
-                                Person.saveAccount(super.toString(), "Accounts.txt");
+                                String newPerson = "";
+                                if (this instanceof Customer) {
+                                    Customer c = (Customer) this;
+                                    newPerson = c.getPersonToString();
+                                    Person.saveAccount(newPerson, "Accounts.txt");
+                                    Person.deleteAccount(old, "Customer.txt");
+                                    Person.saveAccount(c.toString(), "Customer.txt");
+                                }
                                 System.out.println("Your password has been changed.");
                             } else
                                 System.out.println("Your password isn't in the correct format.\n" +
@@ -311,7 +330,7 @@ public class Person {
                                     }
 
                                 case 2:
-                                    System.out.printf("Create seller account with email: %s?\n[1]Confirm\n[2]Cancel", email);
+                                    System.out.printf("Create seller account with email: %s?\n[1]Confirm\n[2]Cancel\n", email);
                                     try {
                                         input2String = scanner.nextLine();
                                         input2 = Integer.parseInt(input2String);
