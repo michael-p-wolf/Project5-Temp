@@ -5,16 +5,37 @@ import java.util.List;
 public class Store {
     private String storeName;
     private String seller;
-    private String filename;
+    private String storeFile;
     private List<Product> products;
     private List<Product> soldProducts; //keeping track of sold products
 
 
-    public Store(String name, String seller) {
+    public Store(String name, String seller) throws IOException {
         this.storeName = name;
         this.seller = seller;
         this.products = new ArrayList<>();
         this.soldProducts = new ArrayList<>();
+        this.storeFile = "stores.txt";
+
+        PrintWriter pw = new PrintWriter(new FileOutputStream(storeFile,true));
+        BufferedReader bfr = new BufferedReader(new FileReader(storeFile));
+
+        String line = bfr.readLine();
+        boolean random = false;
+        while(line != null) {
+            String[] split = line.split(";");
+            if(split[0].equals(storeName)) {
+                random = true;
+                break;
+            }
+            line = bfr.readLine();
+        }
+        if(random == false) {
+            pw.append("\n" + storeName);
+
+        }
+        pw.flush();
+        pw.close();
     }
     public void sell(Product product, Customer customer, int sellQuantity) throws IOException {
         try {
