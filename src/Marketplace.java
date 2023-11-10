@@ -190,6 +190,9 @@ public class Marketplace {
                         break;
                     case 2:
                         seller.editAccount(scan);
+                        String createStoreName = scan.nextLine();
+                        seller.createStore(createStoreName);
+                      
                         break;
                     case 3:
                         List<Store> stores = seller.getStores();

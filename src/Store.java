@@ -5,16 +5,37 @@ import java.util.List;
 public class Store {
     private String storeName;
     private String seller;
-    private String filename;
+    private String storeFile;
     private List<Product> products;
     private List<Product> soldProducts; //keeping track of sold products
 
 
-    public Store(String name, String seller) {
+    public Store(String name, String seller) throws IOException {
         this.storeName = name;
         this.seller = seller;
         this.products = new ArrayList<>();
         this.soldProducts = new ArrayList<>();
+        this.storeFile = "stores.txt";
+
+        PrintWriter pw = new PrintWriter(new FileOutputStream(storeFile,true));
+        BufferedReader bfr = new BufferedReader(new FileReader(storeFile));
+
+        String line = bfr.readLine();
+        boolean random = false;
+        while(line != null) {
+            String[] split = line.split(";");
+            if(split[0].equals(storeName)) {
+                random = true;
+                break;
+            }
+            line = bfr.readLine();
+        }
+        if(random == false) {
+            pw.append("\n" + storeName);
+
+        }
+        pw.flush();
+        pw.close();
     }
 
     public Store(String name) {
@@ -26,7 +47,7 @@ public class Store {
         try {
 
 
-            File f = new File(filename);
+            File f = new File(storeName);
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(f)));
             int counter = 0; // this is for seeing if the store hold the product it gets incremented when product is found
             if (product.getQuantity() > 0 && (product.getQuantity() - sellQuantity) > -1) {
@@ -70,11 +91,11 @@ public class Store {
     }
 
     public String getFilename() {
-        return filename;
+        return storeFile;
     }
 
     public void setFilename(String filename) {
-        this.filename = filename;
+        this.storeFile = filename;
     }
 
     public List<Product> getProducts() {
