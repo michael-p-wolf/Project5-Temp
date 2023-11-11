@@ -145,7 +145,7 @@ public class Marketplace {
                     case 5:
                         ;
                     case 6:
-                        ;
+                        customer.createPurchaseHistory();
                     case 7:
                         //How do I call the person toString for a customer?
                         //customer.deleteAccount(customer.toString());

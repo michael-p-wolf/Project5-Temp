@@ -187,26 +187,30 @@ public class Customer extends Person {
     }
 
     /**
-     * Rewrite's the line in Accounts.txt
+     * Rewrite's the line in Customer.txt
      * to update the cart information
      */
     private void rewriteLine() throws IOException {
-        File file = new File("Accounts.txt");
+        File file = new File("Customer.txt");
+        ArrayList<String> lines = new ArrayList<>();
         if (file.exists()) {
-            BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Accounts.txt")));
+            BufferedReader bfr = new BufferedReader(new FileReader("Customer.txt"));
             String line = bfr.readLine();
-            while (line != null) {
+            while (line != null && !line.isEmpty()) {
                 String[] data = line.split(";");
                 // we only change the line for this user
-                if (data[2].equals("C") && data[0].equals(this.getEmail())) {
+                if (data[2].equals("C") && data[0].equals(super.getEmail())) {
                     // we do this by updating the value to the new cart
-                    data[3] = cart.toString();
-                    line = Arrays.toString(data);
+                    line = this.toString();
                 }
-                // we overwrite all lines in the file
-                pw.println(line);
+                lines.add(line);
+                line = bfr.readLine();
             }
+        }
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Customer.txt")));
+        for (String line : lines) {
+            pw.println(line);
+            pw.flush();
         }
     }
 
@@ -246,26 +250,34 @@ public class Customer extends Person {
                 stores.add(p.getStoreSelling());
             }
             // we update the database if it exists
-            File file = new File("Accounts.txt");
+            File file = new File("Customer.txt");
+            ArrayList<String> lines = new ArrayList<>();
             if (file.exists()) {
                 try {
-                    BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
-                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Accounts.txt")));
+                    BufferedReader bfr = new BufferedReader(new FileReader("Customer.txt"));
+
                     String line = bfr.readLine();
                     while (line != null) {
                         String[] data = line.split(";");
                         // we get the correct customer
                         if (data[2].equals("C") && data[0].equals(this.getEmail())) {
-                            data[4] = purchaseHistory.toString();
-                            data[5] = stores.toString();
-                            // we rewrite the history
-                            line = Arrays.toString(data);
+                            line = this.toString();
                         }
-                        pw.println(line);
+                        lines.add(line);
+                        line = bfr.readLine();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+
+            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Customer.txt")))) {
+                for (String line : lines) {
+                    pw.println(line);
+                    pw.flush();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -295,6 +307,7 @@ public class Customer extends Person {
             for (Product p : purchaseHistory) {
                 pw.println("Purchased: Product: " + p.toString());
             }
+            pw.flush();
         } catch (IOException e) {
             System.out.println("Write File Error");
             e.printStackTrace();
