@@ -450,8 +450,65 @@ public class Customer extends Person {
                 cart.toString(),purchaseHistory.toString(), stores.toString());
     }
 
-    public String getPersonToString() {
-        return super.toString();
+    public void editAccount(Scanner scanner) {
+        boolean exit = false;
+        while (!exit) {
+            String oldAccount = super.toString();
+            String old = this.toString();
+            System.out.println("\nWhat would you like to edit?\n[1]Email\n[2]Password\n[3]Exit");
+            if (scanner.hasNextInt()) {
+                int option = scanner.nextInt();
+                scanner.nextLine();
+                switch (option) {
+                    case 1:
+                        System.out.println("\nEnter your new email:");
+                        String newEmail = scanner.nextLine().toLowerCase();
+                        String accountOnFile = Person.retrieveAccountInfo(newEmail);
+                        if (Person.isValidFormat(newEmail) && (accountOnFile.isEmpty())) {
+                            this.setEmail(newEmail);
+                            Person.deleteAccount(oldAccount,"Accounts.txt");
+                            String newPerson = super.toString();
+                            Person.saveAccount(newPerson, "Accounts.txt");
+                            Person.deleteAccount(old, "Customer.txt");
+                            Person.saveAccount(this.toString(), "Customer.txt");
+                            System.out.println("\nYour email has been changed.");
+                        } else if (Person.isValidFormat(newEmail))
+                            System.out.println("\nThis email is already taken.");
+                        else
+                            System.out.println("\nYour email isn't in the correct format." +
+                                    " No spaces and no semicolons.");
+                        break;
+                    case 2:
+                        System.out.println("\nEnter your current password:");
+                        if (scanner.nextLine().equals(this.getPassword())) {
+                            System.out.println("\nEnter your new password:");
+                            String newPassword = scanner.nextLine();
+                            if (!(newPassword.contains(" ")) && !(newPassword.contains(";"))
+                                    && !(newPassword.isEmpty())) {
+                                this.setPassword(newPassword);
+                                Person.deleteAccount(oldAccount, "Accounts.txt");
+                                String newPerson = super.toString();
+                                Person.saveAccount(newPerson, "Accounts.txt");
+                                Person.deleteAccount(old, "Customer.txt");
+                                Person.saveAccount(this.toString(), "Customer.txt");
+                                System.out.println("Your password has been changed.");
+                            } else
+                                System.out.println("Your password isn't in the correct format.\n" +
+                                        " No spaces and no semicolons.");
+                        } else
+                            System.out.println("Password is incorrect.");
+                        break;
+                    case 3:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid Input!");
+                        scanner.nextLine();
+                }
+            } else {
+                System.out.println("Invalid Input!");
+            }
+        }
     }
 
 }
