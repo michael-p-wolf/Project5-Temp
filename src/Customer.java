@@ -107,7 +107,7 @@ public class Customer extends Person {
      */
     private ArrayList<Product> convert(String line) {
         if (!line.equalsIgnoreCase("[]")) {
-            String l = line.substring(1, line.length() - 2);
+            String l = line.substring(1, line.length() - 1);
             // we use comma space to differentiate between products, not fields
             // within products
             String[] items = l.split(", ");

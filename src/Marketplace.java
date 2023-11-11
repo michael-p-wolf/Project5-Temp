@@ -23,7 +23,7 @@ public class Marketplace {
 
         Product basketball = new Product("basketball", "Academy", "round, orange",
                 5, 29.99);
-        Product phone = new Product("phone", "Apple", "expensive, durable",
+        Product phone = new Product("phone", "Apple", "expensive and durable",
                 200, 1399.99);
         Product chair = new Product("chair", "IKEA", "wooden with 4 legs",
                 15, 49.99);
@@ -193,7 +193,8 @@ public class Marketplace {
                                     for (Product product : marketplace) {
                                         if (product.getName().equals(inputString)) {
                                             Product targetProduct = product;
-                                            while (true) {
+                                            boolean done = false;
+                                            while (!done) {
                                                 System.out.printf("Product: %s\nStore: %s\nDescription: %s\nPrice: " +
                                                                 "%.2f\nQuantity: %d\n\n", targetProduct.getName(),
                                                         targetProduct.getStoreSelling(), targetProduct.getDescription(),
@@ -202,19 +203,17 @@ public class Marketplace {
                                                         " To Cart\n[3] Go Back");
                                                 inputString = scan.nextLine();
                                                 input = Integer.parseInt(inputString);
-                                                while (true) {
-                                                    // Purchase or Add to Cart
-                                                    if (input == 1) { // Purchase
-                                                        customer.buy(targetProduct);
-                                                        System.out.println("Item Bought");
-                                                        break;
-                                                    } else if (input == 2) { // Add To Cart
-                                                        customer.addToCart(targetProduct);
-                                                        System.out.println("Item Added to Cart");
-                                                        break;
-                                                    } else if (input == 3) { // Go Back
-                                                        break;
-                                                    } else System.out.println("Invalid Input");
+                                                // Purchase or Add to Cart
+                                                if (input == 1) { // Purchase
+                                                    customer.buy(targetProduct);
+                                                    System.out.println("Item Bought");
+                                                } else if (input == 2) { // Add To Cart
+                                                    customer.addToCart(targetProduct);
+                                                    System.out.println("Item Added to Cart");
+                                                } else if (input == 3) { // Go Back
+                                                    done = true;
+                                                } else {
+                                                    System.out.println("Invalid Input");
                                                 }
                                             }
                                         }
@@ -224,7 +223,8 @@ public class Marketplace {
                         }
                         // Search for Product
                         else if (input == 2) {
-                            while (true) {
+                            boolean done = false;
+                            while (!done) {
                                 System.out.println("Search By:\n[1] Name\n[2] Store\n[3] Description\n[4] Go Back");
                                 inputString = scan.nextLine();
                                 input = Integer.parseInt(inputString);
@@ -240,6 +240,7 @@ public class Marketplace {
                                 } else if (input == 3) { // Search by Description
                                     searchResults = customer.searchDescription(marketplace, inputString);
                                 } else if (input == 4) { // Go Back
+                                    done = true;
                                     break;
                                 } else
                                     System.out.println("Invalid Input");
@@ -290,20 +291,30 @@ public class Marketplace {
 
                         // Buy All Items or Remove Individual Items
                         if (input == 1) { // Buy All Items
-                            customer.buyFromCart();
-                            System.out.println("Items Bought");
+                            if (customer.getCart().size() != 0 ) {
+                                customer.buyFromCart();
+                                System.out.println("Items Bought");
+                            } else {
+                                System.out.println("Cart is empty");
+                            }
                         } else if (input == 2) { // Remove Item from Cart
                             System.out.println("Enter the name of the item you'd like to remove");
                             inputString = scan.nextLine();
+                            boolean found = false;
                             for (Product product : customer.getCart()) {
                                 if (product.getName().equals(inputString)) {
                                     customer.removeFromCart(product);
+                                    found = true;
                                 }
+                            }
+                            if (!found) {
+                                System.out.println("Product not in Cart");
                             }
                         } else if (input == 3) { // Go Back
                             break;
-                        } else
-                            System.out.println("Invalid Input");
+                        } else {
+                           break;
+                        }
                     }
                 }
                 // View Store Dashboard
