@@ -1,294 +1,115 @@
-import java.io.*;
-import java.util.*;
-
-/**
- * Project 4 -- Customer
- *
- * This class represents a Customer
- * who can buy products from the marketplace
- *
- * @author Pranay Nandkeolyar, lab sec 36
- *
- * @version November 5, 2023
- *
- */
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 public class Customer extends Person {
-    // this represents the current cart for the customer
-    private ArrayList<Product> cart;
-    // this represents the list of all products the user has bought
+    private ArrayList<CartObject> cart;
     private ArrayList<Product> purchaseHistory;
-    // this represents a list of all the store names
-    // the user has bought from
     private ArrayList<String> stores;
 
-    /**
-     * Creates a Customer Object
-     * @param email - the user's email
-     * @param password - the user's password
-     */
-    public Customer(String email, String password) {
-        // we use our super constructor
-        super(email, password, "Customer");
-        File file = new File("Customer.txt");
-        // a flag representing whetehr the user exists
-        boolean flag = false;
-        // if the file exists and the file is not empty
-        // we get the preexisting data for this user
-        if (file.exists() || file.length() != 0) {
-            try (BufferedReader bfr = new BufferedReader(new FileReader("Customer.txt"))) {
-                String line = bfr.readLine();
-                while (line != null) {
-                    String[] info = line.split(";");
-                    // if this user is the user we are creating
-                    if (info[2].equals("Customer") && info[0].equals(email)) {
-                        // we get the cart, purchase history, and store information
-                        // from the file
-                        flag = true;
-                        this.cart = convert(info[3]);
-                        this.purchaseHistory = convert(info[4]);
-                        this.stores = convertStringToArrayList(info[5]);
-                    }
-                    line = bfr.readLine();
-                }
-                try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Customer.txt", true)))) {
-                    if (!flag) {
-                        // if we did not have that user's data in here before
-                        // we print the object
-                        this.cart = new ArrayList<>();
-                        this.purchaseHistory = new ArrayList<>();
-                        this.stores = new ArrayList<>();
-                        pw.println(this);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            // if the file is empty or does not exist we
-            // print our first user
-            this.cart = new ArrayList<>();
-            this.purchaseHistory = new ArrayList<>();
-            this.stores = new ArrayList<>();
-            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Customer.txt")))) {
-                pw.println(this);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public Customer(String email, String password, String accountType) {
+        super(email, password, accountType);
+        this.cart = new ArrayList<CartObject>();
+        this.purchaseHistory = new ArrayList<Product>();
     }
 
-    /**
-     * Converts an ArrayList of String's
-     * toString() representation back to
-     * an ArrayList of Strings
-     * @param str - the toString representation
-     * @return list - An ArrayList of Strings
-     */
-    private static ArrayList<String> convertStringToArrayList(String str) {
-        // Check if the list is empty
-        if (str.equals("[]")) {
-            return new ArrayList<>();
-        }
-        // Remove square brackets and split the string by commas
-        String[] elements = str.substring(1, str.length() - 1).split(", ");
-        // Convert the array to an ArrayList
-        List<String> list = Arrays.asList(elements);
-        return new ArrayList<>(list);
-    }
-
-    /**
-     * Converts an ArrayList of Products'
-     * String representation back to
-     * an ArrayList of Products
-     * @param line - the toString representation
-     * @return products - An ArrayList of Products
-     */
-    private ArrayList<Product> convert(String line) {
-        if (!line.equalsIgnoreCase("[]")) {
-            String l = line.substring(1, line.length() - 2);
-            // we use comma space to differentiate between products, not fields
-            // within products
-            String[] items = l.split(", ");
-            ArrayList<Product> ans = new ArrayList<>();
-            for (String s : items) {
-                // only a comma to differentiate fields
-                String[] data = s.split(",");
-                Product p3 = new Product(data[0], data[1], data[2], Integer.parseInt(data[4]), Double.parseDouble(data[3]));
-                ans.add(p3);
-            }
-            return ans;
-        } else {
-            return new ArrayList<Product>();
-        }
-    }
-
-    /**
-     * Returns the user's cart
-     * @return - the user's cart
-     */
-    public ArrayList<Product> getCart() {
+    public ArrayList<CartObject> getCart() {
         return cart;
     }
-
-    /**
-     * Resets the user's cart
-     * @param cart - the user's new cart
-     */
-    public void setCart(ArrayList<Product> cart) {
+    public void setCart(ArrayList<CartObject> cart) {
         this.cart = cart;
     }
-
-    /**
-     * Gets the user's product purchase-history
-     * @return the user's purchase history
-     */
     public ArrayList<Product> getPurchaseHistory() {
         return purchaseHistory;
     }
-
-    /**
-     * Gets the user's store purchase-history
-     * @return the user's purchase
-     */
     public ArrayList<String> getStores() {
         return stores;
     }
-
-    /**
-     * Adds an item to the user's cart
-     * @param p - the product to add
-     */
-    public void addToCart(Product p) {
-        this.cart.add(p);
-        try {
-            // we update the database with the new information
-            rewriteLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void addToCart(CartObject c) {
+        this.cart.add(c);
     }
-
-    /**
-     * Removes an item from the user's cart
-     * @param p - the product to remove
-     */
-    public void removeFromCart(Product p) {
-        try {
-            cart.remove(p);
-            // we update the database with the new information
-            rewriteLine();
-        } catch (Exception e) {
-            // if there is an error, we tell the user the product is not
-            // in the cart
-            System.out.println("This product is not in the cart");
-        }
-    }
-
-    /**
-     * Rewrite's the line in Accounts.txt
-     * to update the cart information
-     */
-    private void rewriteLine() throws IOException {
-        File file = new File("Accounts.txt");
-        if (file.exists()) {
-            BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
-            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Accounts.txt")));
-            String line = bfr.readLine();
-            while (line != null) {
-                String[] data = line.split(";");
-                // we only change the line for this user
-                if (data[2].equals("Customer") && data[0].equals(this.getEmail())) {
-                    // we do this by updating the value to the new cart
-                    data[3] = cart.toString();
-                    line = Arrays.toString(data);
-                }
-                // we overwrite all lines in the file
-                pw.println(line);
+    public void buy(Product p, Scanner scan, Seller seller, Store store) {
+        do {
+            if (p.getQuantity() < 1) {
+                System.out.println(p.getName() + " is out of stock!");
+                return;
             }
-        }
-    }
-
-    /**
-     * Buys the entire cart
-     */
-    public void buyFromCart() {
-        // buys each product
-        for (Product p : cart) {
-            buy(p);
-        }
-        // resets the cart
-        this.cart = new ArrayList<>();
-        try {
-            // rewrite the cart information
-            rewriteLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Buys a product and updates
-     * the database with the new information
-     * @param p - the product to remove
-     */
-    public void buy(Product p) {
-        // If the product is out of stock, we let the user know and
-        // stop the method
-        if (p.getQuantity() < 1) {
-            System.out.println(p.getName() + " is out of stock!");
-            return;
-        } else {
-            // we update the product and store history with the new information
-            purchaseHistory.add(p);
-            if (!inList(p.getStoreSelling())) {
-                stores.add(p.getStoreSelling());
-            }
-            // we update the database if it exists
-            File file = new File("Accounts.txt");
-            if (file.exists()) {
-                try {
-                    BufferedReader bfr = new BufferedReader(new FileReader("Accounts.txt"));
-                    PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Accounts.txt")));
-                    String line = bfr.readLine();
-                    while (line != null) {
-                        String[] data = line.split(";");
-                        // we get the correct customer
-                        if (data[2].equals("Customer") && data[0].equals(this.getEmail())) {
-                            data[4] = purchaseHistory.toString();
-                            data[5] = stores.toString();
-                            // we rewrite the history
-                            line = Arrays.toString(data);
+            System.out.println(p.getName() + "\nHow many would you like to buy?");
+            try {
+                int quantity = Integer.parseInt(scan.nextLine());
+                if (quantity <= p.getQuantity()) {
+                    double totalCost = quantity * p.getPrice();
+                    System.out.printf("Purchase %d of %s for $%.2f?\n[1]Confirm\n[2]Cancel",quantity, p.getName(), totalCost);
+                    try {
+                        int input = Integer.parseInt(scan.nextLine());
+                        switch (input) {
+                            case 1:
+                                p.setQuantity(p.getQuantity()-quantity);
+                                this.purchaseHistory.add(p);
+                                store.getSoldProducts().add(p);
+                                seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), p.getName(), p.getPrice(), quantity));
+                            case 2:
+                                return;
+                            default:
+                                System.out.println("Invalid input!");
                         }
-                        pw.println(line);
+
+                    } catch (Exception e) {
+                        System.out.println("Invalid input!");
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    System.out.println("Not enough stock available!");
+                    break;
                 }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
             }
-        }
+        } while (true);
     }
 
-    /**
-     * Checks if a store name is in our list
-     *
-     * @param val - the product to remove
-     * @return - a boolean representing whether the value is in the list
-     */
-    private boolean inList(String val) {
-        for (String name : stores) {
-            if (name.equals(val)) {
-                return true;
+    public void addToCart(Product p, Scanner scan) {
+        do {
+            if (p.getQuantity() < 1) {
+                System.out.println(p.getName() + " is out of stock!");
+                return;
             }
-        }
-        return false;
+            System.out.println(p.getName() + "\nHow many would you like to add to cart?");
+            try {
+                int quantity = Integer.parseInt(scan.nextLine());
+                if (quantity <= p.getQuantity()) {
+                    double totalCost = quantity * p.getPrice();
+                    System.out.printf("Add %d of %s for $%.2f to cart?\n[1]Confirm\n[2]Cancel",quantity, p.getName(), totalCost);
+                    try {
+                        int input = Integer.parseInt(scan.nextLine());
+                        switch (input) {
+                            case 1:
+                                p.setQuantity(p.getQuantity()-quantity);
+                                this.cart.add(new CartObject(p.getName(),p.getStoreSelling(),p.getDescription(),p.getPrice(),quantity));
+                            case 2:
+                                return;
+                            default:
+                                System.out.println("Invalid input!");
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("Invalid input!");
+                    }
+                } else {
+                    System.out.println("Not enough stock available!");
+                    break;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
+        } while (true);
     }
 
-    /**
-     * Writes the customer's purchase history to a file
-     *
-     */
+    public void addToHistory(Product product) {
+        this.purchaseHistory.add(product);
+    }
     public void createPurchaseHistory() {
         String filename = super.getEmail() + "_purchase_history.txt";
         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
@@ -300,140 +121,436 @@ public class Customer extends Person {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Searches the marketplace
-     * for a list of products by name
-     *
-     * @param marketplace - the list of products in the marketplace
-     * @param name - the name of the product we are searching for
-     * @return - An ArrayList of Products matching the search criteria
-     */
-    public ArrayList<Product> searchName(ArrayList<Product> marketplace, String name) {
-        ArrayList<Product> searchResults = new ArrayList<>();
-        for (Product p : marketplace) {
-            if (p.getName().contains(name)) {
-                searchResults.add(p);
-            }
-        }
-        if (searchResults.isEmpty()) {
-            System.out.println("No search results!");
-        }
-        return searchResults;
-    }
-
-    /**
-     * Searches the marketplace
-     * for a list of products by store
-     *
-     * @param marketplace - the list of products in the marketplace
-     * @param store - the name of the product we are searching for
-     * @return - An ArrayList of Products matching the search criteria
-     */
-    public ArrayList<Product> searchStore(ArrayList<Product> marketplace, String store) {
-        ArrayList<Product> searchResults = new ArrayList<>();
-        for (Product p : marketplace) {
-            if (p.getStoreSelling().contains(store)) {
-                searchResults.add(p);
-            }
-        }
-        if (searchResults.isEmpty()) {
-            System.out.println("No search results!");
-        }
-        return searchResults;
-    }
-
-    /**
-     * Searches the marketplace
-     * for a list of products by name
-     *
-     * @param marketplace - the list of products in the marketplace
-     * @param description - the name of the product we are searching for
-     * @return - An ArrayList of Products matching the search criteria
-     */
-    public ArrayList<Product> searchDescription(ArrayList<Product> marketplace, String description) {
-        ArrayList<Product> searchResults = new ArrayList<>();
-        for (Product p : marketplace) {
-            if (p.getDescription().contains(description)) {
-                searchResults.add(p);
-            }
-        }
-        if (searchResults.isEmpty()) {
-            System.out.println("No search results!");
-        }
-        return searchResults;
-    }
-
-    /**
-     * Sorts the marketplace
-     * by price
-     *
-     * @param marketplace - the list of products in the marketplace
-     * @return - A sorted ArrayList of Products based on the price
-     */
-    public ArrayList<Product> sortPrice(ArrayList<Product> marketplace) {
-        // Create a custom comparator to compare products by price
-        Comparator<Product> priceComparator = new Comparator<>() {
-            public int compare(Product product1, Product product2) {
-                // Compare the prices of the two products
-                return Double.compare(product1.getPrice(), product2.getPrice());
-            }
-        };
-        // Sort the marketplace ArrayList using the custom comparator
-        marketplace.sort(priceComparator);
-        // Return the sorted ArrayList
-        return marketplace;
-    }
-
-    /**
-     * Sorts the marketplace
-     * by quantity left
-     *
-     * @param marketplace - the list of products in the marketplace
-     * @return - A sorted ArrayList of Products based on the stock left
-     */
-    public ArrayList<Product> sortQuantity(ArrayList<Product> marketplace) {
-        // Create a custom comparator to compare products by stock
-        Comparator<Product> priceComparator = new Comparator<>() {
-            public int compare(Product product1, Product product2) {
-                // Compare the stock of the two products
-                return Double.compare(product1.getQuantity(), product2.getQuantity());
-            }
-        };
-        // Sort the marketplace ArrayList using the custom comparator
-        marketplace.sort(priceComparator);
-        return marketplace;
-    }
-
-
-    /**
-     * Sorts the marketplace
-     * by store based on each store's sales
-     *
-     * @param marketplace - the list of products in the marketplace
-     * @return - A sorted ArrayList of Stores based on its sales
-     */
-    public ArrayList<Store> sortSold(ArrayList<Store> marketplace) {
-        // Create a custom comparator to compare stores by sales
-        Comparator<Store> priceComparator = new Comparator<>() {
-            public int compare(Store store1, Store store2) {
-                // Compare sales prices of the two stores
-                return Integer.compare(store1.getSoldProducts().size(), store2.getSoldProducts().size());
-            }
-        };
-        // Sort the marketplace ArrayList using the custom comparator
-        marketplace.sort(priceComparator);
-        // Return the sorted ArrayList
-        return marketplace;
-    }
-
-    /**
-     * Represents the customer as a string
-     * @return - A string representation of the customer
-     */
     public String toString() {
         // uses the Person toString() along with our extra fields
         return super.toString() + String.format(";%s;%s;%s",
                 cart.toString(),purchaseHistory.toString(), stores.toString());
+    }
+    public void updateCustomer(Customer update) {
+         this.setEmail(update.getEmail());
+         this.setPassword(update.getPassword());
+         this.cart = update.getCart();
+         this.purchaseHistory = update.getPurchaseHistory();
+    }
+    public void displayMarket(Scanner scan, ArrayList<Seller> sellers) {
+        do {
+            int productCount = 0;
+            System.out.println("[1]Go Back");
+            for (int i = 0; i < sellers.size(); i++) {
+                for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                    for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                        System.out.println("[" + (productCount + 2) + "]" + sellers.get(i).getStores().get(j).getProducts().get(k).getName() + "\nStore:" + sellers.get(i).getStores().get(j).getStoreName() + "\nPrice: " + sellers.get(i).getStores().get(j).getProducts().get(k).getPrice());
+                        productCount++;
+                    }
+                }
+            }
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                if (input == 1) {
+                    return;
+                } else if (input <= productCount + 2) {
+                    productCount = 0;
+                    for (int i = 0; i < sellers.size(); i++) {
+                        for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                            for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                                if (productCount == input - 2) {
+                                    this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
+                                    return;
+                                }
+                                productCount++;
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid input!");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
+        } while (true);
+    }
+    public void productPage(Scanner scan, Product product, Seller seller, Store store) {
+        do {
+            System.out.println(product.getName() + "\nStore: " + product.getStoreSelling() + "\nDescription: " + product.getDescription() + "\nQuantity: " + product.getQuantity() + "\nPrice: " + product.getPrice()
+                    + "\n[1]Purchase Product\n[2]Add to Cart\n[3]Go Back");
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                switch (input) {
+                    case 1:
+                        buy(product, scan, seller, store);
+                        return;
+                    case 2:
+                        addToCart(product,scan);
+                        return;
+                    case 3:
+                        return;
+                    default:
+                        System.out.println("Invalid input!");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
+        } while (true);
+    }
+    public void search(Scanner scan, ArrayList<Seller> sellers) {
+        int resultsCount = 0;
+        System.out.println("What would you like to search for?");
+        String search = scan.nextLine();
+        System.out.println("[1]Go Back");
+        for (int i = 0; i < sellers.size(); i++) {
+            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                    String name = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
+                    String description = sellers.get(i).getStores().get(j).getProducts().get(k).getDescription();
+                    String storeName = sellers.get(i).getStores().get(j).getStoreName();
+                    if (name.contains(search) || description.contains(search) || storeName.contains(search)) {
+                        System.out.println("[" + (resultsCount+2) + "]" + name);
+                        resultsCount++;
+                    }
+                }
+            }
+        }
+        try {
+            int input = Integer.parseInt(scan.nextLine());
+            if (input == 1) {
+                return;
+            } else if (input <= resultsCount + 2) {
+                resultsCount = 0;
+                for (int i = 0; i < sellers.size(); i++) {
+                    for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                        for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                            if (resultsCount == input - 2) {
+                                this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
+                                break;
+                            }
+                            resultsCount++;
+                        }
+                    }
+                }
+            } else {
+                System.out.println("Invalid input!");
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid input!");
+        }
+    }
+    //if a seller changes the price while the product is in the cart, the cart price will remain the same
+    public void shoppingCart(Scanner scan, ArrayList<Seller> sellers) {
+        do {
+            int index = 0;
+            double grandTotal = 0;
+            for (int i = 0; i < cart.size(); i++) {
+                index = i;
+                double totalPrice = cart.get(i).getPrice() * cart.get(i).getCartQuantity();
+                grandTotal += totalPrice;
+                System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() + "\nTotal Cost: " + totalPrice);
+            }
+            int totalInput = index+cart.size() + 2;
+            System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput-2) + "]Purchase Cart\n[" + (totalInput-1) + "]Empty Cart\n[" + (totalInput) + "]Go Back");
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                if (input == totalInput) {
+                    return;
+                } else if (input == (totalInput-1)) {
+                    System.out.println("Empty Cart?\n[1]Confirm\n[2]Cancel");
+                    try {
+                        int input2 = Integer.parseInt(scan.nextLine());
+                        switch (input2) {
+                            case 1:
+                                this.emptyCart(sellers);
+                                break;
+                            case 2:
+                                return;
+                            default:
+                                System.out.println("Invalid input!");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Invalid input!");
+                    }
+                } else if (input == (totalInput - 2)) {
+                    System.out.println("Purchase entire cart?\n[1]Confirm\n[2]Cancel");try {
+                        int input2 = Integer.parseInt(scan.nextLine());
+                        switch (input2) {
+                            case 1:
+                                this.purchaseCart();
+                                break;
+                            case 2:
+                                return;
+                            default:
+                                System.out.println("Invalid input!");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Invalid input!");
+                    }
+                } else if (input <= totalInput-3) {
+                    this.cartProductPage(scan, this.cart.get(input),sellers);
+                } else {
+                    System.out.println("Invalid Input!");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid Input!");
+            }
+        } while (true);
+    }
+    public void removeFromCart(CartObject o, ArrayList<Seller> sellers) {
+        this.cart.remove(o);
+        for (int i = 0; i < sellers.size(); i++) {
+            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                    String productName = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
+                    String storeSelling = sellers.get(i).getStores().get(j).getProducts().get(k).getStoreSelling();
+                    if (o.getName().equals(productName) && o.getStoreSelling().equals(storeSelling)) {
+                        sellers.get(i).getStores().get(j).getProducts().get(k).setQuantity(sellers.get(i).getStores().get(j).getProducts().get(k).getQuantity() + o.getCartQuantity());
+                    }
+                }
+            }
+        }
+    }
+    public void emptyCart(ArrayList<Seller> sellers) {
+        for (int i = 0; i < this.cart.size(); i++) {
+            this.removeFromCart(this.cart.get(i),sellers);
+        }
+    }
+    public void purchaseCart() {
+        for (int i = 0; i < this.cart.size(); i++) {
+            this.purchaseHistory.add(this.cart.get(i));
+        }
+        this.cart = new ArrayList<CartObject>();
+    }
+    public void purchaseFromCart(CartObject o) {
+        this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
+        this.cart.remove(o);
+    }
+    public void cartProductPage (Scanner scan, CartObject o, ArrayList<Seller> sellers) {
+        String name = o.getName();
+        String store = o.getStoreSelling();
+        String description = o.getDescription();
+        double price = o.getPrice();
+        int cartQuantity = o.getCartQuantity();
+        double totalPrice = price * cartQuantity;
+        do {
+            System.out.println(name + "\nStore: " + store + "\nDescription: " + description + "\nQuantity: " + cartQuantity + "\nTotal Price: " + totalPrice + "\n[1]Purchase Product\n[2]Remove From Cart\n[3]Go Back");
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                switch (input) {
+                    case 1:
+                        System.out.println("Purchase from cart?\n[1]Confirm\n[2]Cancel");
+                        try {
+                            int input2 = Integer.parseInt(scan.nextLine());
+                            switch (input2) {
+                                case 1:
+                                    purchaseFromCart(o);
+                                    break;
+                                case 2:
+                                    return;
+                                default:
+                                    System.out.println("Invalid input!");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid input!");
+                        }
+                        return;
+                    case 2:
+                        System.out.println("Purchase from cart?\n[1]Confirm\n[2]Cancel");
+                        try {
+                            int input2 = Integer.parseInt(scan.nextLine());
+                            switch (input2) {
+                                case 1:
+                                    removeFromCart(o, sellers);
+                                    break;
+                                case 2:
+                                    return;
+                                default:
+                                    System.out.println("Invalid input!");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Invalid input!");
+                        }
+                        return;
+                    case 3:
+                        return;
+                    default:
+                        System.out.println("Invalid input!");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
+        } while (true);
+    }
+    public void deleteAccount(Scanner scan, ArrayList<Customer> customers, ArrayList<Seller> sellers) {
+        do {
+            System.out.println("Enter Password: ");
+            String pass = scan.nextLine();
+            if (!pass.equals(this.getPassword())) {
+                System.out.println("Incorrect password!");
+                return;
+            }
+            System.out.println("Are you sure you want to delete your account? This action cannot be undone.\n[1]Confirm\n[2]Cancel");
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                switch (input) {
+                    case 1:
+                        for (int i = 0; i < this.getCart().size(); i++) {
+                            removeFromCart(this.getCart().get(i), sellers);
+                        }
+                        this.cart = null;
+                        customers.remove(this);
+                        return;
+                    case 2:
+                        return;
+                    default:
+                        System.out.println("Invalid input!");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
+        } while (true);
+    }
+
+    public void printHistory (Scanner scan) {
+        for (int i = 0; i < this.purchaseHistory.size(); i++) {
+            String name = this.purchaseHistory.get(i).getName();
+            String description = this.purchaseHistory.get(i).getDescription();
+            String store = this.purchaseHistory.get(i).getStoreSelling();
+            double price = this.purchaseHistory.get(i).getPrice();
+            int quantity = this.purchaseHistory.get(i).getQuantity();
+            System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d",name, description, store, price, quantity);
+        }
+        System.out.println("Press ENTER to go Back");
+        scan.nextLine();
+    }
+
+    public void storeDashboard(Scanner scan, ArrayList<Seller> sellers) {
+        do {
+            System.out.println("Which Dashboard would you like to view?\n[1]Stores by products sold (for all customers)\n[2]Stores by products sold (for your account)\n");
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                switch (input) {
+                    case 1:
+                        do {
+                            System.out.println("How would you like to sort stores (general)?\n[1]Ascending\n[2]Descending\n[3]Cancel");
+                            try {
+                                int input2 = Integer.parseInt(scan.nextLine());
+                                switch (input2) {
+                                    case 1:
+                                        ArrayList<Sales> talliedSales = this.salesByStore(sellers);
+                                        Collections.sort(talliedSales);
+                                        for (int i = 0; i < talliedSales.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
+                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        }
+                                        System.out.println("Press ENTER to continue.\n");
+                                        scan.nextLine();
+                                        return;
+                                    case 2:
+                                        talliedSales = this.salesByStore(sellers);
+                                        Collections.sort(talliedSales, Collections.reverseOrder());
+                                        for (int i = 0; i < talliedSales.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
+                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        }
+                                        System.out.println("Press ENTER to continue.\n");
+                                        scan.nextLine();
+                                        return;
+                                    case 3:
+                                        return;
+                                    default:
+                                        System.out.println("Invalid input!");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Invalid input!");
+                                e.printStackTrace();
+                            }
+                        } while (true);
+                    case 2:
+                        do {
+                            System.out.println("How would you like to sort stores (personal)?\n[1]Ascending\n[2]Descending\n[3]Cancel");
+                            try {
+                                int input2 = Integer.parseInt(scan.nextLine());
+                                switch (input2) {
+                                    case 1:
+                                        ArrayList<Sales> talliedSales = this.personalSalesByStore();
+                                        Collections.sort(talliedSales);
+                                        for (int i = 0; i < talliedSales.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
+                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        }
+                                        System.out.println("Press ENTER to continue.\n");
+                                        scan.nextLine();
+                                        return;
+                                    case 2:
+                                        talliedSales = this.personalSalesByStore();
+                                        Collections.sort(talliedSales, Collections.reverseOrder());
+                                        for (int i = 0; i < talliedSales.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
+                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        }
+                                        System.out.println("Press ENTER to continue.\n");
+                                        scan.nextLine();
+                                        return;
+                                    case 3:
+                                        return;
+                                    default:
+                                        System.out.println("Invalid input!");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Invalid input!");
+                                e.printStackTrace();
+                            }
+                        } while (true);
+                    default:
+                        System.out.println("Invalid input!");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
+        } while (true);
+    }
+
+    public ArrayList<Sales> salesByStore (ArrayList<Seller> sellers) {
+        int totalSales = 0;
+        double totalRevenue = 0;
+        String currentSellerName = "";
+        String currentStoreName ="";
+        ArrayList<Sales> talliedSales = new ArrayList<Sales>();
+        for (int i = 0; i < sellers.size(); i++) {
+            currentSellerName = sellers.get(i).getEmail();
+            for (int j = 0; j < sellers.get(i).getSales().size(); j++) {
+                totalSales += sellers.get(i).getSales().get(j).getQuantity();
+                totalRevenue += (sellers.get(i).getSales().get(j).getQuantity() * sellers.get(i).getSales().get(j).getProductPrice());
+                currentStoreName = sellers.get(i).getStores().get(j).getStoreName();
+            }
+            talliedSales.add(new Sales(currentSellerName, currentStoreName, totalRevenue, totalSales));
+        }
+        return talliedSales;
+    }
+
+    public ArrayList<Sales> personalSalesByStore () {
+        ArrayList<Sales> talliedSales = new ArrayList<Sales>();
+        ArrayList<String> storeName = new ArrayList<String>();
+        int totalQuantity = 0;
+        double totalRevenue = 0;
+        String currentSellerName = "";
+        String currentStoreName ="";
+        for (int i = 0; i < this.purchaseHistory.size(); i++) {
+            if (storeName.indexOf(this.purchaseHistory.get(i).getName()) == -1) {
+                storeName.add(this.purchaseHistory.get(i).getName());
+            }
+        }
+        for (int i = 0; i < storeName.size(); i++) {
+            currentStoreName = storeName.get(i);
+            for (int j = 0; j < this.purchaseHistory.size(); j++) {
+                if (storeName.get(i).equals(this.purchaseHistory.get(j).getStoreSelling())) {
+                    totalQuantity += this.purchaseHistory.get(j).getQuantity();
+                    totalRevenue += this.purchaseHistory.get(j).getPrice() * this.purchaseHistory.get(j).getQuantity();
+                }
+                talliedSales.add(new Sales("", currentStoreName,totalRevenue, totalQuantity));
+            }
+        }
+        return talliedSales;
     }
 }
