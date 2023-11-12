@@ -154,7 +154,8 @@ public class Seller extends Person {
         ArrayList<Sales> sales = this.sales;
         do {
             try {
-                System.out.println("Which dashboard would you like to view?\n[1]Number of items per customer\n[2]Number of sales per product");
+                System.out.println("Which dashboard would you like to view?\n[1]Number of items per " +
+                        "customer\n[2]Number of sales per product\n[3]Cancel");
                 int input = Integer.parseInt(scan.nextLine());
                 switch (input) {
                     case 1:
@@ -256,6 +257,8 @@ public class Seller extends Person {
                                 System.out.println("Invalid Input!");
                             }
                         } while (again);
+                    case 3:
+                        return;
                     default:
                         System.out.println("Invalid Input!");
                 }
@@ -286,15 +289,19 @@ public class Seller extends Person {
 
         }
         System.out.println(output + "Press ENTER to return");
+        String input = scan.nextLine();
     }
     public void storeInterface(Scanner scan) {
         do {
-            System.out.println("[1]Go Back");
-            ArrayList<Store> stores = this.stores;
-            for (int i = 0; i < stores.size(); i++) {
-                int num = i;
-                System.out.println("[" + (num+2) + "]" + stores.get(i).getStoreName());
+            System.out.println("[1]Go Back\n-Stores:");
+            if (!this.stores.isEmpty()) {
+                ArrayList<Store> stores = this.stores;
+                for (int i = 0; i < stores.size(); i++) {
+                    int num = i;
+                    System.out.println("[" + (num + 2) + "]" + stores.get(i).getStoreName());
+                }
             }
+            else System.out.println("No stores are available currently");
             try {
                 int input = Integer.parseInt(scan.nextLine());
                 if (!(input <= stores.size()+2)) {

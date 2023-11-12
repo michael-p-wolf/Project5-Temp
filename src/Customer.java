@@ -130,7 +130,6 @@ public class Customer extends Person {
     public void displayMarket(Scanner scan, ArrayList<Seller> sellers) {
         do {
             int productCount = 0;
-            System.out.println("[1]Go Back");
             for (int i = 0; i < sellers.size(); i++) {
                 for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
                     for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
@@ -139,29 +138,37 @@ public class Customer extends Person {
                     }
                 }
             }
-            try {
-                int input = Integer.parseInt(scan.nextLine());
-                if (input == 1) {
-                    return;
-                } else if (input <= productCount + 2) {
-                    productCount = 0;
-                    for (int i = 0; i < sellers.size(); i++) {
-                        for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                            for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                                if (productCount == input - 2) {
-                                    this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
-                                    return;
+            if (productCount != 0) {
+                System.out.println("[1]Go Back");
+                try {
+                    int input = Integer.parseInt(scan.nextLine());
+                    if (input == 1) {
+                        return;
+                    } else if (input <= productCount + 2) {
+                        productCount = 0;
+                        for (int i = 0; i < sellers.size(); i++) {
+                            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                                    if (productCount == input - 2) {
+                                        this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
+                                        return;
+                                    }
+                                    productCount++;
                                 }
-                                productCount++;
                             }
                         }
+                    } else {
+                        System.out.println("Invalid input!");
                     }
-                } else {
+                } catch (Exception e) {
                     System.out.println("Invalid input!");
                 }
-            } catch (Exception e) {
-                System.out.println("Invalid input!");
             }
+            else {
+                System.out.println("No items are available currently.");
+                return;
+            }
+
         } while (true);
     }
     public void productPage(Scanner scan, Product product, Seller seller, Store store) {
@@ -189,44 +196,57 @@ public class Customer extends Person {
     }
     public void search(Scanner scan, ArrayList<Seller> sellers) {
         int resultsCount = 0;
-        System.out.println("What would you like to search for?");
-        String search = scan.nextLine();
-        System.out.println("[1]Go Back");
         for (int i = 0; i < sellers.size(); i++) {
             for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
                 for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                    String name = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
-                    String description = sellers.get(i).getStores().get(j).getProducts().get(k).getDescription();
-                    String storeName = sellers.get(i).getStores().get(j).getStoreName();
-                    if (name.contains(search) || description.contains(search) || storeName.contains(search)) {
-                        System.out.println("[" + (resultsCount+2) + "]" + name);
-                        resultsCount++;
-                    }
+                    System.out.println("[" + (resultsCount + 2) + "]" + sellers.get(i).getStores().get(j).getProducts().get(k).getName() + "\nStore:" + sellers.get(i).getStores().get(j).getStoreName() + "\nPrice: " + sellers.get(i).getStores().get(j).getProducts().get(k).getPrice());
+                    resultsCount++;
                 }
             }
         }
-        try {
-            int input = Integer.parseInt(scan.nextLine());
-            if (input == 1) {
-                return;
-            } else if (input <= resultsCount + 2) {
-                resultsCount = 0;
-                for (int i = 0; i < sellers.size(); i++) {
-                    for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                        for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                            if (resultsCount == input - 2) {
-                                this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
-                                break;
-                            }
+        if (resultsCount != 0) {
+            System.out.println("What would you like to search for?");
+            String search = scan.nextLine();
+            System.out.println("[1]Go Back");
+            for (int i = 0; i < sellers.size(); i++) {
+                for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                    for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                        String name = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
+                        String description = sellers.get(i).getStores().get(j).getProducts().get(k).getDescription();
+                        String storeName = sellers.get(i).getStores().get(j).getStoreName();
+                        if (name.contains(search) || description.contains(search) || storeName.contains(search)) {
+                            System.out.println("[" + (resultsCount + 2) + "]" + name);
                             resultsCount++;
                         }
                     }
                 }
-            } else {
+            }
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                if (input == 1) {
+                    return;
+                } else if (input <= resultsCount + 2) {
+                    resultsCount = 0;
+                    for (int i = 0; i < sellers.size(); i++) {
+                        for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
+                            for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
+                                if (resultsCount == input - 2) {
+                                    this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
+                                    break;
+                                }
+                                resultsCount++;
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid input!");
+                }
+            } catch (Exception e) {
                 System.out.println("Invalid input!");
             }
-        } catch (Exception e) {
-            System.out.println("Invalid input!");
+        } else {
+            System.out.println("No products are available currently");
+            return;
         }
     }
     //if a seller changes the price while the product is in the cart, the cart price will remain the same
@@ -241,12 +261,12 @@ public class Customer extends Person {
                 System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() + "\nTotal Cost: " + totalPrice);
             }
             int totalInput = index+cart.size() + 2;
-            System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput-2) + "]Purchase Cart\n[" + (totalInput-1) + "]Empty Cart\n[" + (totalInput) + "]Go Back");
+            System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput - 1) + "]Purchase Cart\n[" + (totalInput) + "]Empty Cart\n[" + (totalInput + 1) + "]Go Back");
             try {
                 int input = Integer.parseInt(scan.nextLine());
-                if (input == totalInput) {
+                if (input == totalInput + 1) {
                     return;
-                } else if (input == (totalInput-1)) {
+                } else if (input == (totalInput)) {
                     System.out.println("Empty Cart?\n[1]Confirm\n[2]Cancel");
                     try {
                         int input2 = Integer.parseInt(scan.nextLine());
@@ -262,7 +282,7 @@ public class Customer extends Person {
                     } catch (Exception e) {
                         System.out.println("Invalid input!");
                     }
-                } else if (input == (totalInput - 2)) {
+                } else if (input == (totalInput - 1)) {
                     System.out.println("Purchase entire cart?\n[1]Confirm\n[2]Cancel");try {
                         int input2 = Integer.parseInt(scan.nextLine());
                         switch (input2) {
@@ -277,7 +297,7 @@ public class Customer extends Person {
                     } catch (Exception e) {
                         System.out.println("Invalid input!");
                     }
-                } else if (input <= totalInput-3) {
+                } else if (input <= (totalInput - 2)) {
                     this.cartProductPage(scan, this.cart.get(input),sellers);
                 } else {
                     System.out.println("Invalid Input!");
@@ -403,21 +423,32 @@ public class Customer extends Person {
     }
 
     public void printHistory (Scanner scan) {
-        for (int i = 0; i < this.purchaseHistory.size(); i++) {
-            String name = this.purchaseHistory.get(i).getName();
-            String description = this.purchaseHistory.get(i).getDescription();
-            String store = this.purchaseHistory.get(i).getStoreSelling();
-            double price = this.purchaseHistory.get(i).getPrice();
-            int quantity = this.purchaseHistory.get(i).getQuantity();
-            System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d",name, description, store, price, quantity);
+        if (!this.purchaseHistory.isEmpty()) {
+            for (int i = 0; i < this.purchaseHistory.size(); i++) {
+                String name = this.purchaseHistory.get(i).getName();
+                String description = this.purchaseHistory.get(i).getDescription();
+                String store = this.purchaseHistory.get(i).getStoreSelling();
+                double price = this.purchaseHistory.get(i).getPrice();
+                int quantity = this.purchaseHistory.get(i).getQuantity();
+                System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d", name, description, store, price, quantity);
+            }
+            System.out.println("[1]Export To File\n[2] Go Back");
+            int input2 = Integer.parseInt(scan.nextLine());
+            switch (input2) {
+                case 1:
+                    System.out.println("[Implement File Export Here]");
+                default:
+                    // Do Nothing
+            }
+        } else {
+            System.out.println("You haven't purchased anything yet.\nPurchase something first.");
         }
-        System.out.println("Press ENTER to go Back");
-        scan.nextLine();
     }
 
     public void storeDashboard(Scanner scan, ArrayList<Seller> sellers) {
         do {
-            System.out.println("Which Dashboard would you like to view?\n[1]Stores by products sold (for all customers)\n[2]Stores by products sold (for your account)\n");
+            System.out.println("Which Dashboard would you like to view?\n[1]Stores by products sold (for all " +
+                    "customers)\n[2]Stores by products sold (for your account)\n[3]Cancel");
             try {
                 int input = Integer.parseInt(scan.nextLine());
                 switch (input) {
@@ -497,6 +528,8 @@ public class Customer extends Person {
                                 e.printStackTrace();
                             }
                         } while (true);
+                    case 3:
+                        return;
                     default:
                         System.out.println("Invalid input!");
                 }
