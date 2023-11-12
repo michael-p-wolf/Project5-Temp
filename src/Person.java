@@ -12,7 +12,8 @@ import java.util.Scanner;
  */
 
 public class Person {
-    public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1]Customer Account\n[2]Seller Account\n[3]Go Back";
+    public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1] Customer Account\n[2] Seller " +
+            "Account\n[3] Go Back";
 
 
     private String email;
@@ -193,11 +194,11 @@ public class Person {
                             accountOnFile.split(";", -1)[1],
                             accountOnFile.split(";", -1)[2]);
                 } else {
-                    System.out.println("\nYour password is incorrect.");
+                    System.out.println("Your password is incorrect.");
                     return null;
                 }
             } else {
-                System.out.println("\nThis email isn't associated to any account.");
+                System.out.println("This email isn't associated to any account.");
                 return null;
             }
 
@@ -283,14 +284,14 @@ public class Person {
                         // If account type is input correctly, proceed
 
                     } else {
-                        System.out.println("\nYour password isn't in the correct format.\n" +
+                        System.out.println("Your password isn't in the correct format.\n" +
                                 "No spaces and no semicolons.");
                     }
 
                 } else if (Person.isValidFormat(email)) {
-                    System.out.println("\nThis email is already associated with an account.");
+                    System.out.println("This email is already associated with an account.");
                 } else {
-                    System.out.println("\nYour email isn't in the correct format.\n" +
+                    System.out.println("Your email isn't in the correct format.\n" +
                             "No spaces and no semicolons, must contain '@' and '.'");
                 }
             } else if (input == 3) {
