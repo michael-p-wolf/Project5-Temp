@@ -272,8 +272,8 @@ public class Marketplace {
 
                 while (cartLine != null) {
                     String[] cartSplit = cartLine.split(";");
-                    int quantity = Integer.parseInt(cartSplit[3]);
-                    double price = Double.parseDouble(cartSplit[4]);
+                    int quantity = Integer.parseInt(cartSplit[4]);
+                    double price = Double.parseDouble(cartSplit[3]);
                     CartObject currentCartObject = new CartObject(cartSplit[0], cartSplit[1], cartSplit[2], price, quantity);
                     currentCustomer.addToCart(currentCartObject);
                     cartLine = bfrcart.readLine();

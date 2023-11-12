@@ -241,12 +241,12 @@ public class Customer extends Person {
                 System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() + "\nTotal Cost: " + totalPrice);
             }
             int totalInput = index+cart.size() + 2;
-            System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput-2) + "]Purchase Cart\n[" + (totalInput-1) + "]Empty Cart\n[" + (totalInput) + "]Go Back");
+            System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput-1) + "]Purchase Cart\n[" + (totalInput) + "]Empty Cart\n[" + (totalInput+1) + "]Go Back");
             try {
                 int input = Integer.parseInt(scan.nextLine());
                 if (input == totalInput) {
                     return;
-                } else if (input == (totalInput-1)) {
+                } else if (input == (totalInput)) {
                     System.out.println("Empty Cart?\n[1]Confirm\n[2]Cancel");
                     try {
                         int input2 = Integer.parseInt(scan.nextLine());
@@ -262,7 +262,7 @@ public class Customer extends Person {
                     } catch (Exception e) {
                         System.out.println("Invalid input!");
                     }
-                } else if (input == (totalInput - 2)) {
+                } else if (input == (totalInput - 1)) {
                     System.out.println("Purchase entire cart?\n[1]Confirm\n[2]Cancel");try {
                         int input2 = Integer.parseInt(scan.nextLine());
                         switch (input2) {
@@ -277,7 +277,9 @@ public class Customer extends Person {
                     } catch (Exception e) {
                         System.out.println("Invalid input!");
                     }
-                } else if (input <= totalInput-3) {
+                } else if (input == totalInput + 1) {
+                    return;
+                } else if (input <= totalInput-2) {
                     this.cartProductPage(scan, this.cart.get(input),sellers);
                 } else {
                     System.out.println("Invalid Input!");
