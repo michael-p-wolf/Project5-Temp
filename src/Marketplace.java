@@ -48,7 +48,6 @@ public class Marketplace {
     }
 
     public Marketplace() {
-
     }
 
     public static int firstScreen(Scanner scan) {
