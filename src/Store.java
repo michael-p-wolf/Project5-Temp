@@ -67,7 +67,8 @@ public class Store {
     // Method to edit a product's information
     public void editProduct(String oldProductName, String newProductName, String description, double price, int quantity) {
         for (Product product : products) {
-            if (product.getName().equals(productName)) {
+            if (product.getName().equals(oldProductName)) {
+                product.setName(newProductName);
                 product.setDescription(description);
                 product.setPrice(price);
                 product.setQuantity(quantity);
