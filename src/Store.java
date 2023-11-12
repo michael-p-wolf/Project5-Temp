@@ -59,19 +59,56 @@ public class Store {
     }
 
     // Method to add a product to the store
-    public void createProduct(String name, String description, double price, int quantity) {
-        Product product = new Product(name, this.storeName, description, quantity, price);
-        products.add(product);
+    public void createProduct(String name, String description, double price, int quantity) throws IOException {
+        File f = new File(storeFile);
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f)));
+        BufferedReader bfr = new BufferedReader(new FileReader(f));
+
+        String line = bfr.readLine(); // skipping the first line because it is the store name
+        while (true) {
+            line = bfr.readLine();
+            String[] theProduct = line.split(";");
+            if (line == null || line.isEmpty() || line.isBlank()) {
+                pw.println(name + ";" + quantity + ";" + price + ";" + description);
+                break;
+            }
+
+            if (theProduct[0].equals(name)) {
+                System.out.println("This product already exists");
+                break;
+            }
+
+        }
     }
 
     // Method to edit a product's information
-    public void editProduct(String productName, String description, double price, int quantity) {
-        for (Product product : products) {
-            if (product.getName().equals(productName)) {
-                product.setDescription(description);
-                product.setPrice(price);
-                product.setQuantity(quantity);
+    public void editProduct(String oldProductName, String newProductName, String description, double price, int quantity) {
+        try {
+            File f = new File(storeFile);
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(f)));
+            BufferedReader bfr = new BufferedReader(new FileReader(f));
+
+            int counter = 0; // this is for seeing if the store hold the product it gets incremented when product is found
+            String line = bfr.readLine(); // skipping the first line because it is the store name
+            while (line != null) {
+                line = bfr.readLine();
+                String[] theProduct = line.split(";");
+
+                if (theProduct[0].equals(oldProductName)) {
+                    counter++;
+                    pw.write(newProductName + ";" + quantity + ";" + price + ";" + description);
+                } else {
+                    pw.write(line);
+                }
             }
+
+            if (counter > 0) {
+                System.out.println("Product changed!");
+            } else {
+                System.out.println("There is no product with that name");
+            }
+        } catch(IOException e){
+            e.printStackTrace();
         }
     }
 
