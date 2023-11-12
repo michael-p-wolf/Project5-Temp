@@ -124,6 +124,9 @@ public class Marketplace {
             System.out.println(CREATE_ACCOUNT_SCREEN);
             try {
                 int input = Integer.parseInt(scan.nextLine());
+                if (input == 3) {
+                    return;
+                }
                 System.out.println("Email:");
                 email = scan.nextLine();
 
@@ -135,6 +138,7 @@ public class Marketplace {
                 if (!Person.isValidFormat(email)) {
                     System.out.println("\nYour email isn't in the correct format.\n" +
                             "No spaces and no semicolons, must contain '@' and '.'");
+                    return;
                 }
                 System.out.println("Password:");
                 pass = scan.nextLine();
@@ -205,10 +209,10 @@ public class Marketplace {
                         break;
                     case 7:
                         customer.deleteAccount(scan, customers, sellers);
-                        return null;
+                        System.out.println("Account deleted");
                     case 8:
                         return customer;
-                    default: System.out.println("Invalid Input!");
+                    default: System.out.println("Invalid Input! line 211");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input!");
@@ -242,7 +246,6 @@ public class Marketplace {
                         break;
                     case 6:
                         seller.deleteAccount(scan, sellers);
-                        return null;
                     case 7:
                         return seller;
                     default:

@@ -389,6 +389,7 @@ public class Seller extends Person {
                             removeStore(this.getStores().get(i));
                         }
                         sellers.remove(this);
+                        System.out.println("Successfully Removed");
                         return;
                     case 2:
                         return;
@@ -397,6 +398,7 @@ public class Seller extends Person {
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input!");
+                e.printStackTrace();
             }
         } while (true);
 

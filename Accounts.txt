@@ -1,2 +1,1 @@
-customer1@test.com;test;C
 seller1@test.com;test;S
