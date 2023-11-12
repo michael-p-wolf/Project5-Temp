@@ -25,7 +25,7 @@ public class Seller extends Person {
             line = bfr.readLine();
         }
         if (!random) {
-            pw.append("\n" + email);
+            pw.append(email + "\n");
         }
         pw.flush();
         pw.close();
@@ -157,14 +157,15 @@ public class Seller extends Person {
         return existingStoreLines;
     }
 
-    public void switchCurrentStore(String storeName) {
+    public Store switchCurrentStore(String storeName) {
         for (Store store : stores) {
             if (store.getStoreName().equals(storeName)) {
                 currentStore = store;
-                return;
+                return store;
             }
         }
         System.out.println("Store not found.");
+        return null;
     }
 
     public void editAccount(Scanner scanner) {
@@ -172,7 +173,7 @@ public class Seller extends Person {
         while (!exit) {
             String oldAccount = super.toString();
             String old = this.toString();
-            System.out.println("\nWhat would you like to edit?\n[1]Email\n[2]Password\n[3]Exit");
+            System.out.println("What would you like to edit?\n[1] Email\n[2] Password\n[3] Exit");
             if (scanner.hasNextInt()) {
                 int option = scanner.nextInt();
                 scanner.nextLine();

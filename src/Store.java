@@ -109,6 +109,7 @@ public class Store {
     public void setSoldProducts(List<Product> soldProducts) {
         this.soldProducts = soldProducts;
     }
+
     // Method to add a product to the store
     public void createProduct(String name, String description, double price, int quantity) {
         Product product = new Product(name, this.storeName, description, quantity, price);

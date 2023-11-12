@@ -7,14 +7,15 @@ import java.util.Scanner;
 public class Marketplace {
 
     private static ArrayList<Product> marketplace = new ArrayList<>();
+    private static ArrayList<Store> storefront = new ArrayList<>();
     private static ArrayList<Seller> sellers;
     private static ArrayList<Customer> customers;
     public static final String WELCOME = "Home Screen\n[1] Sign In\n[2] Create Account\n[3] Exit";
     public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1] Customer Account\n" +
             "[2] Seller Account\n[3] Go Back";
     public static final String CUSTOMER_HOME = "[1] View Marketplace\n[2] View Shopping Cart\n" +
-            "[3] View Store\n[4] Edit Account\n[5] View Purchase History\n[6] Log Out";
-    public static final String SELLER_HOME = "Seller Home Screen\n[1] My Stores\n[2] Edit Products\n" +
+            "[3] View Store Dashboard\n[4] Edit Account\n[5] View Purchase History\n[6] Log Out";
+    public static final String SELLER_HOME = "[1] My Stores\n[2] Edit Products\n" +
             "[3] Import Products\n[4] Export Products\n[5] Edit Account\n[6] Log Out";
 
     public static void main(String[] args) {
@@ -37,6 +38,21 @@ public class Marketplace {
         Marketplace.marketplace.add(chair);
         Marketplace.marketplace.add(candyBar);
         Marketplace.marketplace.add(truck);
+
+        try {
+            Store storeOne = new Store("Store One", "e@e.com");
+            Store storeTwo = new Store("Store Two", "e@e.com");
+            storeOne.addProduct(basketball);
+            storeOne.addProduct(phone);
+            storeOne.addProduct(chair);
+            storeTwo.addProduct(candyBar);
+            storeTwo.addProduct(truck);
+            storefront.add(storeOne);
+            storefront.add(storeTwo);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         Scanner scan = new Scanner(System.in);
 
@@ -100,7 +116,7 @@ public class Marketplace {
                                 Seller activeSeller = new Seller(activeUser.getEmail(),activeUser.getPassword());
                                 sellerHome(scan, activeSeller);
                             } else if (activeUser == null){/*Login failed*/
-                                System.out.println("Login failed!\n[1]Try Again\n[2]Exit");
+                                System.out.println("Login failed!\n[1] Try Again\n[2] cExit");
                                 String input2String = scan.nextLine();
                                 try {
                                     int input2 = Integer.parseInt(input2String);
@@ -190,25 +206,25 @@ public class Marketplace {
                                 } else {
 
                                     // Choose Product
-                                    for (Product product : marketplace) {
+                                    for (int i = 0; i < marketplace.size(); i++) {
+                                        Product product = marketplace.get(i);
                                         if (product.getName().equals(inputString)) {
-                                            Product targetProduct = product;
                                             boolean done = false;
                                             while (!done) {
                                                 System.out.printf("Product: %s\nStore: %s\nDescription: %s\nPrice: " +
-                                                                "%.2f\nQuantity: %d\n\n", targetProduct.getName(),
-                                                        targetProduct.getStoreSelling(), targetProduct.getDescription(),
-                                                        targetProduct.getPrice(), targetProduct.getQuantity());
+                                                                "%.2f\nQuantity: %d\n\n", product.getName(),
+                                                        product.getStoreSelling(), product.getDescription(),
+                                                        product.getPrice(), product.getQuantity());
                                                 System.out.println("What would you like to do?\n[1] Purchase Product\n[2] Add" +
                                                         " To Cart\n[3] Go Back");
                                                 inputString = scan.nextLine();
                                                 input = Integer.parseInt(inputString);
                                                 // Purchase or Add to Cart
                                                 if (input == 1) { // Purchase
-                                                    customer.buy(targetProduct);
+                                                    customer.buy(product);
                                                     System.out.println("Item Bought");
                                                 } else if (input == 2) { // Add To Cart
-                                                    customer.addToCart(targetProduct);
+                                                    customer.addToCart(product);
                                                     System.out.println("Item Added to Cart");
                                                 } else if (input == 3) { // Go Back
                                                     done = true;
@@ -223,24 +239,25 @@ public class Marketplace {
                         }
                         // Search for Product
                         else if (input == 2) {
-                            boolean done = false;
-                            while (!done) {
+                            while (true) {
                                 System.out.println("Search By:\n[1] Name\n[2] Store\n[3] Description\n[4] Go Back");
                                 inputString = scan.nextLine();
                                 input = Integer.parseInt(inputString);
-                                System.out.println("Enter your search:");
-                                inputString = scan.nextLine();
                                 ArrayList<Product> searchResults = marketplace;
-
                                 // Search by...
                                 if (input == 1) { // Search by Name
+                                    System.out.println("Enter your search:");
+                                    inputString = scan.nextLine();
                                     searchResults = customer.searchName(marketplace, inputString);
                                 } else if (input == 2) { // Search by Store
+                                    System.out.println("Enter your search:");
+                                    inputString = scan.nextLine();
                                     searchResults = customer.searchStore(marketplace, inputString);
                                 } else if (input == 3) { // Search by Description
+                                    System.out.println("Enter your search:");
+                                    inputString = scan.nextLine();
                                     searchResults = customer.searchDescription(marketplace, inputString);
                                 } else if (input == 4) { // Go Back
-                                    done = true;
                                     break;
                                 } else
                                     System.out.println("Invalid Input");
@@ -254,23 +271,41 @@ public class Marketplace {
                                     System.out.println("No results");
                                 else if (searchResults.size() == 1) {
                                     Product targetProduct = searchResults.get(0);
-                                    System.out.println("What would you like to do?\n[1] Purchase Product\n[2] Add" +
-                                            " To Cart\n[3] Go Back");
-                                    inputString = scan.nextLine();
-                                    input = Integer.parseInt(inputString);
+                                    while (true) {
+                                        System.out.println("What would you like to do?\n[1] Purchase Product\n[2] Add" +
+                                                " To Cart\n[3] Go Back");
+                                        inputString = scan.nextLine();
+                                        input = Integer.parseInt(inputString);
 
-                                    // Purchase or Add to Cart
-                                    if (input == 1) { // Buy item
-                                        customer.buy(targetProduct);
-                                        System.out.println("Item Bought");
-                                        break;
-                                    } else if (input == 2) { // Add To Cart
-                                        customer.addToCart(targetProduct);
-                                        System.out.println("Item Added to Cart");
-                                        break;
-                                    } else if (input == 3) { // Go Back
-                                        break;
-                                    } else System.out.println("Invalid Input");
+                                        // Purchase or Add to Cart
+                                        if (input == 1) { // Buy item
+                                            System.out.println("How many would you like to buy?");
+                                            int count = 0;
+                                            inputString = scan.nextLine();
+                                            input = Integer.parseInt(inputString);
+                                            for (int i = 1; i <= input; i++) {
+                                                customer.buy(targetProduct);
+                                                count++;
+                                            }
+                                            if (count < 1) {
+                                                System.out.println("Purchase could not be made");
+                                            }
+                                            else if (count == 1) {
+                                                System.out.println("Item Bought");
+                                                break;
+                                            }
+                                            else {
+                                                System.out.println(count + "Items Bought");
+                                                break;
+                                            }
+                                        } else if (input == 2) { // Add To Cart
+                                            customer.addToCart(targetProduct);
+                                            System.out.println("Item Added to Cart");
+                                            break;
+                                        } else if (input == 3) { // Go Back
+                                            break;
+                                        } else System.out.println("Invalid Input");
+                                    }
                                 }
                             }
                         }
@@ -283,37 +318,44 @@ public class Marketplace {
                 // View Shopping Cart
                 else if (input == 2) {
                     while (true) {
-                        System.out.println(customer.getCart());
-                        System.out.println("Would you like to:\n[1] Purchase All Items\n[2] Remove Item\n[3] " +
-                                "Go Back");
-                        inputString = scan.nextLine();
-                        input = Integer.parseInt(inputString);
-
-                        // Buy All Items or Remove Individual Items
-                        if (input == 1) { // Buy All Items
-                            if (customer.getCart().size() != 0 ) {
-                                customer.buyFromCart();
-                                System.out.println("Items Bought");
-                            } else {
-                                System.out.println("Cart is empty");
-                            }
-                        } else if (input == 2) { // Remove Item from Cart
-                            System.out.println("Enter the name of the item you'd like to remove");
+                        if (customer.getCart().size() != 0) {
+                            System.out.println(customer.getCart());
+                            System.out.println("Would you like to:\n[1] Purchase All Items\n[2] Remove Item\n[3] " +
+                                    "Go Back");
                             inputString = scan.nextLine();
-                            boolean found = false;
-                            for (Product product : customer.getCart()) {
-                                if (product.getName().equals(inputString)) {
-                                    customer.removeFromCart(product);
-                                    found = true;
+                            input = Integer.parseInt(inputString);
+
+                            // Buy All Items or Remove Individual Items
+                            if (input == 1) { // Buy All Items
+                                if (customer.getCart().size() != 0) {
+                                    customer.buyFromCart();
+                                    System.out.println("Items Bought");
+                                } else {
+                                    System.out.println("Cart is empty");
                                 }
+                            } else if (input == 2) { // Remove Item from Cart
+                                System.out.println("Enter the name of the item you'd like to remove");
+                                inputString = scan.nextLine();
+                                boolean found = false;
+                                for (int i = 0; i < customer.getCart().size(); i++) {
+                                    Product product = customer.getCart().get(i);
+                                    if (product.getName().equals(inputString)) {
+                                        customer.removeFromCart(product);
+                                        found = true;
+                                    }
+                                }
+                                if (!found) {
+                                    System.out.println("Product not in Cart");
+                                }
+                            } else if (input == 3) { // Go Back
+                                break;
+                            } else {
+                                break;
                             }
-                            if (!found) {
-                                System.out.println("Product not in Cart");
-                            }
-                        } else if (input == 3) { // Go Back
+                        }
+                        else {
+                            System.out.println("There are no items in your cart.");
                             break;
-                        } else {
-                           break;
                         }
                     }
                 }
@@ -327,15 +369,19 @@ public class Marketplace {
                 }
                 // View Purchase History
                 else if (input == 5) {
-                    System.out.println(customer.getPurchaseHistory());
-                    System.out.println("\nWould you like to export to file?\nType \"export\" to export to file");
-                    inputString = scan.nextLine();
+                    if (customer.getPurchaseHistory().size() != 0) {
+                        System.out.println(customer.getPurchaseHistory());
+                        System.out.println("Would you like to export to file?\n[1] Yes\n[2] Go Back");
+                        inputString = scan.nextLine();
+                        input = Integer.parseInt(inputString);
 
-                    // Export To File
-                    if (inputString.toLowerCase().equals("export")) {
-                        customer.createPurchaseHistory();
-                        System.out.println("Purchase History File Created");
+                        // Export To File
+                        if (inputString.equalsIgnoreCase("yes")) {
+                            customer.createPurchaseHistory();
+                            System.out.println("Purchase History File Created");
+                        }
                     }
+                    else System.out.println("You haven't purchased any items yet.");
                 }
                 // Log Out
                 else if (input == 6) {
@@ -351,69 +397,334 @@ public class Marketplace {
     }
 
     public static void sellerHome(Scanner scan, Seller seller) {
-        int input = 0;
+        String inputString;
+        int input;
+
         do {
-            System.out.println(SELLER_HOME);
+            System.out.println(seller.getEmail() + " Seller Homepage\n" + SELLER_HOME);
             try {
-                String inputString = scan.nextLine();
+                inputString = scan.nextLine();
                 input = Integer.parseInt(inputString);
-                switch (input) {
-                    case 1:
-                        try {
-                            System.out.println("[1]Create new Store\n[2]Back");
-                            int storeInput = Integer.parseInt(scan.nextLine());
-                            switch (storeInput) {
-                                case 1:
-                                    String storeName = scan.nextLine();
-                                    break;
-                                case 2:
-                                    break;
-                                case 3:
-                                    System.out.println("Invalid input!");
-                                    break;
+
+                // View My Stores
+                if (input == 1) {
+                    // Print all seller's stores
+                    while (true) {
+                        System.out.println("[1] Create a New Store\n[2] Search My Stores\n[3] Go Back");
+                        inputString = scan.nextLine();
+                        input = Integer.parseInt(inputString);
+                        // Add Store or Search for Store
+                        if (input == 1) { // Add Store
+                            System.out.println("Enter the new store name:\nOr enter \"return\" to go back");
+                            String newName = scan.nextLine();
+                            // If store exists, restart
+                            // If not, create new store
+                            boolean alreadyExists = false;
+                            for (Store store : storefront) {
+                                if (newName.equals(store.getStoreName())) {
+                                    alreadyExists = true;
+                                }
                             }
-                        } catch (Exception e) {
-                            System.out.println("Invalid input!");
+                            if (newName.equalsIgnoreCase("return")) {
+                                // Go Back
+                            } else if (alreadyExists) {
+                                System.out.println("A store of this name already exists");
+                            } else {
+                                seller.createStore(newName);
+                                System.out.println("Store Created");
+                                System.out.println("[Make sure files change]");
+                            }
                         }
-                        break;
-                    case 2:
-                        seller.editAccount(scan);
-                        break;
-                    case 3:
-                        List<Store> stores = seller.getStores();
-                        System.out.println("[1]Go Back");
-                        for (int i = 0; i < stores.size(); i++) {
-                            int index = i;
-                            System.out.println("[" + (index+2) +"]" + stores.get(i).getStoreName());
+                        else if (input == 2) { // Search My Stores
+                            if (seller.getStores().size() != 0) {
+                                System.out.println("My Stores:");
+                                for (Store store : seller.getStores()) {
+                                    System.out.println("-" + store.getStoreName());
+                                }
+                                System.out.println("Enter the name of the store you'd like to view\nOr enter \"return\" to " +
+                                        "go back");
+                                inputString = scan.nextLine();
+
+                                // Choose Store
+                                if (inputString.equalsIgnoreCase("return")) {
+                                    break;
+                                }
+                                Store currentStore = seller.switchCurrentStore(inputString);
+                                if (currentStore != null) {
+                                    while (true) {
+                                        System.out.println("What would you like to do?\n[1] Change Store Name\n[2] " +
+                                                "View Store Sales\n[3] Delete Store\n[4] Edit Store Products\n[5] Go Back");
+                                        inputString = scan.nextLine();
+                                        input = Integer.parseInt(inputString);
+
+                                        // Edit Store
+                                        if (input == 1) { // Change Store Name
+                                            System.out.println("Enter your new store name:\nOr enter \"return\" to " +
+                                                            "go back");
+                                            inputString = scan.nextLine();
+                                            if (inputString.equalsIgnoreCase("return")) {
+                                                System.out.println("Name Change Canceled");
+                                                break;
+                                            } else {
+                                                currentStore.setStoreName(inputString);
+                                                System.out.println("[Implement Name Change Here]");
+                                                System.out.println("[Ensure files are changed]");
+                                            }
+                                        } else if (input == 2) { // View Store Sales
+                                            System.out.println("[Print Store Dashboard Here]");
+                                        } else if (input == 3) { // Delete Store
+                                            System.out.println("Are you sure you want to delete this " +
+                                                    "product?\nEnter \"yes\" to confirm");
+                                            inputString = scan.nextLine();
+                                            if (inputString.equalsIgnoreCase("yes")) {
+                                                seller.removeStore(currentStore.getStoreName());
+                                                System.out.println("Product Deleted");
+                                                System.out.println("[Ensure files are changed]");
+                                            }
+                                            else System.out.println("Deletion aborted");
+                                        } else if (input == 4) { // Edit Store Products
+                                            System.out.println("\n");
+                                            if (currentStore.getProducts().size() > 0) {
+                                                for (Product product : currentStore.getProducts()) {
+                                                    if (currentStore.getProducts().size() != 0) {
+                                                        System.out.printf("Product: %s\nStore: %s\nDescription: %s\nPrice: " +
+                                                                        "%.2f\nQuantity: %d\n\n", product.getName(),
+                                                                product.getStoreSelling(), product.getDescription(),
+                                                                product.getPrice(), product.getQuantity());
+                                                    }
+                                                }
+                                            }
+                                            System.out.println("\n");
+                                            System.out.println("\nEnter the name of the product you'd like to " +
+                                                    "edit\n[1] Add Product\n[2] Go Back");
+                                            inputString = scan.nextLine();
+
+                                            // Add Product Or Choose Product
+                                            if (inputString.equalsIgnoreCase("1")) {
+                                                System.out.println("Enter the product's name:");
+                                                String productName = scan.nextLine();
+                                                System.out.println("Enter the product's description:");
+                                                String description = scan.nextLine();
+                                                System.out.println("Enter the product's price:");
+                                                double price = scan.nextInt();
+                                                System.out.println("How many of this product are " +
+                                                        "available:");
+                                                int quantity = scan.nextInt();
+                                                currentStore.addProduct(new Product(productName,
+                                                        seller.getEmail(),
+                                                        description, quantity, price));
+                                                System.out.println("Product added");
+                                                System.out.println("[Ensure files are changed]");;
+                                            }
+                                            else if (inputString.equalsIgnoreCase("2")) {
+                                                break;
+                                            } else {
+                                                for (int i = 0; i < currentStore.getProducts().size(); i++) {
+                                                    Product currentProduct = currentStore.getProducts().get(i);
+                                                    if (inputString.equals(currentProduct.getName())) {
+                                                        while (true) {
+                                                            System.out.println("What would you like to do?\n[1] " +
+                                                                    "Add Product\n[2] Change Product Name\n" +
+                                                                    "[3] Change Description\n[4] Change " +
+                                                                    "Price\n [5] Change Quantity\n[6] View Shopping Cart " +
+                                                                    "Stats\n[7] Delete Product\n[8] Go Back");
+                                                            // Edit Product
+                                                            inputString = scan.nextLine();
+                                                            input = Integer.parseInt(inputString);
+                                                            if (input == 1) { // Add Product
+                                                                System.out.println("Enter the product's name:");
+                                                                String productName = scan.nextLine();
+                                                                System.out.println("Enter the product's description:");
+                                                                String description = scan.nextLine();
+                                                                System.out.println("Enter the product's price:");
+                                                                double price = scan.nextInt();
+                                                                System.out.println("How many of this product are " +
+                                                                        "available:");
+                                                                int quantity = scan.nextInt();
+                                                                currentStore.addProduct(new Product(productName,
+                                                                        seller.getEmail(),
+                                                                        description, quantity, price));
+                                                                System.out.println("Product added");
+                                                                System.out.println("[Ensure files are changed]");
+                                                            } else if (input == 2) { // Change Product Name
+                                                                System.out.println("Enter the new product name:");
+                                                                inputString = scan.nextLine();
+                                                                currentProduct.setName(inputString);
+                                                                System.out.println("Name changed");
+                                                                System.out.println("[Ensure files are changed]");
+                                                            } else if (input == 3) { // Change Description
+                                                                System.out.println("Enter the new description:");
+                                                                inputString = scan.nextLine();
+                                                                currentProduct.setName(inputString);
+                                                                System.out.println("Description changed");
+                                                                System.out.println("[Ensure files are changed]");
+                                                            } else if (input == 4) { // Change Price
+                                                                System.out.println("Enter the new price:");
+                                                                inputString = scan.nextLine();
+                                                                currentProduct.setName(inputString);
+                                                                System.out.println("Price changed");
+                                                                System.out.println("[Ensure files are changed]");
+                                                            } else if (input == 5) { // Change Quantity
+                                                                System.out.println("Enter the new quantity:");
+                                                                inputString = scan.nextLine();
+                                                                currentProduct.setName(inputString);
+                                                                System.out.println("Quantity changed");
+                                                                System.out.println("[Ensure files are changed]");
+                                                            } else if (input == 6) { // View Shopping Cart Stats
+                                                                System.out.println("[Implement Shopping Cart Stats Here]");
+                                                            } else if (input == 7) { // Delete Product
+                                                                System.out.println("Are you sure you want to delete this " +
+                                                                        "product?\nEnter \"yes\" to confirm");
+                                                                inputString = scan.nextLine();
+                                                                if (inputString.equalsIgnoreCase("yes")) {
+                                                                    currentStore.removeProduct(currentProduct);
+                                                                    System.out.println("Product Deleted");
+                                                                    System.out.println("[Ensure files are changed]");
+                                                                }
+                                                                else System.out.println("Deletion aborted");
+                                                            } else if (input == 8) {
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else if (input == 5) {
+                                            break;
+                                        } else System.out.println("Invalid Input");
+                                    }
+                                }
+                            } else System.out.println("You currently have no stores.\nCreate one first.");
                         }
-                        try {
-                            int storeInput = Integer.parseInt(scan.nextLine());
-                            if (storeInput == 1) {
-                                break;
-                            } else if (storeInput <= stores.size() + 1) {
-                                System.out.println(stores.get(storeInput-2).getStoreName() + "\n[1]");
+                        else if (input == 3)
+                            break;
+                        else System.out.println("Invalid Input");
+                    }
+                }
+                // Edit Products
+                else if (input == 2) {
+                    boolean hasAnyProducts = false;
+                    for (Store store : seller.getStores()) {
+                        for (Product product : store.getProducts()) {
+                            if (store.getProducts().size() != 0) {
+                                System.out.printf("Product: %s\nStore: %s\nDescription: %s\nPrice: %.2f\nQuantity: " +
+                                                "%d\n", product.getName(), product.getStoreSelling(),
+                                        product.getDescription(), product.getPrice(), product.getQuantity());
+                                hasAnyProducts = true;
+                            }
+                        }
+                    }
+                    if (hasAnyProducts) {
+                        while (true) {
+                            System.out.println("Enter the name of the product you'd like to edit\nOr enter " +
+                                    "\"return\" to go back");
+                            inputString = scan.nextLine();
+
+                            // Choose Product
+                            if (inputString.equalsIgnoreCase("return")) {
                                 break;
                             } else {
-                                System.out.println("Invalid input!");
+                                for (int i = 0; i < seller.getStores().size(); i++) {
+                                    Store currentStore = seller.getStores().get(i);
+                                    for (int j = 0; j < currentStore.getProducts().size(); j++) {
+                                        Product currentProduct = currentStore.getProducts().get(j);
+                                        if (inputString.equals(currentProduct.getName())) {
+                                            while (true) {
+                                                System.out.println("What would you like to do?\n[1] " +
+                                                        "Add Product\n[2] Change Product Name\n" +
+                                                        "[3] Change Description\n[4] Change " +
+                                                        "Price\n [5] Change Quantity\n[6] View Shopping Cart " +
+                                                        "Stats\n[7] Delete Product\n[8] Go Back");
+                                                // Edit Product
+                                                inputString = scan.nextLine();
+                                                input = Integer.parseInt(inputString);
+                                                if (input == 1) { // Add Product
+                                                    currentStore.addProduct(currentProduct);
+                                                    System.out.println("[Ensure files are changed]");
+                                                } else if (input == 2) { // Change Product Name
+                                                    System.out.println("Enter the new product name");
+                                                    inputString = scan.nextLine();
+                                                    currentProduct.setName(inputString);
+                                                    System.out.println("Name changed");
+                                                    System.out.println("[Ensure files are changed]");
+                                                } else if (input == 3) { // Change Description
+                                                    System.out.println("Enter the new description");
+                                                    inputString = scan.nextLine();
+                                                    currentProduct.setName(inputString);
+                                                    System.out.println("Description changed");
+                                                    System.out.println("[Ensure files are changed]");
+                                                } else if (input == 4) { // Change Price
+                                                    System.out.println("Enter the new price");
+                                                    inputString = scan.nextLine();
+                                                    currentProduct.setName(inputString);
+                                                    System.out.println("Price changed");
+                                                    System.out.println("[Ensure files are changed]");
+                                                } else if (input == 5) { // Change Quantity
+                                                    System.out.println("Enter the new quantity");
+                                                    inputString = scan.nextLine();
+                                                    currentProduct.setName(inputString);
+                                                    System.out.println("Quantity changed");
+                                                    System.out.println("[Ensure files are changed]");
+                                                } else if (input == 6) { // View Shopping Cart Stats
+                                                    System.out.println("[Implement Shopping Cart Stats Here]");
+                                                } else if (input == 7) { // Delete Product
+                                                    System.out.println("Are you sure you want to delete this " +
+                                                            "product?\nEnter \"yes\" to confirm");
+                                                    inputString = scan.nextLine();
+                                                    if (inputString.equalsIgnoreCase("yes")) {
+                                                        currentStore.removeProduct(currentProduct);
+                                                        System.out.println("Product Deleted");
+                                                        System.out.println("[Ensure files are changed]");
+                                                    }
+                                                } else if (input == 8) {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        } catch (Exception e) {
-                            System.out.println("Invalid input!");
-                            e.printStackTrace();
                         }
-                        break;
-                    case 4:
-                        ;
-                    case 5:
-                        ;
-                    case 6:
-                        return;
-                    default:
-                        System.out.println("Invalid Input!");
+                    }
+                    else System.out.println("You currently have no products\nAdd one to a store first");
                 }
+                // Import Products
+                else if (input == 3) {
+                    System.out.println("Enter the filename of the file to import from:\nOr type \"return\" to go " +
+                            "back");
+                    inputString = scan.nextLine();
+                    if (inputString.equalsIgnoreCase("return")) {
+                        // Go Back
+                    } else {
+                        System.out.println("[Implement Import Here]");
+                    }
+                }
+                // Export Products
+                else if (input == 4) {
+                    System.out.println("Enter the filename of the file to export to:\nOr type \"return\" to go " +
+                            "back");
+                    inputString = scan.nextLine();
+                    if (inputString.equalsIgnoreCase("return")) {
+                        // Go Back
+                    } else {
+                        System.out.println("[Implement Export Here]");
+                    }
+                }
+                // Edit Account
+                else if (input == 5) {
+                    seller.editAccount(scan);
+                }
+                // Log Out
+                else if (input == 6) {
+                    break;
+                }
+                else
+                    System.out.println("Invalid Input!");
             } catch (Exception e) {
                 System.out.println("Invalid Input!");
+                // e.printStackTrace();
             }
-
         } while (true);
     }
+
 }

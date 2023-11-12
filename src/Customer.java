@@ -455,13 +455,13 @@ public class Customer extends Person {
         while (!exit) {
             String oldAccount = super.toString();
             String old = this.toString();
-            System.out.println("\nWhat would you like to edit?\n[1]Email\n[2]Password\n[3]Exit");
+            System.out.println("What would you like to edit?\n[1] Email\n[2] Password\n[3] Exit");
             if (scanner.hasNextInt()) {
                 int option = scanner.nextInt();
                 scanner.nextLine();
                 switch (option) {
                     case 1:
-                        System.out.println("\nEnter your new email:");
+                        System.out.println("Enter your new email:");
                         String newEmail = scanner.nextLine().toLowerCase();
                         String accountOnFile = Person.retrieveAccountInfo(newEmail);
                         if (Person.isValidFormat(newEmail) && (accountOnFile.isEmpty())) {
@@ -471,17 +471,17 @@ public class Customer extends Person {
                             Person.saveAccount(newPerson, "Accounts.txt");
                             Person.deleteAccount(old, "Customer.txt");
                             Person.saveAccount(this.toString(), "Customer.txt");
-                            System.out.println("\nYour email has been changed.");
+                            System.out.println("Your email has been changed.");
                         } else if (Person.isValidFormat(newEmail))
-                            System.out.println("\nThis email is already taken.");
+                            System.out.println("This email is already taken.");
                         else
-                            System.out.println("\nYour email isn't in the correct format." +
+                            System.out.println("Your email isn't in the correct format." +
                                     " No spaces and no semicolons.");
                         break;
                     case 2:
-                        System.out.println("\nEnter your current password:");
+                        System.out.println("Enter your current password:");
                         if (scanner.nextLine().equals(this.getPassword())) {
-                            System.out.println("\nEnter your new password:");
+                            System.out.println("Enter your new password:");
                             String newPassword = scanner.nextLine();
                             if (!(newPassword.contains(" ")) && !(newPassword.contains(";"))
                                     && !(newPassword.isEmpty())) {
