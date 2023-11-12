@@ -14,8 +14,6 @@ public class Marketplace {
     private static Seller activeSeller;
     private static Customer activeCustomer;
 
-
-
     public static void main(String[] args) throws IOException {
         Scanner scan = new Scanner(System.in);
 
@@ -133,8 +131,9 @@ public class Marketplace {
                 }
 
                 if (!Person.isValidFormat(email)) {
-                    System.out.println("\nYour email isn't in the correct format.\n" +
+                    System.out.println("Your email isn't in the correct format.\n" +
                             "No spaces and no semicolons, must contain '@' and '.'");
+                    return;
                 }
                 System.out.println("Password:");
                 pass = scan.nextLine();
@@ -152,22 +151,22 @@ public class Marketplace {
                 }
 
                 switch (input) {
-                    case 2:
-                        Seller currentSeller = new Seller(email, pass, "S");
-                        sellers.add(currentSeller);
-                        Seller update = sellerHome(scan, currentSeller);
-                        currentSeller.updateSeller(update);
-                        return;
                     case 1:
                         Customer currentCustomer = new Customer(email, pass, "C");
                         customers.add(currentCustomer);
-                        Customer update2  = customerHome(scan, currentCustomer);
-                        currentCustomer.updateCustomer(update2);
+                        Customer update = customerHome(scan, currentCustomer);
+                        currentCustomer.updateCustomer(update);
+                        return;
+                    case 2:
+                        Seller currentSeller = new Seller(email, pass, "S");
+                        sellers.add(currentSeller);
+                        Seller update2 = sellerHome(scan, currentSeller);
+                        currentSeller.updateSeller(update2);
                         return;
                     case 3:
                         return;
                     default:
-                        System.out.println("Invalid input!");
+                        System.out.println("Invalid Input!");
                         break;
                 }
 

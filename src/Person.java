@@ -28,9 +28,11 @@ public class Person {
         if (!(o instanceof Person person)) return false;
         return Objects.equals(getEmail(), person.getEmail());
     }
+
     public String getEmail() {
         return email;
     }
+
     public String getPassword() {
         return password;
     }
@@ -38,18 +40,22 @@ public class Person {
     public String getAccountType() {
         return accountType;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String toString() {
         return String.format("%s;%s;%s", this.email, this.password, this.accountType);
     }
+
     public static boolean isValidFormat(String email) {
 
-        // Checks if there are no semicolons (will break system if they do)
+        // Checks if there are no spaces or semicolons (will break system if they do)
         if (!(email.contains(" ")) && !(email.contains(";"))) {
 
             // Checks if there is exactly one "@"
