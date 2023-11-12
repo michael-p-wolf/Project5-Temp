@@ -59,15 +59,16 @@ public class Store {
     }
 
     // Method to add a product to the store
-    public void createProduct(String name, String description, double price, int quantity) {
+    public void createProduct(String name, String description, double price, int quantity) throws IOException {
         Product product = new Product(name, this.storeName, description, quantity, price);
         products.add(product);
     }
 
     // Method to edit a product's information
-    public void editProduct(String productName, String description, double price, int quantity) {
+    public void editProduct(String oldProductName, String newProductName, String description, double price, int quantity) {
         for (Product product : products) {
-            if (product.getName().equals(productName)) {
+            if (product.getName().equals(oldProductName)) {
+                product.setName(newProductName);
                 product.setDescription(description);
                 product.setPrice(price);
                 product.setQuantity(quantity);
