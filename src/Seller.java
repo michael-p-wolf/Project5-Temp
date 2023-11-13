@@ -84,23 +84,23 @@ public class Seller extends Person {
     }
 
     public void salesDashboard (Scanner scan, int input) {
-            for (int i = 0; i < sales.size(); i++) {
-                if (sales.get(i).getSellerEmail().equals(this.getEmail()) && sales.get(i).getStoreName().equals(stores.get(input).getStoreName())) {
-                    String storeName = sales.get(i).getStoreName();
-                    String customerEmail = sales.get(i).getCustomerEmail();
-                    String productName = sales.get(i).getProductName();
-                    double price = sales.get(i).getProductPrice();
-                    int quantity = sales.get(i).getQuantity();
-                    double revenue = price * quantity;
-                    int num = i;
+        for (int i = 0; i < sales.size(); i++) {
+            if (sales.get(i).getSellerEmail().equals(this.getEmail()) && sales.get(i).getStoreName().equals(stores.get(input).getStoreName())) {
+                String storeName = sales.get(i).getStoreName();
+                String customerEmail = sales.get(i).getCustomerEmail();
+                String productName = sales.get(i).getProductName();
+                double price = sales.get(i).getProductPrice();
+                int quantity = sales.get(i).getQuantity();
+                double revenue = price * quantity;
+                int num = i;
 
-                    System.out.printf("Sale #" + (num+2) + " for " + storeName +
-                            ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.",customerEmail, productName, price, quantity, revenue);
+                System.out.printf("Sale #" + (num+2) + " for " + storeName +
+                        ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.",customerEmail, productName, price, quantity, revenue);
 
-                }
             }
-            System.out.println("Press ENTER to go back");
-            scan.nextLine();
+        }
+        System.out.println("Press ENTER to go back");
+        scan.nextLine();
     }
 
     public void createProduct(Scanner scan, Store store) {
@@ -147,7 +147,7 @@ public class Seller extends Person {
         }
 
     }
-//Sellers can view a dashboard that lists statistics for each of their stores.
+    //Sellers can view a dashboard that lists statistics for each of their stores.
 //Data will include a list of customers with the number of items that they have purchased and a list of products with the number of sales.
 //Sellers can choose to sort the dashboard.
     public void dashboard(Scanner scan) {
@@ -167,7 +167,7 @@ public class Seller extends Person {
                                 ArrayList<Sales> salesList = new ArrayList<Sales>();
                                 ArrayList<String> customerEmails = new ArrayList<String>();
                                 for (int i = 0; i < sales.size(); i++) {
-                                    if (customerEmails.indexOf(sales.get(i).getCustomerEmail()) == -1) {
+                                    if (!customerEmails.contains(sales.get(i).getCustomerEmail())) {
                                         customerEmails.add(sales.get(i).getCustomerEmail());
                                     }
                                 }
@@ -211,23 +211,54 @@ public class Seller extends Person {
                     case 2:
                         again = true;
                         do {
-                            System.out.println("How would you like to sort products?\n[1]Ascending\n[2]Descending\n[3]Cancel");
+                            System.out.println("How would you like to sort product?\n[1]Ascending\n[2]Descending\n[3]Cancel");
                             try {
                                 int input2 = Integer.parseInt(scan.nextLine());
-                                ArrayList<Sales> salesList = new ArrayList<Sales>();
-                                ArrayList<String> productNames = new ArrayList<String>();
-                                for (int i = 0; i < sales.size(); i++) {
-                                    System.out.println("Product name: " + sales.get(i).getProductName());
+                                ArrayList<Sales> salesList = new ArrayList<>();
+                                ArrayList<String> productNames = new ArrayList<>();
 
-                                    if (productNames.indexOf(sales.get(i).getProductName()) == -1) {
+                                for (int i = 0; i < sales.size(); i++) {
+                                    if (!productNames.contains(sales.get(i).getProductName())) {
                                         productNames.add(sales.get(i).getProductName());
                                     }
                                 }
-                                // ... (rest of the code)
+
+                                for (int i = 0; i < productNames.size(); i++) {
+                                    int total = 0;
+                                    for (Sales sale : sales) {
+                                        if (sale.getProductName().equals(productNames.get(i))) {
+                                            total += sale.getQuantity();
+                                        }
+                                    }
+                                    Product dummyProduct = new Product(productNames.get(i), "", "", 0, 0);
+                                    salesList.add(new Sales(this.getEmail(),total, dummyProduct));
+                                }
+
+                                switch (input2) {
+                                    case 1:
+                                        Collections.sort(salesList);
+                                        break;
+                                    case 2:
+                                        Collections.sort(salesList, Collections.reverseOrder());
+                                        break;
+                                    case 3:
+                                        again = false;
+                                        break;
+                                    default:
+                                        System.out.println("Invalid Input!");
+                                }
+
+                                for (Sales sale : salesList) {
+                                    System.out.println(sale.getProduct().getName() + " - " + sale.getQuantity());
+                                }
+
+                                System.out.println("Press ENTER to go back.");
+                                scan.nextLine();
                             } catch (Exception e) {
                                 System.out.println("Invalid Input!");
                             }
                         } while (again);
+                        break;
                     case 3:
                         return;
                     default:
@@ -381,5 +412,3 @@ public class Seller extends Person {
 
     }
 }
-
-

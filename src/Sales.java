@@ -6,6 +6,8 @@ public class Sales implements Comparable<Sales> {
     private double productPrice;
     private int quantity;
 
+    private Product product;
+
     public Sales(String sellerEmail, String customerEmail, String storeName, String productName, double productPrice, int quantity) {
         this.sellerEmail = sellerEmail;
         this.customerEmail = customerEmail;
@@ -26,9 +28,19 @@ public class Sales implements Comparable<Sales> {
             return Double.compare(this.quantity, sales.quantity);
     }
 
+    public Sales(String customerEmail,int quantity, Product product) {
+        this.customerEmail = customerEmail;
+        this.quantity = quantity;
+        this.product = product;
+    }
+
     public Sales(String customerEmail,int quantity) {
         this.customerEmail = customerEmail;
         this.quantity = quantity;
+    }
+
+    public Product getProduct() {
+        return product;
     }
     public String getSellerEmail() {
         return sellerEmail;
