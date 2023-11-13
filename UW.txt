@@ -1,2 +1,2 @@
 Hoodie;UW;Hoodie Szn;10;50.00
-Water Bottle;UW;to drink water;1000;15.00
+Water Bottle;UW;to drink water;900;15.00

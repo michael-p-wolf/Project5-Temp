@@ -372,7 +372,7 @@ public class Customer extends Person {
                         System.out.println("Invalid input!");
                     }
                 } else if (input <= (totalInput - 2)) {
-                    this.cartProductPage(scan, this.cart.get(input),sellers);
+                    this.cartProductPage(scan, this.cart.get(input - 1),sellers);
                 } else {
                     System.out.println("Invalid Input!");
                 }
@@ -383,17 +383,6 @@ public class Customer extends Person {
     }
     public void removeFromCart(CartObject o, ArrayList<Seller> sellers) {
         this.cart.remove(o);
-        for (int i = 0; i < sellers.size(); i++) {
-            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                    String productName = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
-                    String storeSelling = sellers.get(i).getStores().get(j).getProducts().get(k).getStoreSelling();
-                    if (o.getName().equals(productName) && o.getStoreSelling().equals(storeSelling)) {
-                        sellers.get(i).getStores().get(j).getProducts().get(k).setQuantity(sellers.get(i).getStores().get(j).getProducts().get(k).getQuantity() + o.getCartQuantity());
-                    }
-                }
-            }
-        }
     }
     public void emptyCart(ArrayList<Seller> sellers) {
         for (int i = 0; i < this.cart.size(); i++) {
@@ -402,7 +391,7 @@ public class Customer extends Person {
     }
     public void purchaseCart(ArrayList<Seller> sellers) {
         for (CartObject p : cart) {
-            this.purchaseHistory.add(p);
+            //this.purchaseHistory.add(p);
             Product p2 = getProductInCart(p.getName(), sellers);
             if (p2.getQuantity() - p.getQuantity() < 0) {
                 System.out.println("Out of Stock!");
@@ -465,9 +454,20 @@ public class Customer extends Person {
         return null;
     }
 
-    public void purchaseFromCart(CartObject o) {
-        this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
+    public void purchaseFromCart(CartObject o, ArrayList<Seller> sellers) {
         this.cart.remove(o);
+        //this.purchaseHistory.add(p);
+        Product p2 = getProductInCart(o.getName(), sellers);
+        if (p2.getQuantity() - o.getQuantity() < 0) {
+            System.out.println("Out of Stock!");
+            return;
+        }
+        p2.setQuantity(p2.getQuantity()-o.getCartQuantity());
+        this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
+        Store store = getStoreFromName(o.getStoreSelling(), sellers);
+        store.getSoldProducts().add(o);
+        Seller seller = getSellerFromName(store.getStoreName(), sellers);
+        seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), o.getName(), o.getPrice(), o.getCartQuantity()));
     }
     public void cartProductPage (Scanner scan, CartObject o, ArrayList<Seller> sellers) {
         String name = o.getName();
@@ -487,7 +487,7 @@ public class Customer extends Person {
                             int input2 = Integer.parseInt(scan.nextLine());
                             switch (input2) {
                                 case 1:
-                                    purchaseFromCart(o);
+                                    purchaseFromCart(o, sellers);
                                     break;
                                 case 2:
                                     return;

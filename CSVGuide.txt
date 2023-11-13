@@ -1,0 +1,5 @@
+## Here is how you format a .csv file
+storeName,productName,quantity
+
+## Example
+Nike,Basketball Shoes,5
