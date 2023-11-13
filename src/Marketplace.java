@@ -40,7 +40,7 @@ public class Marketplace {
                     marketplace.writeFiles();
                     return;
                 default:
-                    System.out.println("Invalid input!");
+                    System.out.println("Invalid Input!");
             }
         } while (true);
     }
@@ -105,7 +105,7 @@ public class Marketplace {
                 } else if (input == 2) {
                     return;
                 } else {
-                    System.out.println("Invlaid input!");
+                    System.out.println("Invalid Input!");
                 }
 
             } catch (Exception e) {
@@ -214,7 +214,7 @@ public class Marketplace {
                     default: System.out.println("Invalid Input!");
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input!");
+                System.out.println("Invalid Input!");
             }
 
         } while (true);
@@ -252,7 +252,7 @@ public class Marketplace {
                         System.out.println("Invalid Input!");
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input!");
+                System.out.println("Invalid Input!");
             }
 
         } while (true);
