@@ -27,10 +27,11 @@ Made by L36 Group 2
 
 - **Seller** - The seller class is a subclass of a person which is a class that represents a seller in our marketplace. It stores a list of stores and sales to keep data of the seller stores and the sales they made. Also, it keeps track of the current store being used. The Seller can create, remove, or add a store to their list of stores. When creating a store we keep all store names unique. It can also create sales for its list of sales unique to that seller. Also, the seller's information can be changed. The seller can also delete their own account which will delete related products and stores. Also, each seller has their own dashboard where they can view statistics of their sales by store. **Testing** We needed to make sure that stores could be created, removed, or modified for the seller's request. We checked if the seller's information can be updated successfully and that the dashboard displays statistics accurately for the seller to view. **Relation with other classes** A seller is a subclass of the person class and the seller class manages stores with their own products. Its dashboard is accessible from the marketplace class and the seller has their list of sales from customers that have purchased the seller's products.  
 
-- Store -
+- **Store** - The store class is a crucial part of the program that manages and stores its list of products and allows customers to buy them. It has a list of products and sold products to help keep track of everything going on in the marketplace. It stores information like the seller's email, the store file, the store name, and the seller's name along with the lists of products. The store can also create, edit, and remove products as well as update its own information. The getter methods return everything in the constructor and make sure that access to its information is possible. Stores can also compare themselves to other stores by sales. **Testing** What needed to be tested was the creation, editing, and removal of products as well as the store information being updated properly. Also what is needed to be set is to see if the compare method can correctly compare stores based on sales. **Relation with other classes** The store class has an array of lists of products and sold products which allows it to modify the products within the store. Also, the store gets managed by the seller class because a store is always assigned a seller to work under. 
+  
+- Product -
 
   
-- Product - A detailed description of the class. This should include the functionality included in the class, the testing done to verify it works properly, and its relationship to other classes in the project.
 # Submissions:
 - Vocareum:
 - BrightSpace:
