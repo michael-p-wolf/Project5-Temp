@@ -2,7 +2,7 @@
 Made by L36 Group 2
   <br>
 <details>
-<summary>How to Run and Compile 🚀</summary>
+How to Run and Compile 🚀
   <br>
 <ol>
   <li>Compile all files in src</li>
