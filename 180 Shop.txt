@@ -1,0 +1,2 @@
+Arraylist;180 Shop;a dynamic data structure;5;50.00
+String;180 Shop;a collection of characters;5;20.00

@@ -1,2 +1,3 @@
 Brush;Arts and Crafts;Paint Brush;149;15.00
+Brush;Arts and Crafts;Paint Brush;19;15.00
 Canvas;Arts and Crafts;A Canvas To Draw On;4;50.00

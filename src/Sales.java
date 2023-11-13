@@ -1,3 +1,16 @@
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * The sales class is meant to store information and handle product 
+ * sales for the seller and the customer.
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 public class Sales implements Comparable<Sales> {
     private String sellerEmail;
     private String customerEmail;

@@ -3,7 +3,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
-
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * Holds the email, password, and account type information for all users 
+ * that have created an account. This info is stored in Accounts.txt and is 
+ * used to identify returning accounts and to create new accounts. 
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 public class Person {
     private String email;
     private String password;

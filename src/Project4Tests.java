@@ -8,13 +8,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * This a set of test cases to test invalid and valid
+ * inputs for customer and seller and their various methods
+ * and interactions with other classes
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 
 public class Project4Tests {
-    /**
-     * because our parameters are printed by the console I have to use
-     * outcontent to be able to capture what would have gotten printed!
-     */
+    // because our parameters are printed by the console I have to use
+    // outcontent to be able to capture what would have gotten printed
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private Store testStore;
@@ -68,7 +80,7 @@ public class Project4Tests {
     }
 
     @Test
-    public void testInvalidInputInCreateProduct() {
+    public void testInvalidInput() {
         String input = "Invalid\nInvalid Input\n2";  // Simulate invalid input
         // Redirect System.in to provide input
         System.setIn(new ByteArrayInputStream(input.getBytes()));
@@ -93,18 +105,11 @@ public class Project4Tests {
         String input = "NewStore\n1\n";
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
-
-        // Create a Seller instance
         Seller seller = new Seller("seller@example.com", "password", "S");
-
         // Create a list of Sellers for testing
         ArrayList<Seller> sellers = new ArrayList<>();
         sellers.add(seller);
-
-        // Call the method to be tested
         seller.createStore(new Scanner(System.in), sellers);
-
-        // Check if the store was created
         Assertions.assertEquals(1, seller.getStores().size());
         Assertions.assertEquals("NewStore", seller.getStores().get(0).getStoreName());
     }
@@ -162,5 +167,55 @@ public class Project4Tests {
             }
         }
         return 0;  // Product not found, handle accordingly
+        CartObject cartObject1 = new CartObject("Product1", "Store1", "Description1", 5.0, 3);
+        CartObject cartObject2 = new CartObject("Product2", "Store2", "Description2", 8.0, 2);
+        Seller seller1 = new Seller("seller1@example.com", "seller1Password", "S");
+        Seller seller2 = new Seller("seller2@example.com", "seller2Password", "S");
+        Store store1 = new Store("Store1");
+        store1.addProduct(product1);
+        seller1.addStore(store1);
+        Store store2 = new Store("Store2");
+        store2.addProduct(product2);
+        seller2.addStore(store2);
+        ArrayList<Seller> sellers = new ArrayList<>(Arrays.asList(seller1, seller2));
+        customer.addToCart(cartObject1);
+        customer.addToCart(cartObject2);
+        customer.purchaseCart(sellers);
+
+        assertEquals(2, customer.getPurchaseHistory().size());
+        assertEquals("Product1", customer.getPurchaseHistory().get(0).getName());
+        assertEquals("Product2", customer.getPurchaseHistory().get(1).getName());
+        assertEquals(0, customer.getCart().size());
+        assertEquals(7, getProductQuantity(store1, "Product1"));
+        assertEquals(6, getProductQuantity(store2, "Product2"));
+    }
+
+    // Helper method to get the quantity of a product in a store
+    private int getProductQuantity(Store store, String productName) {
+        for (Product product : store.getProducts()) {
+            if (product.getName().equals(productName)) {
+                return product.getQuantity();
+            }
+        }
+        return 0;
+    }
+
+    @Test
+    public void testInvalidInput2() {
+        String input = "Invalid\nInvalid Input\n2";  // Simulate invalid input
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        // Create a dummy Product, Seller, and Store
+        Seller testSeller = new Seller("test@example.com", "password", "seller");
+        Store testStore = new Store("TestStore");
+        testSeller.addStore(testStore);
+        Scanner scan = new Scanner(System.in);
+        testSeller.createProduct(scan, testStore);
+
+        String expectedOutput = "Enter Product Name:\n" +
+                "Enter Product Description:\n" +
+                "Enter Product Price:\n" +
+                "Enter Quantity Available:\n" +
+                "Invalid input!\n";
+        assertEquals(expectedOutput, outContent.toString());
     }
 }

@@ -1,7 +1,20 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
-
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * The seller class is a subclass of a person which is a class that represents a 
+ * seller in our marketplace. It stores a list of stores and sales to keep data 
+ * of the seller stores and the sales they made.
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 public class Seller extends Person {
     private ArrayList<Store> stores;
     private Store currentStore;
@@ -186,7 +199,7 @@ public class Seller extends Person {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " + salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -198,7 +211,7 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " +salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -232,25 +245,29 @@ public class Seller extends Person {
                                         productNames.add(sales.get(i).getProductName());
                                     }
                                 }
-
                                 for (int i = 0; i < productNames.size(); i++) {
-
                                     int total = 0;
+                                    String store = "";
+                                    double price = 0.0;
+                                    String customerEmail = "";
+                                    String productName = "";
                                     for (Sales sale : sales) {
                                         if (sale.getProductName().equals(productNames.get(i))) {
                                             total += sale.getQuantity();
+                                            store = sale.getStoreName();
+                                            price = sale.getProductPrice();
+                                            customerEmail = sale.getCustomerEmail();
+                                            productName = sale.getProductName();
                                         }
                                     }
-                                    Product dummyProduct = new Product(productNames.get(i), "", "", 0, 0);
-                                    salesList.add(new Sales(this.getEmail(),total, dummyProduct));
-
+                                    salesList.add(new Sales(this.getEmail(),customerEmail, store, productName, price, total));
                                 }
                                 boolean somethingToPrint = false;
                                 switch (input2) {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getProductName() + " - " + salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -262,7 +279,7 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getProductName() + " - " + salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -401,7 +418,6 @@ public class Seller extends Person {
     }
 
     //Allows the user to delete their account
-
     // Imports products from a file to the seller's stores
     // Must be in the format shown in CSVGuide.txt
     public void importProducts(Scanner scan) {
@@ -520,7 +536,6 @@ public class Seller extends Person {
                 for (int i = 0; i < chosenProducts.size(); i++) {
                     Product currentProduct = chosenProducts.get(i);
                     int productQuantity = currentProduct.getQuantity();
-                    System.out.println(productQuantity);
                     boolean gate = false;
                     for (int j = 0; j < chosenProducts.size(); j++) {
                         if (chosenProducts.get(i).equals(currentProduct)) {

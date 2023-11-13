@@ -1,3 +1,18 @@
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * CartObject is a small subclass of the product class that handles the shopping cart
+ * for customers. Its constructor has all the attributes of a product as well as
+ * how many are being added to the cart.
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
+
 public class CartObject extends Product {
     int cartQuantity;
 

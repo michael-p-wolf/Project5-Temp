@@ -1,0 +1,1 @@
+Arraylist;180 Shop;a dynamic data structure;5;50.00
