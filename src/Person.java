@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -28,9 +29,11 @@ public class Person {
         if (!(o instanceof Person person)) return false;
         return Objects.equals(getEmail(), person.getEmail());
     }
+
     public String getEmail() {
         return email;
     }
+
     public String getPassword() {
         return password;
     }
@@ -38,18 +41,22 @@ public class Person {
     public String getAccountType() {
         return accountType;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String toString() {
         return String.format("%s;%s;%s", this.email, this.password, this.accountType);
     }
+
     public static boolean isValidFormat(String email) {
 
-        // Checks if there are no semicolons (will break system if they do)
+        // Checks if there are no spaces or semicolons (will break system if they do)
         if (!(email.contains(" ")) && !(email.contains(";"))) {
 
             // Checks if there is exactly one "@"
@@ -97,6 +104,39 @@ public class Person {
                                     " No spaces and no semicolons.");
                             break;
                         } else {
+
+                            ArrayList<String> lines = new ArrayList<>();
+                            try (BufferedReader bfr = new BufferedReader(new FileReader("Sales.txt"))) {
+                                String line = bfr.readLine();
+                                while (line != null) {
+                                    lines.add(line);
+                                    line = bfr.readLine();
+                                }
+                            }
+                            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Sales.txt")))) {
+                                for (String line : lines) {
+                                    String[] data = line.split(";");
+                                    if (this instanceof Customer && data[1].equals(this.getEmail())) {
+                                        data[1] = email;
+                                        line = Arrays.toString(data);
+                                        line = line.substring(1, line.length() - 1);
+                                        line = line.replaceAll(", ", ";");
+                                    } else if (this instanceof Seller && data[1].equals(this.getEmail())) {
+                                        data[0] = email;
+                                        line = data.toString();
+                                        line = line.substring(1, line.length() - 1);
+                                        line = line.replaceAll(", ", ";");
+                                    }
+                                    pw.println(line);
+                                }
+                            }
+                            for (Seller seller : sellers) {
+                                for (Sales s : seller.getSales()) {
+                                    if (s.getCustomerEmail().equals(this.getEmail())) {
+                                        s.setCustomerEmail(email);
+                                    }
+                                }
+                            }
                             this.email = email;
                             return;
                         }

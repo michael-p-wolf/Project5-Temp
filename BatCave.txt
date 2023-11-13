@@ -1,1 +1,1 @@
-BatMobile;BatCave;Black Tesla;0;100000000.00
+BatMobile;BatCave;1000000;4;10000.00
