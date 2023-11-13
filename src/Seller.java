@@ -282,18 +282,18 @@ public class Seller extends Person {
         System.out.println("Number of products currently in shopping customers shopping carts");
         String output = "";
         int totalQuantity;
-        for (int i = 0; i < this.stores.size(); i++) {
-            for (int j = 0; j < this.stores.get(i).getProducts().size(); j++) {
+        for (Store store : stores) {
+            for (Product p : store.getProducts()) {
                 totalQuantity = 0;
-                for (int k = 0; k < customers.size(); k++) {
-                    for (int l = 0; l < customers.get(k).getCart().size(); l++) {
-                        if (this.stores.get(i).getProducts().get(j).equals(customers.get(k).getCart().get(l))) {
-                            totalQuantity += customers.get(k).getCart().get(l).getQuantity();
+                for (Customer customer : customers) {
+                    for (CartObject cart : customer.getCart()) {
+                        if (cart.getName().equals(p.getName())) {
+                            totalQuantity += cart.getCartQuantity();
                         }
                     }
 
                 }
-                output += "\n" + this.stores.get(i).getProducts().get(j).getName() + "\nTotal in cart: " + totalQuantity + "\n";
+                output += "\n" + p.getName() + "\nTotal in cart: " + totalQuantity + "\n";
             }
 
         }
