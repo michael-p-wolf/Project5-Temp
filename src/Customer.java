@@ -270,60 +270,55 @@ public class Customer extends Person {
         } while (true);
     }
     public void search(Scanner scan, ArrayList<Seller> sellers) {
-        int resultsCount = 0;
-        for (int i = 0; i < sellers.size(); i++) {
-            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                    System.out.println("[" + (resultsCount + 2) + "]" + sellers.get(i).getStores().get(j).getProducts().get(k).getName() + "\nStore:" + sellers.get(i).getStores().get(j).getStoreName() + "\nPrice: " + sellers.get(i).getStores().get(j).getProducts().get(k).getPrice());
-                    resultsCount++;
-                }
-            }
-        }
-        if (resultsCount != 0) {
+        while (true) {
+            // Collect search results
+            ArrayList<Product> searchResults = new ArrayList<>();
+            int resultCount = 1;
+
             System.out.println("What would you like to search for?");
             String search = scan.nextLine();
-            System.out.println("[1]Go Back");
-            for (int i = 0; i < sellers.size(); i++) {
-                for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                    for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                        String name = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
-                        String description = sellers.get(i).getStores().get(j).getProducts().get(k).getDescription();
-                        String storeName = sellers.get(i).getStores().get(j).getStoreName();
-                        if (name.contains(search) || description.contains(search) || storeName.contains(search)) {
-                            System.out.println("[" + (resultsCount + 2) + "]" + name);
-                            resultsCount++;
+
+            for (Seller seller : sellers) {
+                for (Store store : seller.getStores()) {
+                    for (Product product : store.getProducts()) {
+                        if (product.getName().contains(search) || product.getDescription().contains(search) || store.getStoreName().contains(search)) {
+                            System.out.println("[" + resultCount + "]" + product.getName() + "\nStore:" + store.getStoreName() + "\nPrice: " + product.getPrice());
+                            searchResults.add(product);
+                            resultCount++;
                         }
                     }
                 }
             }
+
+            if (searchResults.isEmpty()) {
+                System.out.println("No products matching the search criteria.");
+                return;
+            }
+
+            // Process user input
+            System.out.println("[0] Go Back");
+            System.out.println("Select a product:");
+
             try {
                 int input = Integer.parseInt(scan.nextLine());
-                if (input == 1) {
+                if (input == 0) {
                     return;
-                } else if (input <= resultsCount + 2) {
-                    resultsCount = 0;
-                    for (int i = 0; i < sellers.size(); i++) {
-                        for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                            for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                                if (resultsCount == input - 2) {
-                                    this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
-                                    break;
-                                }
-                                resultsCount++;
-                            }
-                        }
-                    }
+                } else if (input <= searchResults.size()) {
+                    Product selectedProduct = searchResults.get(input - 1);
+                    Store store = getStoreFromName(selectedProduct.getStoreSelling(), sellers);
+                    Seller s = getSellerFromName(store.getSeller(), sellers);
+                    this.productPage(scan, selectedProduct, s, store);
+                    return;
                 } else {
                     System.out.println("Invalid input!");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input!");
             }
-        } else {
-            System.out.println("No products are available currently");
-            return;
         }
     }
+
+
     //if a seller changes the price while the product is in the cart, the cart price will remain the same
     public void shoppingCart(Scanner scan, ArrayList<Seller> sellers) {
         do {
@@ -442,6 +437,8 @@ public class Customer extends Person {
         }
         return null;
     }
+
+
 
     private Seller getSellerFromName(String name, ArrayList<Seller> sellers) {
         for (Seller s : sellers) {
