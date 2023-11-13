@@ -3,6 +3,6 @@ arav@purdue.edu;nikhil@purdue.edu;CornFields;Corn Maze Tickets;25.000000;1
 arav@purdue.edu;nikhil@purdue.edu;CornFields;Corn Maze Tickets;25.000000;1
 arav@purdue.edu;pranay.nandkeolyar@gmail.com;CornFields;Corn Maze Tickets;25.000000;10
 vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;Arts and Crafts;Canvas;50.000000;1
-vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;UW;Water Bottle;15.000000;10
 vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;Arts and Crafts;Brush;15.000000;1
+vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;UW;Water Bottle;15.000000;10
 vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;UW;Water Bottle;15.000000;100
