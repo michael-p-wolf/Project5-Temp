@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 public class Customer extends Person {
     private ArrayList<CartObject> cart;
@@ -76,13 +77,13 @@ public class Customer extends Person {
                 int quantity = Integer.parseInt(scan.nextLine());
                 if (quantity <= p.getQuantity()) {
                     double totalCost = quantity * p.getPrice();
-                    System.out.printf("Add %d of %s for $%.2f to cart?\n[1]Confirm\n[2]Cancel",quantity, p.getName(), totalCost);
+                    System.out.printf("Add %d of %s for $%.2f to cart?\n[1]Confirm\n[2]Cancel\n",quantity, p.getName(), totalCost);
                     try {
                         int input = Integer.parseInt(scan.nextLine());
                         switch (input) {
                             case 1:
-                                p.setQuantity(p.getQuantity()-quantity);
                                 this.cart.add(new CartObject(p.getName(),p.getStoreSelling(),p.getDescription(),p.getPrice(),quantity));
+                                return;
                             case 2:
                                 return;
                             default:
@@ -274,7 +275,7 @@ public class Customer extends Person {
                 index = i;
                 double totalPrice = cart.get(i).getPrice() * cart.get(i).getCartQuantity();
                 grandTotal += totalPrice;
-                System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() + "\nTotal Cost: " + totalPrice);
+                System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() +  "\nTotal Price: " + totalPrice);
             }
             int totalInput = index+cart.size() + 2;
             System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput - 1) + "]Purchase Cart\n[" + (totalInput) + "]Empty Cart\n[" + (totalInput + 1) + "]Go Back");
@@ -303,7 +304,7 @@ public class Customer extends Person {
                         int input2 = Integer.parseInt(scan.nextLine());
                         switch (input2) {
                             case 1:
-                                this.purchaseCart();
+                                this.purchaseCart(sellers);
                                 break;
                             case 2:
                                 return;
@@ -342,12 +343,59 @@ public class Customer extends Person {
             this.removeFromCart(this.cart.get(i),sellers);
         }
     }
-    public void purchaseCart() {
-        for (int i = 0; i < this.cart.size(); i++) {
-            this.purchaseHistory.add(this.cart.get(i));
+    public void purchaseCart(ArrayList<Seller> sellers) {
+        for (CartObject p : cart) {
+            this.purchaseHistory.add(p);
+            Product p2 = getProductInCart(p.getName(), sellers);
+            if (p2.getQuantity() - p.getQuantity() < 0) {
+                System.out.println("Out of Stock!");
+                return;
+            }
+            p2.setQuantity(p2.getQuantity()-p.getCartQuantity());
+            this.purchaseHistory.add(p);
+            Store store = getStoreFromName(p.getStoreSelling(), sellers);
+            store.getSoldProducts().add(p);
+            Seller seller = getSellerFromName(store.getStoreName(), sellers);
+            seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), p.getName(), p.getPrice(), p.getCartQuantity()));
         }
         this.cart = new ArrayList<CartObject>();
     }
+
+    private Product getProductInCart(String name, ArrayList<Seller> sellers) {
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                for (Product p : store.getProducts()) {
+                    if (p.getName().equals(name)) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Store getStoreFromName(String name, ArrayList<Seller> sellers) {
+        for (Seller s : sellers) {
+            for (Store store : s.getStores()) {
+                if (store.getStoreName().equals(name)) {
+                    return store;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Seller getSellerFromName(String name, ArrayList<Seller> sellers) {
+        for (Seller s : sellers) {
+            for (Store store : s.getStores()) {
+                if (store.getStoreName().equals(name)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
     public void purchaseFromCart(CartObject o) {
         this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
         this.cart.remove(o);

@@ -1,0 +1,1 @@
+BatMobile;BatCave;Tesla;100000.00;1
