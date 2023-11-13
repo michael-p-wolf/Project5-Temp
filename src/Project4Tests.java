@@ -9,6 +9,21 @@ import java.util.Arrays;
 import java.util.Scanner;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * This a set of test cases to test invalid and valid
+ * inputs for customer and seller and their various methods
+ * and interactions with other classes
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
+
 public class Project4Tests {
     /**
      * because our parameters are printed by the console I have to use
