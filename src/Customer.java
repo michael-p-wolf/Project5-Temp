@@ -1,6 +1,22 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * A subclass of Person. Contains basic account information as well as basic customer information,
+ * such as their current shopping cart, a list of products they have purchased, and a list of stores
+ * they have bought from. This information is stored in Customers.txt so user data persists.
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
+
 public class Customer extends Person {
     private ArrayList<CartObject> cart;
     private ArrayList<Product> purchaseHistory;
