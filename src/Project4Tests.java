@@ -3,13 +3,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class Project4Tests {
     /**
@@ -70,25 +68,16 @@ public class Project4Tests {
 
     @Test
     public void testInvalidInputInCreateProduct() {
-        // Arrange
         String input = "Invalid\nInvalid Input\n2";  // Simulate invalid input
-
         // Redirect System.in to provide input
         System.setIn(new ByteArrayInputStream(input.getBytes()));
-
-        // Create a Seller instance (replace with your actual constructor if needed)
+        // Create a Seller instance
         Seller testSeller = new Seller("test@example.com", "password", "seller");
-
-        // Create a dummy Store
+        // Create a dummy Store and Scanner
         Store testStore = new Store("TestStore");
         testSeller.addStore(testStore);
-
-        // Create a dummy Scanner (replace with your actual method invocation if needed)
         Scanner scan = new Scanner(System.in);
-
-        // Act
         testSeller.createProduct(scan, testStore);
-
         // Assert
         String expectedOutput = "Enter Product Name:\n" +
                 "Enter Product Description:\n" +
@@ -117,5 +106,44 @@ public class Project4Tests {
         // Check if the store was created
         Assertions.assertEquals(1, seller.getStores().size());
         Assertions.assertEquals("NewStore", seller.getStores().get(0).getStoreName());
+    }
+
+    @Test
+    public static void testBuy() {
+        // Create a customer
+        Customer customer = new Customer("test@email.com", "password", "customer");
+
+        // Create a product
+        Product product = new Product("TestProduct", "TestStore", "Description", 10, 5.0);
+
+        // Create a CartObject
+        CartObject cartObject = new CartObject("TestProduct", "TestStore", "Description", 5.0, 3);
+
+        // Create a Seller
+        Seller seller = new Seller("seller@example.com", "sellerPassword", "S");
+
+        // Create a Store
+        Store store = new Store("TestStore");
+        store.addProduct(product); // Add the product to the store
+
+        // Add the store to the seller
+        seller.addStore(store);
+
+        // Simulate user adding the product to the cart
+        customer.addToCart(cartObject);
+
+        // Simulate user buying the product
+        customer.buy(cartObject, new Scanner(System.in), seller, store);
+
+        // Assert that the purchase history contains the bought product
+        assert customer.getPurchaseHistory().size() == 1 : "Purchase history size mismatch";
+        assert "TestProduct".equals(customer.getPurchaseHistory().get(0).getName()) : "Product name mismatch";
+
+        // Assert other properties if needed
+        assert "test@email.com".equals(customer.getEmail()) : "Email mismatch";
+        assert "password".equals(customer.getPassword()) : "Password mismatch";
+        assert "customer".equals(customer.getType()) : "Type mismatch";
+
+        // Additional assertions if needed
     }
 }
