@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import static org.junit.Assert.assertEquals;
 
-public class StoreTest {
+public class Project4Tests {
     /**
      * because our parameters are printed by the console I have to use
      * outcontent to be able to capture what would have gotten printed!
