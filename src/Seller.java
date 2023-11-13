@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Seller extends Person {
@@ -96,7 +97,7 @@ public class Seller extends Person {
                 double revenue = price * quantity;
                 int num = i;
 
-                System.out.printf("Sale #" + (num+2) + " for " + storeName +
+                System.out.printf("Sale #" + (num+1) + " for " + storeName +
                         ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.",customerEmail, productName, price, quantity, revenue);
 
             }
@@ -180,11 +181,16 @@ public class Seller extends Person {
                                     }
                                     salesList.add(new Sales(customerEmails.get(i), total));
                                 }
+                                boolean somethingToPrint = false;
                                 switch (input2) {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            somethingToPrint = true;
+                                        }
+                                        if (!somethingToPrint) {
+                                            System.out.println("No customers have purchased your items yet.");
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
@@ -192,7 +198,11 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            somethingToPrint = true;
+                                        }
+                                        if (!somethingToPrint) {
+                                            System.out.println("No customers have purchased your items yet.");
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
@@ -235,23 +245,29 @@ public class Seller extends Person {
                                     salesList.add(new Sales(this.getEmail(),total, dummyProduct));
 
                                 }
-
+                                boolean somethingToPrint = false;
                                 switch (input2) {
                                     case 1:
                                         Collections.sort(salesList);
-                                        for (Sales sale : salesList) {
-                                            System.out.println(sale.getProduct().getName() + " - " + sale.getQuantity());
+                                        for (int i = 0; i < salesList.size(); i++) {
+                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            somethingToPrint = true;
                                         }
-
+                                        if (!somethingToPrint) {
+                                            System.out.println("No customers have purchased your products yet.");
+                                        }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
                                         break;
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
-                                        for (Sales sale : salesList) {
-                                            System.out.println(sale.getProduct().getName() + " - " + sale.getQuantity());
+                                        for (int i = 0; i < salesList.size(); i++) {
+                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            somethingToPrint = true;
                                         }
-
+                                        if (!somethingToPrint) {
+                                            System.out.println("No customers have purchased your products yet.");
+                                        }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
                                         break;
@@ -279,7 +295,7 @@ public class Seller extends Person {
     }
     //Allows the user to view the number of items currently in customer shopping carts
     public void shoppingCart(Scanner scan, ArrayList<Customer> customers) {
-        System.out.println("Number of products currently in shopping customers shopping carts");
+        System.out.println("Number of products currently in customers shopping carts");
         String output = "";
         int totalQuantity;
         for (Store store : stores) {
@@ -299,6 +315,7 @@ public class Seller extends Person {
         }
         System.out.println(output + "Press ENTER to return");
         String input = scan.nextLine();
+
     }
     //Allows the user to view and interact with all of their stores
     public void storeInterface(Scanner scan) {
@@ -311,7 +328,7 @@ public class Seller extends Person {
                     System.out.println("[" + (num + 2) + "]" + stores.get(i).getStoreName());
                 }
             }
-            else System.out.println("No stores are available currently");
+            else System.out.println("You currently have no stores.\nCreate one first");
             try {
                 int input = Integer.parseInt(scan.nextLine());
                 if (!(input <= stores.size()+2)) {
@@ -382,14 +399,157 @@ public class Seller extends Person {
         } while (true);
 
     }
-    //Allows the user to delete their account
+
+    // Imports products from a file to the seller's stores
+    // Must be in the format shown in CSVGuide.txt
+    public void importProducts(Scanner scan) {
+        System.out.println("Enter the filename to import products from:");
+        String filename = scan.nextLine();
+        File file = new File(filename);
+        try {
+            if (file.exists()) {
+                FileReader fr = new FileReader(file);
+                BufferedReader bfr = new BufferedReader(fr);
+
+                ArrayList<String> fileContents = new ArrayList<>();
+                String line = bfr.readLine();
+
+                while (line != null) {
+                    if (line.split(",", -1).length != 3) {
+                        System.out.println("This file is not formatted correctly.");
+                        bfr.close();
+                        return;
+                    }
+                    fileContents.add(line);
+                    line = bfr.readLine();
+                }
+                for (int i = 0; i < this.getStores().size(); i++) {
+                    Store currentStore = this.getStores().get(i);
+                    for (int j = 0; j < fileContents.size(); j++) {
+                        String currentLine = fileContents.get(j);
+                        String fileStoreName = currentLine.split(",", -1)[0];
+                        String fileProductName = currentLine.split(",", -1)[1];
+                        int fileQuantity = Integer.parseInt(currentLine.split(",", -1)[2]);
+                        if (currentStore.getStoreName().equals(fileStoreName)) {
+                            for (int k = 0; k < currentStore.getProducts().size(); k++) {
+                                Product currentProduct = currentStore.getProducts().get(k);
+                                if (currentProduct.getName().equals(fileProductName)) {
+                                    currentProduct.setQuantity(currentProduct.getQuantity() + fileQuantity);
+                                }
+                            }
+                        }
+                    }
+                }
+                System.out.println("Products imported from " + filename);
+                bfr.close();
+            } else {
+                System.out.println("The file could not be located");
+                return;
+            }
+        } catch (IOException e) {
+            System.out.println("An error has occured.\nCheck your file formatting.");
+        }
+    }
+
+    // Exports products from the seller's stores to a file
+    public void exportProducts(Scanner scan) {
+        System.out.println("Enter the filename to export products to:");
+        String filename = scan.nextLine();
+        File file = new File(filename);
+        try {
+            if (!file.exists()) {
+                ArrayList<Product> sellersProducts = new ArrayList<>();
+                ArrayList<Product> chosenProducts = new ArrayList<>();
+                ArrayList<Integer> numToRemove = new ArrayList<>();
+                System.out.println("Your Products:");
+
+                // Add all of user's products to arraylist
+                for (int i = 0; i < this.getStores().size(); i++) {
+                    Store currentStore = this.getStores().get(i);
+                    for (int j = 0; j < currentStore.getProducts().size(); j++) {
+                        Product currentProduct = currentStore.getProducts().get(j);;
+                        sellersProducts.add(currentProduct);
+                    }
+                }
+                if (sellersProducts.size() > 0) {
+                    while (true) {
+                        String output = "";
+                        for (int i = 0; i < sellersProducts.size(); i++) {
+                            output += String.format("\n[%d]%s", i + 3, sellersProducts.get(i).getName());
+                        }
+                        System.out.println("Select the product you'd like to export:\n[1]Exit\n[2]Export" +
+                                " to File" + output);
+                        int input = Integer.parseInt(scan.nextLine());
+                        if (input == 1)
+                            return;
+                        else if (input == 2) {
+                            if (chosenProducts.isEmpty()) {
+                                System.out.println("Please select some products first.");
+                            } else {
+                                break;
+                            }
+                        } else {
+                            // Tracks product quantity without changing product quantity
+                            Product selectedProduct = sellersProducts.get(input - 3);
+                            int productQuantity = selectedProduct.getQuantity();
+                            for (int i = 0; i < chosenProducts.size(); i++) {
+                                if (chosenProducts.get(i).equals(selectedProduct)) {
+                                    productQuantity -= numToRemove.get(i);
+                                }
+                            }
+                            System.out.println("How many of this product do you want to export?\nCurrent " +
+                                    "Quantity: " + productQuantity);
+                            int toRemove = Integer.parseInt(scan.nextLine());
+                            if (productQuantity >= toRemove) {
+                                chosenProducts.add(selectedProduct);
+                                numToRemove.add(toRemove);
+                            } else {
+                                System.out.println("You cannot export more than your current stock");
+                            }
+                        }
+                    }
+                }
+                else {
+                    System.out.println("You currently have no products.");
+                    return;
+                }
+                FileOutputStream fos = new FileOutputStream(file);
+                PrintWriter pw = new PrintWriter(fos);
+                for (int i = 0; i < chosenProducts.size(); i++) {
+                    Product currentProduct = chosenProducts.get(i);
+                    int productQuantity = currentProduct.getQuantity();
+                    System.out.println(productQuantity);
+                    boolean gate = false;
+                    for (int j = 0; j < chosenProducts.size(); j++) {
+                        if (chosenProducts.get(i).equals(currentProduct)) {
+                            gate = true;
+                        }
+                    }
+                    if (gate) {
+                        productQuantity -= numToRemove.get(i);
+                    }
+                    currentProduct.setQuantity(productQuantity);
+                    pw.println(String.format("%s,%s,%d", currentProduct.getStoreSelling(), currentProduct.getName(),
+                            numToRemove.get(i)));
+                }
+                System.out.println("Products exported to " + filename);
+                pw.close();
+            } else {
+                System.out.println("This file already exists.");
+                return;
+            }
+        } catch (IOException e) {
+            System.out.println("An error has occurred.\nCheck your file formatting.");
+        }
+    }
+
     public void deleteAccount(Scanner scan, ArrayList<Seller> sellers) {
         do {
             System.out.println("Enter Password: ");
             String pass = scan.nextLine();
             if (!pass.equals(this.getPassword())) {
                 System.out.println("Incorrect password!");
-                return;
+                break;
             }
             System.out.println("Are you sure you want to delete your account? This action cannot be undone.\n[1]Confirm\n[2]Cancel");
             try {
@@ -408,7 +568,7 @@ public class Seller extends Person {
                         sellers.remove(this);
                         return;
                     case 2:
-                        return;
+                        break;
                     default:
                         System.out.println("Invalid input!");
                 }

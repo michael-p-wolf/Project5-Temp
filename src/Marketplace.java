@@ -1,15 +1,17 @@
-import javax.lang.model.type.ArrayType;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 public class Marketplace {
     private static ArrayList<Seller> sellers = new ArrayList<Seller>();
     private static ArrayList<Customer> customers = new ArrayList<Customer>();
-    public static final String WELCOME = "Home Screen\n[1] Sign In\n[2] Create Account\n[3] Exit";
-    public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1]Customer Account\n[2]Seller Account\n[3]Go Back";
-    public static final String CUSTOMER_HOME = "[1]Marketplace\n[2]Edit Account\n[3]Search For Product\n[4]Store Dashboard\n[5]Shopping Cart\n[6]Purchase History\n[7]Delete Account\n[8]Sign Out";
-    public static final String SELLER_HOME = "Seller Home Screen\n[1]Create Store\n[2]Edit Account\n[3]Access Store List\n[4]Dashboard\n[5]Shopping Cart\n[6]Delete Account\n[7]Sign Out";
+    public static final String WELCOME = "Home Screen\n[1]Sign In\n[2]Create Account\n[3]Exit Program";
+    public static final String CREATE_ACCOUNT_SCREEN = "Create Account:\n[1]Customer Account\n" +
+            "[2]Seller Account\n[3]Go Back";
+    public static final String CUSTOMER_HOME = "[1]Marketplace\n[2]Edit Account\n[3]Search For Product\n" +
+            "[4]Store Dashboard\n[5]Shopping Cart\n[6]Purchase History\n[7]Delete Account\n[8]Sign Out";
+    public static final String SELLER_HOME = "[1]Create Store\n[2]Edit Account\n[3]Access Store " +
+            "List\n[4]Dashboard\n[5]Shopping Cart\n[6]Import Products\n[7]Export Products\n[8]Delete Account\n[9]Sign" +
+            " Out";
 
     private static Seller activeSeller;
     private static Customer activeCustomer;
@@ -29,15 +31,16 @@ public class Marketplace {
             switch (firstScreen(scan)) {
                 case 1:
                     loginScreen(scan);
+                    marketplace.writeFiles();
                     break;
 
                 case 2:
                     createAccountScreen(scan);
+                    marketplace.writeFiles();
                     break;
 
                 case 3:
                     System.out.println("Goodbye!");
-                    marketplace.writeFiles();
                     return;
                 default:
                     System.out.println("Invalid Input!");
@@ -105,7 +108,7 @@ public class Marketplace {
                 } else if (input == 2) {
                     return;
                 } else {
-                    System.out.println("Invalid Input!");
+                    System.out.println("Invalid input!");
                 }
 
             } catch (Exception e) {
@@ -208,7 +211,7 @@ public class Marketplace {
                         break;
                     case 7:
                         customer.deleteAccount(scan, customers, sellers);
-                        return null;
+                        break;
                     case 8:
                         return customer;
                     default: System.out.println("Invalid Input!");
@@ -223,7 +226,7 @@ public class Marketplace {
     public static Seller sellerHome(Scanner scan, Seller seller) {
         int input = 0;
         do {
-            System.out.println(SELLER_HOME);
+            System.out.println(seller.getEmail() + " Seller Homepage\n" + SELLER_HOME);
             try {
                 String inputString = scan.nextLine();
                 input = Integer.parseInt(inputString);
@@ -244,9 +247,15 @@ public class Marketplace {
                         seller.shoppingCart(scan, customers);
                         break;
                     case 6:
-                        seller.deleteAccount(scan, sellers);
-                        return null;
+                        seller.importProducts(scan);
+                        break;
                     case 7:
+                        seller.exportProducts(scan);
+                        break;
+                    case 8:
+                        seller.deleteAccount(scan, sellers);
+                        break;
+                    case 9:
                         return seller;
                     default:
                         System.out.println("Invalid Input!");
