@@ -402,7 +402,7 @@ public class Customer extends Person {
     }
     public void purchaseCart(ArrayList<Seller> sellers) {
         for (CartObject p : cart) {
-            this.purchaseHistory.add(p);
+            //this.purchaseHistory.add(p);
             Product p2 = getProductInCart(p.getName(), sellers);
             if (p2.getQuantity() - p.getQuantity() < 0) {
                 System.out.println("Out of Stock!");

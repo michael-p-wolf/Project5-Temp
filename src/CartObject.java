@@ -1,4 +1,4 @@
-public class CartObject extends Product{
+public class CartObject extends Product {
     int cartQuantity;
 
     public CartObject(String name, String storeSelling, String description, double price, int cartQuantity) {
