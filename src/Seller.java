@@ -5,7 +5,7 @@ public class Seller extends Person {
     private ArrayList<Store> stores;
     private Store currentStore;
     private ArrayList<Sales> sales;
-
+    //Constructor for a seller object
     public Seller(String email, String password, String accountType) {
         super(email, password, accountType);
         this.stores = new ArrayList<Store>();
@@ -14,7 +14,7 @@ public class Seller extends Person {
     public ArrayList<Store> getStores() {
         return this.stores;
     }
-
+    //returns the string representation of a seller
     public String toString() {
         String toWrite = this.getEmail();
         for (int i = 0; i < this.stores.size(); i++) {
@@ -22,6 +22,7 @@ public class Seller extends Person {
         }
         return toWrite;
     }
+    //Allows the seller to create a new store
     public void createStore(Scanner scan, ArrayList<Seller> sellers) {
         boolean exists = false;
         do {
@@ -58,6 +59,7 @@ public class Seller extends Person {
 
         } while (true);
     }
+    //The next four methods allow the user to add and remove stores and sales
     public void removeStore(Store store) {
         this.stores.remove(store);
     }
@@ -73,7 +75,7 @@ public class Seller extends Person {
     public ArrayList<Sales> getSales() {
         return sales;
     }
-
+    //Updates the seller based on changes that were made
     public void updateSeller(Seller update) {
         this.setEmail(update.getEmail());
         this.setPassword(update.getPassword());
@@ -82,7 +84,7 @@ public class Seller extends Person {
         }
 
     }
-
+    //allows the seller to view a dashboard of sales
     public void salesDashboard (Scanner scan, int input) {
         for (int i = 0; i < sales.size(); i++) {
             if (sales.get(i).getSellerEmail().equals(this.getEmail()) && sales.get(i).getStoreName().equals(stores.get(input).getStoreName())) {
@@ -102,7 +104,7 @@ public class Seller extends Person {
         System.out.println("Press ENTER to go back");
         scan.nextLine();
     }
-
+    //Allows the seller to create a new product
     public void createProduct(Scanner scan, Store store) {
         System.out.println("Enter Product Name:");
         String name = scan.nextLine();
@@ -129,7 +131,7 @@ public class Seller extends Person {
             System.out.println("Invalid input!");
         }
     }
-
+    //Allows the seller to delete a store
     public void deleteStore (Scanner scan, Store store) {
         System.out.println("Are you sure you want to delete: " + store.getStoreName() + "?\n[1]Confirm\n[2]Cancel");
         try {
@@ -147,9 +149,7 @@ public class Seller extends Person {
         }
 
     }
-    //Sellers can view a dashboard that lists statistics for each of their stores.
-//Data will include a list of customers with the number of items that they have purchased and a list of products with the number of sales.
-//Sellers can choose to sort the dashboard.
+    //Allows the seller to view a dashboard of sales based on the number of sales per product or customer
     public void dashboard(Scanner scan) {
         ArrayList<Sales> sales = this.sales;
         do {
@@ -277,7 +277,7 @@ public class Seller extends Person {
         } while (true);
 
     }
-
+    //Allows the user to view the number of items currently in customer shopping carts
     public void shoppingCart(Scanner scan, ArrayList<Customer> customers) {
         System.out.println("Number of products currently in shopping customers shopping carts");
         String output = "";
@@ -300,6 +300,7 @@ public class Seller extends Person {
         System.out.println(output + "Press ENTER to return");
         String input = scan.nextLine();
     }
+    //Allows the user to view and interact with all of their stores
     public void storeInterface(Scanner scan) {
         do {
             System.out.println("[1]Go Back\n-Stores:");
@@ -381,7 +382,7 @@ public class Seller extends Person {
         } while (true);
 
     }
-
+    //Allows the user to delete their account
     public void deleteAccount(Scanner scan, ArrayList<Seller> sellers) {
         do {
             System.out.println("Enter Password: ");
@@ -415,7 +416,5 @@ public class Seller extends Person {
                 System.out.println("Invalid input!");
             }
         } while (true);
-
-
     }
 }
