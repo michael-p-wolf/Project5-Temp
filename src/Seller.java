@@ -1,7 +1,20 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
-
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * The seller class is a subclass of a person which is a class that represents a 
+ * seller in our marketplace. It stores a list of stores and sales to keep data 
+ * of the seller stores and the sales they made.
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 public class Seller extends Person {
     private ArrayList<Store> stores;
     private Store currentStore;
