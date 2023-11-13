@@ -94,7 +94,7 @@ public class Seller extends Person {
                 double revenue = price * quantity;
                 int num = i;
 
-                System.out.printf("Sale #" + (num+2) + " for " + storeName +
+                System.out.printf("Sale #" + (num+1) + " for " + storeName +
                         ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.",customerEmail, productName, price, quantity, revenue);
 
             }
