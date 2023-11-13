@@ -199,7 +199,7 @@ public class Seller extends Person {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " + salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -211,7 +211,7 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " +salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -245,25 +245,29 @@ public class Seller extends Person {
                                         productNames.add(sales.get(i).getProductName());
                                     }
                                 }
-
                                 for (int i = 0; i < productNames.size(); i++) {
-
                                     int total = 0;
+                                    String store = "";
+                                    double price = 0.0;
+                                    String customerEmail = "";
+                                    String productName = "";
                                     for (Sales sale : sales) {
                                         if (sale.getProductName().equals(productNames.get(i))) {
                                             total += sale.getQuantity();
+                                            store = sale.getStoreName();
+                                            price = sale.getProductPrice();
+                                            customerEmail = sale.getCustomerEmail();
+                                            productName = sale.getProductName();
                                         }
                                     }
-                                    Product dummyProduct = new Product(productNames.get(i), "", "", 0, 0);
-                                    salesList.add(new Sales(this.getEmail(),total, dummyProduct));
-
+                                    salesList.add(new Sales(this.getEmail(),customerEmail, store, productName, price, total));
                                 }
                                 boolean somethingToPrint = false;
                                 switch (input2) {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getProductName() + " - " + salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -275,7 +279,7 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getProductName() + " - " + salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
