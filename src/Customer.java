@@ -147,46 +147,104 @@ public class Customer extends Person {
     public void displayMarket(Scanner scan, ArrayList<Seller> sellers) {
         do {
             int productCount = 0;
+            ArrayList<Product> products = new ArrayList<>();
+
+            // Add all products to the 'products' list for sorting
             for (int i = 0; i < sellers.size(); i++) {
                 for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                    for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                        System.out.println("[" + (productCount + 2) + "]" + sellers.get(i).getStores().get(j).getProducts().get(k).getName() + "\nStore:" + sellers.get(i).getStores().get(j).getStoreName() + "\nPrice: " + sellers.get(i).getStores().get(j).getProducts().get(k).getPrice());
-                        productCount++;
-                    }
+                    products.addAll(sellers.get(i).getStores().get(j).getProducts());
                 }
-            }
-            if (productCount != 0) {
-                System.out.println("[1]Go Back");
-                try {
-                    int input = Integer.parseInt(scan.nextLine());
-                    if (input == 1) {
-                        return;
-                    } else if (input <= productCount + 2) {
-                        productCount = 0;
-                        for (int i = 0; i < sellers.size(); i++) {
-                            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                                    if (productCount == input - 2) {
-                                        this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
-                                        return;
-                                    }
-                                    productCount++;
-                                }
-                            }
-                        }
-                    } else {
-                        System.out.println("Invalid input!");
-                    }
-                } catch (Exception e) {
-                    System.out.println("Invalid input!");
-                }
-            }
-            else {
-                System.out.println("No items are available currently.");
-                return;
             }
 
+            // Sort products by quantity or price
+            System.out.println("[1]Sort by Quantity");
+            System.out.println("[2]Sort by Price");
+            System.out.println("[3]Go Back");
+
+            try {
+                int sortOption = Integer.parseInt(scan.nextLine());
+
+                switch (sortOption) {
+                    case 1:
+                        // Sort by quantity
+                        Collections.sort(products, Comparator.comparingInt(Product::getQuantity));
+                        break;
+                    case 2:
+                        // Sort by price
+                        Collections.sort(products, Comparator.comparingDouble(Product::getPrice));
+                        break;
+                    case 3:
+                        return; // Go back
+                    default:
+                        System.out.println("Invalid input!");
+                        continue;
+                }
+
+                // Display sorted products
+                for (Product product : products) {
+                    System.out.println("[" + (productCount + 2) + "]" + product.getName() +
+                            "\nStore:" + product.getStoreSelling() +
+                            "\nPrice: " + product.getPrice() +
+                            "\nQuantity " + product.getQuantity());
+
+                    productCount++;
+                }
+
+                if (productCount != 0) {
+                    System.out.println("[1]Go Back");
+                    try {
+                        int input = Integer.parseInt(scan.nextLine());
+                        if (input == 1) {
+                            return;
+                        } else if (input <= productCount + 2) {
+                            productCount = 0;
+                            // Find the selected product after sorting
+                            for (Product sortedProduct : products) {
+                                if (productCount == input - 2) {
+                                    // Assuming productPage method takes care of displaying details
+                                    this.productPage(scan, sortedProduct, getSellerForProduct(sortedProduct, sellers), getStoreForProduct(sortedProduct, sellers));
+                                    return;
+                                }
+                                productCount++;
+                            }
+                        } else {
+                            System.out.println("Invalid input!");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Invalid input!");
+                    }
+                } else {
+                    System.out.println("No items are available currently.");
+                    return;
+                }
+
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
         } while (true);
+    }
+
+    // Helper methods to get Seller and Store for a Product
+    private Seller getSellerForProduct(Product product, ArrayList<Seller> sellers) {
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                if (store.getProducts().contains(product)) {
+                    return seller;
+                }
+            }
+        }
+        return null; // Handle accordingly based on your requirements
+    }
+
+    private Store getStoreForProduct(Product product, ArrayList<Seller> sellers) {
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                if (store.getProducts().contains(product)) {
+                    return store;
+                }
+            }
+        }
+        return null; // Handle accordingly based on your requirements
     }
     public void productPage(Scanner scan, Product product, Seller seller, Store store) {
         do {
