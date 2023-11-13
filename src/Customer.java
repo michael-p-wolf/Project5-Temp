@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 public class Customer extends Person {
     private ArrayList<CartObject> cart;
@@ -76,13 +77,13 @@ public class Customer extends Person {
                 int quantity = Integer.parseInt(scan.nextLine());
                 if (quantity <= p.getQuantity()) {
                     double totalCost = quantity * p.getPrice();
-                    System.out.printf("Add %d of %s for $%.2f to cart?\n[1]Confirm\n[2]Cancel",quantity, p.getName(), totalCost);
+                    System.out.printf("Add %d of %s for $%.2f to cart?\n[1]Confirm\n[2]Cancel\n",quantity, p.getName(), totalCost);
                     try {
                         int input = Integer.parseInt(scan.nextLine());
                         switch (input) {
                             case 1:
-                                p.setQuantity(p.getQuantity()-quantity);
                                 this.cart.add(new CartObject(p.getName(),p.getStoreSelling(),p.getDescription(),p.getPrice(),quantity));
+                                return;
                             case 2:
                                 return;
                             default:
@@ -105,12 +106,28 @@ public class Customer extends Person {
     public void addToHistory(Product product) {
         this.purchaseHistory.add(product);
     }
-    public void createPurchaseHistory() {
-        String filename = super.getEmail() + "_purchase_history.txt";
+    public void createPurchaseHistory(ArrayList<Seller> sellers) {
+        String filename = super.getEmail() + "History.txt";
         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
-            for (Product p : purchaseHistory) {
-                pw.println("Purchased: Product: " + p.toString());
+            ArrayList<Sales> sales = new ArrayList<Sales>();
+            for (Seller s : sellers) {
+                sales.addAll(s.getSales());
             }
+            for (Sales s : sales) {
+                Product p = productInPurchaseHistory(s.getProductName());
+                if (s.getCustomerEmail().equals(this.getEmail()) && p != null) {
+                    String name = p.getName();
+                    String description = p.getDescription();
+                    String store = p.getStoreSelling();
+                    double price = p.getPrice();
+                    int quantity = s.getQuantity();
+                    if (!(name.isEmpty() || description.isEmpty() || store.isEmpty() || price == 0 || quantity == 0)) {
+                        String str = String.format("%s;%s;%s;%d;%f\n", name, store, description, quantity, price);
+                        pw.printf("%s;%s;%s;%d;%f\n", name, store, description, quantity, price);
+                    }
+                }
+            }
+            pw.flush();
         } catch (IOException e) {
             System.out.println("Write File Error");
             e.printStackTrace();
@@ -258,7 +275,7 @@ public class Customer extends Person {
                 index = i;
                 double totalPrice = cart.get(i).getPrice() * cart.get(i).getCartQuantity();
                 grandTotal += totalPrice;
-                System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() + "\nTotal Cost: " + totalPrice);
+                System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() +  "\nTotal Price: " + totalPrice);
             }
             int totalInput = index+cart.size() + 2;
             System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput - 1) + "]Purchase Cart\n[" + (totalInput) + "]Empty Cart\n[" + (totalInput + 1) + "]Go Back");
@@ -287,7 +304,7 @@ public class Customer extends Person {
                         int input2 = Integer.parseInt(scan.nextLine());
                         switch (input2) {
                             case 1:
-                                this.purchaseCart();
+                                this.purchaseCart(sellers);
                                 break;
                             case 2:
                                 return;
@@ -326,12 +343,59 @@ public class Customer extends Person {
             this.removeFromCart(this.cart.get(i),sellers);
         }
     }
-    public void purchaseCart() {
-        for (int i = 0; i < this.cart.size(); i++) {
-            this.purchaseHistory.add(this.cart.get(i));
+    public void purchaseCart(ArrayList<Seller> sellers) {
+        for (CartObject p : cart) {
+            this.purchaseHistory.add(p);
+            Product p2 = getProductInCart(p.getName(), sellers);
+            if (p2.getQuantity() - p.getQuantity() < 0) {
+                System.out.println("Out of Stock!");
+                return;
+            }
+            p2.setQuantity(p2.getQuantity()-p.getCartQuantity());
+            this.purchaseHistory.add(p);
+            Store store = getStoreFromName(p.getStoreSelling(), sellers);
+            store.getSoldProducts().add(p);
+            Seller seller = getSellerFromName(store.getStoreName(), sellers);
+            seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), p.getName(), p.getPrice(), p.getCartQuantity()));
         }
         this.cart = new ArrayList<CartObject>();
     }
+
+    private Product getProductInCart(String name, ArrayList<Seller> sellers) {
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                for (Product p : store.getProducts()) {
+                    if (p.getName().equals(name)) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Store getStoreFromName(String name, ArrayList<Seller> sellers) {
+        for (Seller s : sellers) {
+            for (Store store : s.getStores()) {
+                if (store.getStoreName().equals(name)) {
+                    return store;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Seller getSellerFromName(String name, ArrayList<Seller> sellers) {
+        for (Seller s : sellers) {
+            for (Store store : s.getStores()) {
+                if (store.getStoreName().equals(name)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
     public void purchaseFromCart(CartObject o) {
         this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
         this.cart.remove(o);
@@ -422,27 +486,43 @@ public class Customer extends Person {
         } while (true);
     }
 
-    public void printHistory (Scanner scan) {
-        if (!this.purchaseHistory.isEmpty()) {
-            for (int i = 0; i < this.purchaseHistory.size(); i++) {
-                String name = this.purchaseHistory.get(i).getName();
-                String description = this.purchaseHistory.get(i).getDescription();
-                String store = this.purchaseHistory.get(i).getStoreSelling();
-                double price = this.purchaseHistory.get(i).getPrice();
-                int quantity = this.purchaseHistory.get(i).getQuantity();
-                System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d", name, description, store, price, quantity);
-            }
-            System.out.println("[1]Export To File\n[2] Go Back");
-            int input2 = Integer.parseInt(scan.nextLine());
-            switch (input2) {
-                case 1:
-                    System.out.println("[Implement File Export Here]");
-                default:
-                    // Do Nothing
-            }
-        } else {
-            System.out.println("You haven't purchased anything yet.\nPurchase something first.");
+    public void printHistory (Scanner scan, ArrayList<Seller> sellers) {
+        ArrayList<Sales> sales = new ArrayList<Sales>();
+        for (Seller s : sellers) {
+            sales.addAll(s.getSales());
         }
+        for (Sales s : sales) {
+            Product p = productInPurchaseHistory(s.getProductName());
+            if (s.getCustomerEmail().equals(this.getEmail()) && p != null) {
+                String name = p.getName();
+                String description = p.getDescription();
+                String store = p.getStoreSelling();
+                double price = p.getPrice();
+                int quantity = s.getQuantity();
+                System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d\n", name, description, store, price, quantity);
+            }
+        }
+        System.out.println("[1] Go Back");
+        System.out.println("[2] Export to file");
+        String input = scan.nextLine();
+        switch(input) {
+            case "1":
+                return;
+            case "2":
+                createPurchaseHistory(sellers);
+            default:
+                System.out.println("Invalid Input!");
+                return;
+        }
+    }
+
+    private Product productInPurchaseHistory(String productName) {
+        for (Product p : purchaseHistory) {
+            if (p.getName().equals(productName)) {
+                return p;
+            }
+        }
+        return null;
     }
 
     public void storeDashboard(Scanner scan, ArrayList<Seller> sellers) {

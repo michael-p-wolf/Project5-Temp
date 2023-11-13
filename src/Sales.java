@@ -41,6 +41,7 @@ public class Sales implements Comparable<Sales> {
 
     public Product getProduct() {
         return product;
+
     }
     public String getSellerEmail() {
         return sellerEmail;

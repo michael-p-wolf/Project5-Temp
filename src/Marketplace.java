@@ -122,6 +122,9 @@ public class Marketplace {
             System.out.println(CREATE_ACCOUNT_SCREEN);
             try {
                 int input = Integer.parseInt(scan.nextLine());
+                if (input == 3) {
+                    return;
+                }
                 System.out.println("Email:");
                 email = scan.nextLine();
 
@@ -200,7 +203,8 @@ public class Marketplace {
                         customer.shoppingCart(scan, sellers);
                         break;
                     case 6:
-                        customer.printHistory(scan);
+                        System.out.println();
+                        customer.printHistory(scan, sellers);
                         break;
                     case 7:
                         customer.deleteAccount(scan, customers, sellers);
@@ -271,8 +275,8 @@ public class Marketplace {
 
                 while (cartLine != null) {
                     String[] cartSplit = cartLine.split(";");
-                    int quantity = Integer.parseInt(cartSplit[3]);
-                    double price = Double.parseDouble(cartSplit[4]);
+                    int quantity = Integer.parseInt(cartSplit[4]);
+                    double price = Double.parseDouble(cartSplit[3]);
                     CartObject currentCartObject = new CartObject(cartSplit[0], cartSplit[1], cartSplit[2], price, quantity);
                     currentCustomer.addToCart(currentCartObject);
                     cartLine = bfrcart.readLine();
@@ -381,6 +385,7 @@ public class Marketplace {
             File g = new File(customers.get(i).getEmail() + "History.txt");
             PrintWriter pwHistory = new PrintWriter(new BufferedWriter(new FileWriter(g)));
             for (int j = 0; j < customers.get(i).getPurchaseHistory().size(); j++) {
+                String s = customers.get(i).getPurchaseHistory().get(j).toString();
                 pwHistory.println(customers.get(i).getPurchaseHistory().get(j).toString());
             }
             pwHistory.flush();

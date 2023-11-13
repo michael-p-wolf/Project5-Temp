@@ -224,6 +224,7 @@ public class Seller extends Person {
                                 }
 
                                 for (int i = 0; i < productNames.size(); i++) {
+
                                     int total = 0;
                                     for (Sales sale : sales) {
                                         if (sale.getProductName().equals(productNames.get(i))) {
@@ -232,6 +233,7 @@ public class Seller extends Person {
                                     }
                                     Product dummyProduct = new Product(productNames.get(i), "", "", 0, 0);
                                     salesList.add(new Sales(this.getEmail(),total, dummyProduct));
+
                                 }
 
                                 switch (input2) {
