@@ -30,6 +30,11 @@ public class Sales implements Comparable<Sales> {
         this.customerEmail = customerEmail;
         this.quantity = quantity;
     }
+
+    public Sales(int quantity, String productName) {
+        this.productName = productName;
+        this.quantity = quantity;
+    }
     public String getSellerEmail() {
         return sellerEmail;
     }

@@ -122,6 +122,9 @@ public class Marketplace {
             System.out.println(CREATE_ACCOUNT_SCREEN);
             try {
                 int input = Integer.parseInt(scan.nextLine());
+                if (input == 3) {
+                    return;
+                }
                 System.out.println("Email:");
                 email = scan.nextLine();
 
@@ -200,7 +203,8 @@ public class Marketplace {
                         customer.shoppingCart(scan, sellers);
                         break;
                     case 6:
-                        customer.printHistory(scan);
+                        System.out.println();
+                        customer.printHistory(scan, sellers);
                         break;
                     case 7:
                         customer.deleteAccount(scan, customers, sellers);
@@ -381,6 +385,7 @@ public class Marketplace {
             File g = new File(customers.get(i).getEmail() + "History.txt");
             PrintWriter pwHistory = new PrintWriter(new BufferedWriter(new FileWriter(g)));
             for (int j = 0; j < customers.get(i).getPurchaseHistory().size(); j++) {
+                String s = customers.get(i).getPurchaseHistory().get(j).toString();
                 pwHistory.println(customers.get(i).getPurchaseHistory().get(j).toString());
             }
             pwHistory.flush();

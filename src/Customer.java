@@ -105,12 +105,28 @@ public class Customer extends Person {
     public void addToHistory(Product product) {
         this.purchaseHistory.add(product);
     }
-    public void createPurchaseHistory() {
-        String filename = super.getEmail() + "_purchase_history.txt";
+    public void createPurchaseHistory(ArrayList<Seller> sellers) {
+        String filename = super.getEmail() + "History.txt";
         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
-            for (Product p : purchaseHistory) {
-                pw.println("Purchased: Product: " + p.toString());
+            ArrayList<Sales> sales = new ArrayList<Sales>();
+            for (Seller s : sellers) {
+                sales.addAll(s.getSales());
             }
+            for (Sales s : sales) {
+                Product p = productInPurchaseHistory(s.getProductName());
+                if (s.getCustomerEmail().equals(this.getEmail()) && p != null) {
+                    String name = p.getName();
+                    String description = p.getDescription();
+                    String store = p.getStoreSelling();
+                    double price = p.getPrice();
+                    int quantity = s.getQuantity();
+                    if (!(name.isEmpty() || description.isEmpty() || store.isEmpty() || price == 0 || quantity == 0)) {
+                        String str = String.format("%s;%s;%s;%d;%f\n", name, store, description, quantity, price);
+                        pw.printf("%s;%s;%s;%d;%f\n", name, store, description, quantity, price);
+                    }
+                }
+            }
+            pw.flush();
         } catch (IOException e) {
             System.out.println("Write File Error");
             e.printStackTrace();
@@ -422,27 +438,43 @@ public class Customer extends Person {
         } while (true);
     }
 
-    public void printHistory (Scanner scan) {
-        if (!this.purchaseHistory.isEmpty()) {
-            for (int i = 0; i < this.purchaseHistory.size(); i++) {
-                String name = this.purchaseHistory.get(i).getName();
-                String description = this.purchaseHistory.get(i).getDescription();
-                String store = this.purchaseHistory.get(i).getStoreSelling();
-                double price = this.purchaseHistory.get(i).getPrice();
-                int quantity = this.purchaseHistory.get(i).getQuantity();
-                System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d", name, description, store, price, quantity);
-            }
-            System.out.println("[1]Export To File\n[2] Go Back");
-            int input2 = Integer.parseInt(scan.nextLine());
-            switch (input2) {
-                case 1:
-                    System.out.println("[Implement File Export Here]");
-                default:
-                    // Do Nothing
-            }
-        } else {
-            System.out.println("You haven't purchased anything yet.\nPurchase something first.");
+    public void printHistory (Scanner scan, ArrayList<Seller> sellers) {
+        ArrayList<Sales> sales = new ArrayList<Sales>();
+        for (Seller s : sellers) {
+            sales.addAll(s.getSales());
         }
+        for (Sales s : sales) {
+            Product p = productInPurchaseHistory(s.getProductName());
+            if (s.getCustomerEmail().equals(this.getEmail()) && p != null) {
+                String name = p.getName();
+                String description = p.getDescription();
+                String store = p.getStoreSelling();
+                double price = p.getPrice();
+                int quantity = s.getQuantity();
+                System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d\n", name, description, store, price, quantity);
+            }
+        }
+        System.out.println("[1] Go Back");
+        System.out.println("[2] Export to file");
+        String input = scan.nextLine();
+        switch(input) {
+            case "1":
+                return;
+            case "2":
+                createPurchaseHistory(sellers);
+            default:
+                System.out.println("Invalid Input!");
+                return;
+        }
+    }
+
+    private Product productInPurchaseHistory(String productName) {
+        for (Product p : purchaseHistory) {
+            if (p.getName().equals(productName)) {
+                return p;
+            }
+        }
+        return null;
     }
 
     public void storeDashboard(Scanner scan, ArrayList<Seller> sellers) {

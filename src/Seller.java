@@ -167,7 +167,7 @@ public class Seller extends Person {
                                 ArrayList<Sales> salesList = new ArrayList<Sales>();
                                 ArrayList<String> customerEmails = new ArrayList<String>();
                                 for (int i = 0; i < sales.size(); i++) {
-                                    if (customerEmails.indexOf(sales.get(i).getCustomerEmail()) == -1) {
+                                    if (!customerEmails.contains(sales.get(i).getCustomerEmail())) {
                                         customerEmails.add(sales.get(i).getCustomerEmail());
                                     }
                                 }
@@ -217,18 +217,18 @@ public class Seller extends Person {
                                 ArrayList<Sales> salesList = new ArrayList<Sales>();
                                 ArrayList<String> productNames = new ArrayList<String>();
                                 for (int i = 0; i < sales.size(); i++) {
-                                    if (productNames.indexOf(sales.get(i).getCustomerEmail()) == -1) {
+                                    if (!productNames.contains(sales.get(i).getProductName())) {
                                         productNames.add(sales.get(i).getProductName());
                                     }
                                 }
                                 int total = 0;
                                 for (int i = 0; i < productNames.size(); i++) {
                                     for (int j = 0; j < sales.size(); j++) {
-                                        if (sales.get(j).getCustomerEmail().equals(productNames.get(i))) {
+                                        if (sales.get(j).getProductName().equals(productNames.get(i))) {
                                             total += sales.get(j).getQuantity();
                                         }
                                     }
-                                    salesList.add(new Sales(productNames.get(i), total));
+                                    salesList.add(new Sales(total, productNames.get(i)));
                                 }
                                 switch (input2) {
                                     case 1:
