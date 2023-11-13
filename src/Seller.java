@@ -184,7 +184,7 @@ public class Seller extends Person {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " + salesList.get(i).getQuantity());
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
@@ -192,7 +192,7 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " + salesList.get(i).getQuantity());
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
@@ -239,9 +239,21 @@ public class Seller extends Person {
                                 switch (input2) {
                                     case 1:
                                         Collections.sort(salesList);
+                                        for (Sales sale : salesList) {
+                                            System.out.println(sale.getProduct().getName() + " - " + sale.getQuantity());
+                                        }
+
+                                        System.out.println("Press ENTER to go back.");
+                                        scan.nextLine();
                                         break;
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
+                                        for (Sales sale : salesList) {
+                                            System.out.println(sale.getProduct().getName() + " - " + sale.getQuantity());
+                                        }
+
+                                        System.out.println("Press ENTER to go back.");
+                                        scan.nextLine();
                                         break;
                                     case 3:
                                         again = false;
@@ -249,13 +261,6 @@ public class Seller extends Person {
                                     default:
                                         System.out.println("Invalid Input!");
                                 }
-
-                                for (Sales sale : salesList) {
-                                    System.out.println(sale.getProduct().getName() + " - " + sale.getQuantity());
-                                }
-
-                                System.out.println("Press ENTER to go back.");
-                                scan.nextLine();
                             } catch (Exception e) {
                                 System.out.println("Invalid Input!");
                             }

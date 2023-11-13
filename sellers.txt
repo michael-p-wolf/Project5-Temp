@@ -1,1 +1,2 @@
-arav@purdue.edu;BatCave;Corn
+arav@purdue.edu;BatCave;CornFields
+vrinda@purdue.edu;Arts and Crafts;UW

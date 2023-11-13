@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 BatMobile;BatCave;Tesla;0;100000.00
 BatMobile;BatCave;Tesla;4;100000.00
 BatMobile;BatCave;Tesla;0;100000.00
 BatMobile;BatCave;Tesla;0;100000.00
+=======
+BatMobile;BatCave;1000000;4;10000.00
+>>>>>>> c993149 (Fixed Everything Except Seller Cart)

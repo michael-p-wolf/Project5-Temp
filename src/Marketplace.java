@@ -352,7 +352,9 @@ public class Marketplace {
                                 String[] salesSplit = salesLine.split(";");
                                 double price = Double.parseDouble(salesSplit[4]);
                                 int quantity = Integer.parseInt(salesSplit[5]);
-                                currentSeller.addSales(new Sales(salesSplit[0],salesSplit[1],salesSplit[2],salesSplit[3],price,quantity));
+                                if (salesSplit[0].equals(currentSeller.getEmail()) && salesSplit[2].equals(currentStore.getStoreName())) {
+                                    currentSeller.addSales(new Sales(salesSplit[0], salesSplit[1], salesSplit[2], salesSplit[3], price, quantity));
+                                }
                                 salesLine = bfr5.readLine();
                             }
                         }

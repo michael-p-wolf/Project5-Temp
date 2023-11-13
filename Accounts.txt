@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 pnandkeo@purdue.edu;hello;C
 customer1@test.com;test;C
+=======
+pranay.nandkeolyar@gmail.com;hello;C
+nikhil@purdue.edu;hello;C
+>>>>>>> c993149 (Fixed Everything Except Seller Cart)
 arav@purdue.edu;batman;S
+vrinda@purdue.edu;hello;S

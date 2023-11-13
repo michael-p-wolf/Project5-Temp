@@ -46,6 +46,7 @@ public class Customer extends Person {
                                 p.setQuantity(p.getQuantity()-quantity);
                                 this.purchaseHistory.add(p);
                                 store.getSoldProducts().add(p);
+
                                 seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), p.getName(), p.getPrice(), quantity));
                                 System.out.println("Purchase Successful!");
                                 return;
