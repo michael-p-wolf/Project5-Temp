@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class Project4Tests {
     /**
@@ -68,7 +67,7 @@ public class Project4Tests {
     }
 
     @Test
-    public void testInvalidInputInCreateProduct() {
+    public void testInvalidInput() {
         String input = "Invalid\nInvalid Input\n2";  // Simulate invalid input
         // Redirect System.in to provide input
         System.setIn(new ByteArrayInputStream(input.getBytes()));
@@ -162,5 +161,31 @@ public class Project4Tests {
             }
         }
         return 0;  // Product not found, handle accordingly
+    }
+
+    @Test
+    public void testInvalidInput2() {
+        String input = "Invalid\nInvalid Input\n2";  // Simulate invalid input
+        // Redirect System.in to provide input
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+
+        // Create a dummy Product, Seller, and Store
+        Seller testSeller = new Seller("test@example.com", "password", "seller");
+        Store testStore = new Store("TestStore");
+        testSeller.addStore(testStore);
+
+        // Create a Scanner
+        Scanner scan = new Scanner(System.in);
+
+        // Create a dummy Product using Seller's createProduct method with invalid input
+        testSeller.createProduct(scan, testStore);
+
+        // Assert
+        String expectedOutput = "Enter Product Name:\n" +
+                "Enter Product Description:\n" +
+                "Enter Product Price:\n" +
+                "Enter Quantity Available:\n" +
+                "Invalid input!\n";
+        assertEquals(expectedOutput, outContent.toString());
     }
 }
