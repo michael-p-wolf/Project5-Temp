@@ -611,6 +611,7 @@ public class Customer extends Person {
                 return;
             case "2":
                 createPurchaseHistory(sellers);
+                return;
             default:
                 System.out.println("Invalid Input!");
                 return;
