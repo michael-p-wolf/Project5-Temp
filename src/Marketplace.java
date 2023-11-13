@@ -124,6 +124,9 @@ public class Marketplace {
             System.out.println(CREATE_ACCOUNT_SCREEN);
             try {
                 int input = Integer.parseInt(scan.nextLine());
+                if (input == 3) {
+                    return;
+                }
                 System.out.println("Email:");
                 email = scan.nextLine();
 
