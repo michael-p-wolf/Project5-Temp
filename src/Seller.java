@@ -517,7 +517,6 @@ public class Seller extends Person {
                 for (int i = 0; i < chosenProducts.size(); i++) {
                     Product currentProduct = chosenProducts.get(i);
                     int productQuantity = currentProduct.getQuantity();
-                    System.out.println(productQuantity);
                     boolean gate = false;
                     for (int j = 0; j < chosenProducts.size(); j++) {
                         if (chosenProducts.get(i).equals(currentProduct)) {
