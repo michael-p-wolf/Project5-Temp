@@ -417,6 +417,7 @@ public class Seller extends Person {
 
     }
 
+    //Allows the user to delete their account
     // Imports products from a file to the seller's stores
     // Must be in the format shown in CSVGuide.txt
     public void importProducts(Scanner scan) {
