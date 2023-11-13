@@ -1,6 +1,18 @@
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * The product class represents the products with a marketplace that are 
+ * bought by customers, managed by stores, and sold by sellers. 
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 public class Product {
     private String name;
     private String storeSelling;
