@@ -539,23 +539,23 @@ public class Customer extends Person {
                                 int input2 = Integer.parseInt(scan.nextLine());
                                 switch (input2) {
                                     case 1:
-                                        ArrayList<Sales> talliedSales = this.salesByStore(sellers);
+                                        ArrayList<Store> talliedSales = this.salesByStore(sellers);
                                         Collections.sort(talliedSales);
                                         for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
                                                     talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                                    talliedSales.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
                                         return;
                                     case 2:
-                                        talliedSales = this.salesByStore(sellers);
-                                        Collections.sort(talliedSales, Collections.reverseOrder());
-                                        for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
-                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        ArrayList<Store> talliedSales2 = this.salesByStore(sellers);
+                                        Collections.sort(talliedSales2, Collections.reverseOrder());
+                                        for (int i = 0; i < talliedSales2.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
+                                                    talliedSales2.get(i).getStoreName(), talliedSales2.get(i).getSellerEmail(),
+                                                    talliedSales2.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
@@ -567,7 +567,6 @@ public class Customer extends Person {
                                 }
                             } catch (Exception e) {
                                 System.out.println("Invalid input!");
-                                e.printStackTrace();
                             }
                         } while (true);
                     case 2:
@@ -577,23 +576,23 @@ public class Customer extends Person {
                                 int input2 = Integer.parseInt(scan.nextLine());
                                 switch (input2) {
                                     case 1:
-                                        ArrayList<Sales> talliedSales = this.personalSalesByStore();
+                                        ArrayList<Store> talliedSales = this.personalSalesByStore(sellers);
                                         Collections.sort(talliedSales);
                                         for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
                                                     talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                                    talliedSales.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
                                         return;
                                     case 2:
-                                        talliedSales = this.personalSalesByStore();
-                                        Collections.sort(talliedSales, Collections.reverseOrder());
-                                        for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
-                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        ArrayList<Store> talliedSales2 = this.personalSalesByStore(sellers);
+                                        Collections.sort(talliedSales2, Collections.reverseOrder());
+                                        for (int i = 0; i < talliedSales2.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
+                                                    talliedSales2.get(i).getStoreName(), talliedSales2.get(i).getSellerEmail(),
+                                                    talliedSales2.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
@@ -619,46 +618,29 @@ public class Customer extends Person {
         } while (true);
     }
 
-    public ArrayList<Sales> salesByStore (ArrayList<Seller> sellers) {
-        int totalSales = 0;
-        double totalRevenue = 0;
-        String currentSellerName = "";
-        String currentStoreName ="";
-        ArrayList<Sales> talliedSales = new ArrayList<Sales>();
-        for (int i = 0; i < sellers.size(); i++) {
-            currentSellerName = sellers.get(i).getEmail();
-            for (int j = 0; j < sellers.get(i).getSales().size(); j++) {
-                totalSales += sellers.get(i).getSales().get(j).getQuantity();
-                totalRevenue += (sellers.get(i).getSales().get(j).getQuantity() * sellers.get(i).getSales().get(j).getProductPrice());
-                currentStoreName = sellers.get(i).getStores().get(j).getStoreName();
+    public ArrayList<Store> salesByStore (ArrayList<Seller> sellers) {
+        ArrayList<Store> stores = new ArrayList<>();
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                store.setSeller(seller);
+                stores.add(store);
             }
-            talliedSales.add(new Sales(currentSellerName, currentStoreName, totalRevenue, totalSales));
         }
-        return talliedSales;
+        return stores;
     }
 
-    public ArrayList<Sales> personalSalesByStore () {
-        ArrayList<Sales> talliedSales = new ArrayList<Sales>();
-        ArrayList<String> storeName = new ArrayList<String>();
-        int totalQuantity = 0;
-        double totalRevenue = 0;
-        String currentSellerName = "";
-        String currentStoreName ="";
-        for (int i = 0; i < this.purchaseHistory.size(); i++) {
-            if (storeName.indexOf(this.purchaseHistory.get(i).getName()) == -1) {
-                storeName.add(this.purchaseHistory.get(i).getName());
-            }
-        }
-        for (int i = 0; i < storeName.size(); i++) {
-            currentStoreName = storeName.get(i);
-            for (int j = 0; j < this.purchaseHistory.size(); j++) {
-                if (storeName.get(i).equals(this.purchaseHistory.get(j).getStoreSelling())) {
-                    totalQuantity += this.purchaseHistory.get(j).getQuantity();
-                    totalRevenue += this.purchaseHistory.get(j).getPrice() * this.purchaseHistory.get(j).getQuantity();
+    public ArrayList<Store> personalSalesByStore (ArrayList<Seller> sellers) {
+        ArrayList<Store> stores = new ArrayList<>();
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                for (Product p : this.getPurchaseHistory()) {
+                    if (p.getStoreSelling().equals(store.getStoreName()) && !stores.contains(store)) {
+                        store.setSeller(seller);
+                        stores.add(store);
+                    }
                 }
-                talliedSales.add(new Sales("", currentStoreName,totalRevenue, totalQuantity));
             }
         }
-        return talliedSales;
+        return stores;
     }
 }

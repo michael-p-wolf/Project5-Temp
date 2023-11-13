@@ -1,15 +1,23 @@
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-public class Store {
+public class Store implements Comparable<Store> {
     private String storeName;
     private String seller;
     private String storeFile;
     private ArrayList<Product> products;
     private ArrayList<Product> soldProducts; //keeping track of sold products
+    private String sellerEmail;
+
+
+    public int compareTo(Store store) {
+        return Integer.compare(this.soldProducts.size(), store.getSoldProducts().size());
+    }
+
 
 
     public Store(String name) {
@@ -32,6 +40,11 @@ public class Store {
 
     public void setSeller(Seller seller) {
         this.seller = String.valueOf(seller);
+        this.sellerEmail = String.valueOf(seller).substring(0,  String.valueOf(seller).indexOf(";"));
+    }
+
+    public String getSellerEmail() {
+        return sellerEmail;
     }
 
     public String getFilename() {
