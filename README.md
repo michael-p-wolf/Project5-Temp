@@ -5,8 +5,8 @@ Made by L36 Group 2
 <summary>How to Run and Compile 🚀</summary>
   <br>
 <ol>
-  <li>Compile</li>
-  <li>Run</li>
+  <li>Compile all files in src</li>
+  <li>If you would like to login to an existing account, we have created a seller and customer account for you.  Customer: grader@cs180.com Pass: test  Seller: grader2@cs180.com Pass: test.  Please feel free to add new accounts as you wish!</li>
   <li>Great success</li>
 </ol>
 
