@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+
 /**
  * Boilermaker Bazaar Bonanza
  * <p>
- * The store class is a crucial part of the program that manages and stores 
- * its list of products and allows customers to buy them. It has a list of 
+ * The store class is a crucial part of the program that manages and stores
+ * its list of products and allows customers to buy them. It has a list of
  * products and sold products to help keep track of everything going on in the marketplace.
  *
  * @author Michael Wolf, Lab Sec 36
@@ -30,7 +31,6 @@ public class Store implements Comparable<Store> {
     public int compareTo(Store store) {
         return Integer.compare(this.soldProducts.size(), store.getSoldProducts().size());
     }
-
 
 
     public Store(String name) {
@@ -57,7 +57,7 @@ public class Store implements Comparable<Store> {
 
     public void setSeller(Seller seller) {
         this.seller = String.valueOf(seller);
-        this.sellerEmail = String.valueOf(seller).substring(0,  String.valueOf(seller).indexOf(";"));
+        this.sellerEmail = String.valueOf(seller).substring(0, String.valueOf(seller).indexOf(";"));
     }
 
     public String getSellerEmail() {

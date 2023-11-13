@@ -1,11 +1,12 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+
 /**
  * Boilermaker Bazaar Bonanza
  * <p>
- * The seller class is a subclass of a person which is a class that represents a 
- * seller in our marketplace. It stores a list of stores and sales to keep data 
+ * The seller class is a subclass of a person which is a class that represents a
+ * seller in our marketplace. It stores a list of stores and sales to keep data
  * of the seller stores and the sales they made.
  *
  * @author Michael Wolf, Lab Sec 36
@@ -19,15 +20,18 @@ public class Seller extends Person {
     private ArrayList<Store> stores;
     private Store currentStore;
     private ArrayList<Sales> sales;
+
     //Constructor for a seller object
     public Seller(String email, String password, String accountType) {
         super(email, password, accountType);
         this.stores = new ArrayList<Store>();
         this.sales = new ArrayList<Sales>();
     }
+
     public ArrayList<Store> getStores() {
         return this.stores;
     }
+
     //returns the string representation of a seller
     public String toString() {
         String toWrite = this.getEmail();
@@ -36,6 +40,7 @@ public class Seller extends Person {
         }
         return toWrite;
     }
+
     //Allows the seller to create a new store
     public void createStore(Scanner scan, ArrayList<Seller> sellers) {
         boolean exists = false;
@@ -53,7 +58,7 @@ public class Seller extends Person {
             if (!exists) {
                 do {
                     System.out.println("Create new store: " + storeName + "?\n[1]Confirm\n[2]Cancel");
-                    try{
+                    try {
                         int input = Integer.parseInt(scan.nextLine());
                         switch (input) {
                             case 1:
@@ -63,7 +68,7 @@ public class Seller extends Person {
                             default:
                                 System.out.println("Invalid input!");
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         System.out.println("Invalid input!");
                         return;
                     }
@@ -73,22 +78,24 @@ public class Seller extends Person {
 
         } while (true);
     }
+
     //The next four methods allow the user to add and remove stores and sales
     public void removeStore(Store store) {
         this.stores.remove(store);
     }
 
-    public void addStore (Store store) {
+    public void addStore(Store store) {
         this.stores.add(store);
     }
 
-    public void addSales (Sales sale) {
+    public void addSales(Sales sale) {
         this.sales.add(sale);
     }
 
     public ArrayList<Sales> getSales() {
         return sales;
     }
+
     //Updates the seller based on changes that were made
     public void updateSeller(Seller update) {
         this.setEmail(update.getEmail());
@@ -98,8 +105,9 @@ public class Seller extends Person {
         }
 
     }
+
     //allows the seller to view a dashboard of sales
-    public void salesDashboard (Scanner scan, int input) {
+    public void salesDashboard(Scanner scan, int input) {
         for (int i = 0; i < sales.size(); i++) {
             if (sales.get(i).getSellerEmail().equals(this.getEmail()) && sales.get(i).getStoreName().equals(stores.get(input).getStoreName())) {
                 String storeName = sales.get(i).getStoreName();
@@ -110,14 +118,15 @@ public class Seller extends Person {
                 double revenue = price * quantity;
                 int num = i;
 
-                System.out.printf("Sale #" + (num+1) + " for " + storeName +
-                        ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.",customerEmail, productName, price, quantity, revenue);
+                System.out.printf("Sale #" + (num + 1) + " for " + storeName +
+                        ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.", customerEmail, productName, price, quantity, revenue);
 
             }
         }
         System.out.println("Press ENTER to go back");
         scan.nextLine();
     }
+
     //Allows the seller to create a new product
     public void createProduct(Scanner scan, Store store) {
         System.out.println("Enter Product Name:");
@@ -145,8 +154,9 @@ public class Seller extends Person {
             System.out.println("Invalid input!");
         }
     }
+
     //Allows the seller to delete a store
-    public void deleteStore (Scanner scan, Store store) {
+    public void deleteStore(Scanner scan, Store store) {
         System.out.println("Are you sure you want to delete: " + store.getStoreName() + "?\n[1]Confirm\n[2]Cancel");
         try {
             int input = Integer.parseInt(scan.nextLine());
@@ -163,6 +173,7 @@ public class Seller extends Person {
         }
 
     }
+
     //Allows the seller to view a dashboard of sales based on the number of sales per product or customer
     public void dashboard(Scanner scan) {
         ArrayList<Sales> sales = this.sales;
@@ -211,7 +222,7 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " +salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + " - " + salesList.get(i).getQuantity());
                                             somethingToPrint = true;
                                         }
                                         if (!somethingToPrint) {
@@ -260,7 +271,7 @@ public class Seller extends Person {
                                             productName = sale.getProductName();
                                         }
                                     }
-                                    salesList.add(new Sales(this.getEmail(),customerEmail, store, productName, price, total));
+                                    salesList.add(new Sales(this.getEmail(), customerEmail, store, productName, price, total));
                                 }
                                 boolean somethingToPrint = false;
                                 switch (input2) {
@@ -310,6 +321,7 @@ public class Seller extends Person {
         } while (true);
 
     }
+
     //Allows the user to view the number of items currently in customer shopping carts
     public void shoppingCart(Scanner scan, ArrayList<Customer> customers) {
         System.out.println("Number of products currently in customers shopping carts");
@@ -334,6 +346,7 @@ public class Seller extends Person {
         String input = scan.nextLine();
 
     }
+
     //Allows the user to view and interact with all of their stores
     public void storeInterface(Scanner scan) {
         do {
@@ -344,49 +357,48 @@ public class Seller extends Person {
                     int num = i;
                     System.out.println("[" + (num + 2) + "]" + stores.get(i).getStoreName());
                 }
-            }
-            else System.out.println("You currently have no stores.\nCreate one first");
+            } else System.out.println("You currently have no stores.\nCreate one first");
             try {
                 int input = Integer.parseInt(scan.nextLine());
-                if (!(input <= stores.size()+2)) {
+                if (!(input <= stores.size() + 2)) {
                     System.out.println("Invalid input!");
-                } else if (input == 1){
+                } else if (input == 1) {
                     return;
                 } else {
                     do {
                         String productNames = "";
-                        for (int i = 0; i < stores.get(input-2).getProducts().size(); i++) {
+                        for (int i = 0; i < stores.get(input - 2).getProducts().size(); i++) {
                             int num2 = i;
-                            productNames += "[" + (num2+5) + "]" + stores.get(input-2).getProducts().get(i).getName() + "\n";
+                            productNames += "[" + (num2 + 5) + "]" + stores.get(input - 2).getProducts().get(i).getName() + "\n";
                         }
-                        System.out.println(stores.get(input-2).getStoreName() + "\n[1]Go Back\n[2]Sales\n[3]Create Product\n" +
+                        System.out.println(stores.get(input - 2).getStoreName() + "\n[1]Go Back\n[2]Sales\n[3]Create Product\n" +
                                 "[4]Delete Store\n" + productNames);
                         try {
                             int input2 = Integer.parseInt(scan.nextLine());
                             if (input2 == 1) {
                                 break;
                             } else if (input2 == 2) {
-                                salesDashboard(scan, input-2);
-                            } else if(input2 == 3) {
-                                createProduct(scan, stores.get(input-2));
+                                salesDashboard(scan, input - 2);
+                            } else if (input2 == 3) {
+                                createProduct(scan, stores.get(input - 2));
                                 break;
                             } else if (input2 == 4) {
-                                deleteStore(scan, stores.get(input-2));
-                            } else if (input2 <= (stores.get(input-2).getProducts().size() + 5)) {
+                                deleteStore(scan, stores.get(input - 2));
+                            } else if (input2 <= (stores.get(input - 2).getProducts().size() + 5)) {
                                 do {
-                                    System.out.println("Store: " + stores.get(input-2).getStoreName() + "\nProduct: " + stores.get(input-2).getProducts().get(input2 - 5).getName()
-                                            + "\nDescription: " + stores.get(input-2).getProducts().get(input2 - 5).getDescription()
-                                            + "\nQuantity: " + stores.get(input-2).getProducts().get(input2 - 5).getQuantity()
-                                            + "\nPrice: " + stores.get(input-2).getProducts().get(input2 - 5).getPrice()
-                                            +"\n[1]Edit Product\n[2]Delete Product\n[3]Go Back");
+                                    System.out.println("Store: " + stores.get(input - 2).getStoreName() + "\nProduct: " + stores.get(input - 2).getProducts().get(input2 - 5).getName()
+                                            + "\nDescription: " + stores.get(input - 2).getProducts().get(input2 - 5).getDescription()
+                                            + "\nQuantity: " + stores.get(input - 2).getProducts().get(input2 - 5).getQuantity()
+                                            + "\nPrice: " + stores.get(input - 2).getProducts().get(input2 - 5).getPrice()
+                                            + "\n[1]Edit Product\n[2]Delete Product\n[3]Go Back");
                                     try {
                                         int input3 = Integer.parseInt(scan.nextLine());
                                         switch (input3) {
                                             case 1:
-                                                stores.get(input-2).getProducts().get(input2 - 5).editProduct(scan);
+                                                stores.get(input - 2).getProducts().get(input2 - 5).editProduct(scan);
                                                 break;
                                             case 2:
-                                                stores.get(input-2).removeProduct(scan, stores.get(input-2).getProducts().get(input2 - 5));
+                                                stores.get(input - 2).removeProduct(scan, stores.get(input - 2).getProducts().get(input2 - 5));
                                                 break;
                                             case 3:
                                                 break;
@@ -485,7 +497,8 @@ public class Seller extends Person {
                 for (int i = 0; i < this.getStores().size(); i++) {
                     Store currentStore = this.getStores().get(i);
                     for (int j = 0; j < currentStore.getProducts().size(); j++) {
-                        Product currentProduct = currentStore.getProducts().get(j);;
+                        Product currentProduct = currentStore.getProducts().get(j);
+                        ;
                         sellersProducts.add(currentProduct);
                     }
                 }
@@ -526,8 +539,7 @@ public class Seller extends Person {
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     System.out.println("You currently have no products.");
                     return;
                 }

@@ -1,6 +1,7 @@
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.util.ArrayList;
+
 /**
  * Boilermaker Bazaar Bonanza
  * <p>
@@ -23,7 +24,7 @@ public class Database {
     public Database() {
     }
 
-    public void readFiles () throws IOException {
+    public void readFiles() throws IOException {
         BufferedReader bfr = new BufferedReader(new FileReader(new File("Accounts.txt")));
         String line = bfr.readLine();
         while (line != null) {
@@ -134,7 +135,6 @@ public class Database {
                 sellerOutput += ";" + sellers.get(i).getStores().get(j).getStoreName();
             }
             pws.println(sellerOutput);
-
 
 
             for (int j = 0; j < sellers.get(i).getStores().size(); j++) {

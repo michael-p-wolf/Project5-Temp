@@ -3,12 +3,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
+
 /**
  * Boilermaker Bazaar Bonanza
  * <p>
- * Holds the email, password, and account type information for all users 
- * that have created an account. This info is stored in Accounts.txt and is 
- * used to identify returning accounts and to create new accounts. 
+ * Holds the email, password, and account type information for all users
+ * that have created an account. This info is stored in Accounts.txt and is
+ * used to identify returning accounts and to create new accounts.
  *
  * @author Michael Wolf, Lab Sec 36
  * @author Pranay Nandkeolyar, Lab Sec 36
@@ -94,12 +95,14 @@ public class Person {
         }
         return false;
     }
-    public static boolean invalidPassword (String pass) {
+
+    public static boolean invalidPassword(String pass) {
         if ((pass.contains(" ")) || (pass.contains(";")) || (pass.isEmpty())) {
             return true;
         }
         return false;
     }
+
     public void editAccount(Scanner scan, ArrayList<Seller> sellers, ArrayList<Customer> customers) {
         do {
             System.out.println("What would you like to edit?\n[1]Email\n[2]Password\n[3]Exit");
@@ -177,7 +180,8 @@ public class Person {
             }
         } while (true);
     }
-    public static boolean accountOnFile (String email, ArrayList<Seller> sellers, ArrayList<Customer> customers) {
+
+    public static boolean accountOnFile(String email, ArrayList<Seller> sellers, ArrayList<Customer> customers) {
         for (int i = 0; i < sellers.size(); i++) {
             if (email.equals(sellers.get(i).getEmail())) {
                 return true;

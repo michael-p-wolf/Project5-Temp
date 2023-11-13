@@ -26,6 +26,6 @@ public class CartObject extends Product {
     }
 
     public String toCartString() {
-            return String.format("%s;%s;%s;%.2f;%d", super.getName(), super.getStoreSelling(), super.getDescription(), super.getPrice(),this.cartQuantity);
+        return String.format("%s;%s;%s;%.2f;%d", super.getName(), super.getStoreSelling(), super.getDescription(), super.getPrice(), this.cartQuantity);
     }
 }
