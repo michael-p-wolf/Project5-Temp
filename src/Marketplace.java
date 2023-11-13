@@ -1,6 +1,20 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * This is the main class where all of the different classes come together. 
+ * It stores objects of Sellers and Customers and keeps track of who is the active 
+ * seller and customer through the variables activeCustomer and activeSeller. 
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 public class Marketplace {
     private static ArrayList<Seller> sellers = new ArrayList<Seller>();
     private static ArrayList<Customer> customers = new ArrayList<Customer>();
