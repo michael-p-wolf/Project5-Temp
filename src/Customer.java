@@ -5,13 +5,13 @@ public class Customer extends Person {
     private ArrayList<CartObject> cart;
     private ArrayList<Product> purchaseHistory;
     private ArrayList<String> stores;
-
+    //Customer constructor which creates empty cart and purchase history objects
     public Customer(String email, String password, String accountType) {
         super(email, password, accountType);
         this.cart = new ArrayList<CartObject>();
         this.purchaseHistory = new ArrayList<Product>();
     }
-
+    //setters and getters for customer fields
     public ArrayList<CartObject> getCart() {
         return cart;
     }
@@ -27,6 +27,7 @@ public class Customer extends Person {
     public void addToCart(CartObject c) {
         this.cart.add(c);
     }
+    //When on a product screen, allows the customer to purchase a product.
     public void buy(Product p, Scanner scan, Seller seller, Store store) {
         do {
             if (p.getQuantity() < 1) {
@@ -65,7 +66,7 @@ public class Customer extends Person {
             }
         } while (true);
     }
-
+    //when on the product screen, allows the customer to add the product to cart
     public void addToCart(Product p, Scanner scan) {
         do {
             if (p.getQuantity() < 1) {
@@ -102,10 +103,11 @@ public class Customer extends Person {
             }
         } while (true);
     }
-
+    //when a product is purchased, it adds it to the customers purchase history
     public void addToHistory(Product product) {
         this.purchaseHistory.add(product);
     }
+    //Exports a file when the customer chooses to export their purchase history
     public void createPurchaseHistory(ArrayList<Seller> sellers) {
         String filename = super.getEmail() + "History.txt";
         try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
@@ -133,17 +135,20 @@ public class Customer extends Person {
             e.printStackTrace();
         }
     }
+    //creates a string representation of a customer
     public String toString() {
         // uses the Person toString() along with our extra fields
         return super.toString() + String.format(";%s;%s;%s",
                 cart.toString(),purchaseHistory.toString(), stores.toString());
     }
+    //Changes the customer object when changes are made
     public void updateCustomer(Customer update) {
          this.setEmail(update.getEmail());
          this.setPassword(update.getPassword());
          this.cart = update.getCart();
          this.purchaseHistory = update.getPurchaseHistory();
     }
+    //Prints the marketplace dashboard for customers
     public void displayMarket(Scanner scan, ArrayList<Seller> sellers) {
         do {
             int productCount = 0;
@@ -235,7 +240,6 @@ public class Customer extends Person {
         }
         return null; // Handle accordingly based on your requirements
     }
-
     private Store getStoreForProduct(Product product, ArrayList<Seller> sellers) {
         for (Seller seller : sellers) {
             for (Store store : seller.getStores()) {
@@ -246,6 +250,7 @@ public class Customer extends Person {
         }
         return null; // Handle accordingly based on your requirements
     }
+    //Prints product information and action options when a customer chooses to view a product
     public void productPage(Scanner scan, Product product, Seller seller, Store store) {
         do {
             System.out.println(product.getName() + "\nStore: " + product.getStoreSelling() + "\nDescription: " + product.getDescription() + "\nQuantity: " + product.getQuantity() + "\nPrice: " + product.getPrice()
@@ -269,6 +274,7 @@ public class Customer extends Person {
             }
         } while (true);
     }
+    //Allows the customer to search for a product.  Products which contain the search input in their name, description, or store name will appear
     public void search(Scanner scan, ArrayList<Seller> sellers) {
         while (true) {
             // Collect search results
@@ -319,7 +325,7 @@ public class Customer extends Person {
     }
 
 
-    //if a seller changes the price while the product is in the cart, the cart price will remain the same
+    //Creates the shopping cart page for the customer with options to interact with individual products and buy or empty the entire cart
     public void shoppingCart(Scanner scan, ArrayList<Seller> sellers) {
         do {
             int index = 0;
@@ -377,6 +383,7 @@ public class Customer extends Person {
             }
         } while (true);
     }
+    //Allows the customer to remove a product from their cart
     public void removeFromCart(CartObject o, ArrayList<Seller> sellers) {
         this.cart.remove(o);
         for (int i = 0; i < sellers.size(); i++) {
@@ -391,11 +398,13 @@ public class Customer extends Person {
             }
         }
     }
+    //Allows the customer to remove all products from their cart
     public void emptyCart(ArrayList<Seller> sellers) {
         for (int i = 0; i < this.cart.size(); i++) {
             this.removeFromCart(this.cart.get(i),sellers);
         }
     }
+    //Allows the customer to purchase every product in the cart
     public void purchaseCart(ArrayList<Seller> sellers) {
         for (CartObject p : cart) {
             this.purchaseHistory.add(p);
@@ -413,7 +422,7 @@ public class Customer extends Person {
         }
         this.cart = new ArrayList<CartObject>();
     }
-
+    //Returns the corresponding product which is in the cart for a given product name
     private Product getProductInCart(String name, ArrayList<Seller> sellers) {
         for (Seller seller : sellers) {
             for (Store store : seller.getStores()) {
@@ -426,7 +435,7 @@ public class Customer extends Person {
         }
         return null;
     }
-
+    //Returns the corresponding store based on the name of a seller
     private Store getStoreFromName(String name, ArrayList<Seller> sellers) {
         for (Seller s : sellers) {
             for (Store store : s.getStores()) {
@@ -437,9 +446,7 @@ public class Customer extends Person {
         }
         return null;
     }
-
-
-
+    //returns the corresponding selle based on the name of a store
     private Seller getSellerFromName(String name, ArrayList<Seller> sellers) {
         for (Seller s : sellers) {
             for (Store store : s.getStores()) {
@@ -450,11 +457,12 @@ public class Customer extends Person {
         }
         return null;
     }
-
+    //Allows the customer to purchase an item from their cart
     public void purchaseFromCart(CartObject o) {
         this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
         this.cart.remove(o);
     }
+    //Allows the customer to view a product page from their cart
     public void cartProductPage (Scanner scan, CartObject o, ArrayList<Seller> sellers) {
         String name = o.getName();
         String store = o.getStoreSelling();
@@ -511,6 +519,7 @@ public class Customer extends Person {
             }
         } while (true);
     }
+    //Allows the user to delete their account.  this returns all items in their cart to the stock of the corresponding sellers
     public void deleteAccount(Scanner scan, ArrayList<Customer> customers, ArrayList<Seller> sellers) {
         do {
             System.out.println("Enter Password: ");
@@ -540,7 +549,7 @@ public class Customer extends Person {
             }
         } while (true);
     }
-
+    //Prints the purchase history for a customer
     public void printHistory (Scanner scan, ArrayList<Seller> sellers) {
         ArrayList<Sales> sales = new ArrayList<Sales>();
         for (Seller s : sellers) {
@@ -570,7 +579,7 @@ public class Customer extends Person {
                 return;
         }
     }
-
+    //Checks if the product name is in the purchase history of a customer
     private Product productInPurchaseHistory(String productName) {
         for (Product p : purchaseHistory) {
             if (p.getName().equals(productName)) {
@@ -579,7 +588,8 @@ public class Customer extends Person {
         }
         return null;
     }
-
+    //Allows the customer to view a dashboard of stores based on the amount of products sold for all customers
+    //Or based the amount of products sold to the current user
     public void storeDashboard(Scanner scan, ArrayList<Seller> sellers) {
         do {
             System.out.println("Which Dashboard would you like to view?\n[1]Stores by products sold (for all " +
@@ -672,7 +682,7 @@ public class Customer extends Person {
             }
         } while (true);
     }
-
+    //Gets the total amount of sales by each store
     public ArrayList<Store> salesByStore (ArrayList<Seller> sellers) {
         ArrayList<Store> stores = new ArrayList<>();
         for (Seller seller : sellers) {
@@ -683,7 +693,7 @@ public class Customer extends Person {
         }
         return stores;
     }
-
+    //Gets the total amount of sales to the current user by each store
     public ArrayList<Store> personalSalesByStore (ArrayList<Seller> sellers) {
         ArrayList<Store> stores = new ArrayList<>();
         for (Seller seller : sellers) {

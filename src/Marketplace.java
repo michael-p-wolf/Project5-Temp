@@ -14,6 +14,7 @@ public class Marketplace {
     private static Seller activeSeller;
     private static Customer activeCustomer;
 
+    //Main method to run the program and handle file reading and writing.
     public static void main(String[] args) throws IOException {
         Scanner scan = new Scanner(System.in);
 
@@ -44,11 +45,11 @@ public class Marketplace {
             }
         } while (true);
     }
-
+    //null marketplace constructor to allow the calling of file reading methods.
     public Marketplace() {
 
     }
-
+    //Prints the welcome screen to allow the user to login or create account
     public static int firstScreen(Scanner scan) {
         System.out.println(WELCOME);
         String inputString = scan.nextLine();
@@ -59,7 +60,7 @@ public class Marketplace {
             return 0;
         }
     }
-
+    //Allows the user to login in to an existing account
     public static void loginScreen(Scanner scan) {
         boolean emailExists = false;
         do {
@@ -114,6 +115,7 @@ public class Marketplace {
             }
         } while (true);
     }
+    //Allows the user to create either a seller or customer account
     public static void createAccountScreen (Scanner scan) throws IOException {
         String email;
         String pass;
@@ -179,7 +181,7 @@ public class Marketplace {
         } while (true);
 
     }
-
+    //When a customer is logged in, prints the different actions that the user can take
     public static Customer customerHome(Scanner scan, Customer customer) {
         int input = 0;
         do {
@@ -219,7 +221,7 @@ public class Marketplace {
 
         } while (true);
     }
-
+    //when signed in as a seller, prints the options that the user can take
     public static Seller sellerHome(Scanner scan, Seller seller) {
         int input = 0;
         do {
@@ -258,7 +260,7 @@ public class Marketplace {
         } while (true);
 
     }
-
+    //When run at the start of the program, information is read from files and corresponding objects are created.  Allows for continuity
     public void readFiles () throws IOException {
         BufferedReader bfr = new BufferedReader(new FileReader(new File("Accounts.txt")));
         String line = bfr.readLine();
@@ -365,7 +367,7 @@ public class Marketplace {
             line = bfr.readLine();
         }
     }
-
+    //When run at the end of the program, objects are converted into text in files to allow for continuity
     public void writeFiles() throws IOException {
         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("Accounts.txt")));
         PrintWriter pws = new PrintWriter(new BufferedWriter(new FileWriter("sellers.txt")));

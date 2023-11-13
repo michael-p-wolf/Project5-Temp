@@ -1,2 +1,4 @@
 BatMobile;BatCave;Tesla;0;100000.00
 BatMobile;BatCave;Tesla;4;100000.00
+BatMobile;BatCave;Tesla;2;100000.00
+BatMobile;BatCave;Tesla;1;100000.00

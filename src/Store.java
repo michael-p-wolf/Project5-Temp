@@ -13,19 +13,17 @@ public class Store implements Comparable<Store> {
     private ArrayList<Product> soldProducts; //keeping track of sold products
     private String sellerEmail;
 
-
+    //Compares two stores together
     public int compareTo(Store store) {
         return Integer.compare(this.soldProducts.size(), store.getSoldProducts().size());
     }
-
-
-
+    //Constructor for a store object
     public Store(String name) {
         this.storeName = name;
         this.products = new ArrayList<>();
         this.soldProducts = new ArrayList<>();
     }
-
+    //Setters and getters for the store fields
     public String getStoreName() {
         return storeName;
     }
