@@ -1,2 +1,3 @@
 pnandkeo@purdue.edu;hello;C
+customer1@test.com;test;C
 arav@purdue.edu;batman;S

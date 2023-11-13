@@ -38,6 +38,10 @@ public class Store implements Comparable<Store> {
         return seller;
     }
 
+    public void setSellerEmail(String email) {
+        this.seller = email;
+    }
+
     public void setSeller(Seller seller) {
         this.seller = String.valueOf(seller);
         this.sellerEmail = String.valueOf(seller).substring(0,  String.valueOf(seller).indexOf(";"));

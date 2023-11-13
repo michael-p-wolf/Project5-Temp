@@ -38,7 +38,7 @@ public class Customer extends Person {
                 int quantity = Integer.parseInt(scan.nextLine());
                 if (quantity <= p.getQuantity()) {
                     double totalCost = quantity * p.getPrice();
-                    System.out.printf("Purchase %d of %s for $%.2f?\n[1]Confirm\n[2]Cancel",quantity, p.getName(), totalCost);
+                    System.out.printf("Purchase %d of %s for $%.2f?\n[1]Confirm\n[2]Cancel\n",quantity, p.getName(), totalCost);
                     try {
                         int input = Integer.parseInt(scan.nextLine());
                         switch (input) {
@@ -47,6 +47,8 @@ public class Customer extends Person {
                                 this.purchaseHistory.add(p);
                                 store.getSoldProducts().add(p);
                                 seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), p.getName(), p.getPrice(), quantity));
+                                System.out.println("Purchase Successful!");
+                                return;
                             case 2:
                                 return;
                             default:
@@ -55,6 +57,7 @@ public class Customer extends Person {
 
                     } catch (Exception e) {
                         System.out.println("Invalid input!");
+                        e.printStackTrace();
                     }
                 } else {
                     System.out.println("Not enough stock available!");
@@ -306,7 +309,7 @@ public class Customer extends Person {
                 } else if (input <= searchResults.size()) {
                     Product selectedProduct = searchResults.get(input - 1);
                     Store store = getStoreFromName(selectedProduct.getStoreSelling(), sellers);
-                    Seller s = getSellerFromName(store.getSeller(), sellers);
+                    Seller s = getSellerFromSellerName(store.getSeller(), sellers);
                     this.productPage(scan, selectedProduct, s, store);
                     return;
                 } else {
@@ -431,6 +434,7 @@ public class Customer extends Person {
         for (Seller s : sellers) {
             for (Store store : s.getStores()) {
                 if (store.getStoreName().equals(name)) {
+                    store.setSellerEmail(s.getEmail());
                     return store;
                 }
             }
@@ -446,6 +450,15 @@ public class Customer extends Person {
                 if (store.getStoreName().equals(name)) {
                     return s;
                 }
+            }
+        }
+        return null;
+    }
+
+    private Seller getSellerFromSellerName(String name, ArrayList<Seller> sellers) {
+        for (int i = 0; i < sellers.size(); i++) {
+            if (sellers.get(i).getEmail().equals(name)) {
+                return sellers.get(i);
             }
         }
         return null;

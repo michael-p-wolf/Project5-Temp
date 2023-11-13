@@ -1,1 +1,1 @@
-Corn Maze Ticket;Corn;have fun;10;25.00
+Corn Maze Ticket;Corn;have fun;7;25.00

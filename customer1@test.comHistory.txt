@@ -1,0 +1,5 @@
+BatMobile;BatCave;Tesla;0;100000.00
+BatMobile;BatCave;Tesla;0;100000.00
+Corn Maze Ticket;Corn;have fun;9;25.00
+Corn Maze Ticket;Corn;have fun;8;25.00
+Corn Maze Ticket;Corn;have fun;7;25.00
