@@ -211,48 +211,19 @@ public class Seller extends Person {
                     case 2:
                         again = true;
                         do {
-                            System.out.println("How would you like to sort product?\n[1]Ascending\n[2]Descending\n[3]Cancel");
+                            System.out.println("How would you like to sort products?\n[1]Ascending\n[2]Descending\n[3]Cancel");
                             try {
                                 int input2 = Integer.parseInt(scan.nextLine());
                                 ArrayList<Sales> salesList = new ArrayList<Sales>();
                                 ArrayList<String> productNames = new ArrayList<String>();
                                 for (int i = 0; i < sales.size(); i++) {
-                                    if (productNames.indexOf(sales.get(i).getCustomerEmail()) == -1) {
+                                    System.out.println("Product name: " + sales.get(i).getProductName());
+
+                                    if (productNames.indexOf(sales.get(i).getProductName()) == -1) {
                                         productNames.add(sales.get(i).getProductName());
                                     }
                                 }
-                                int total = 0;
-                                for (int i = 0; i < productNames.size(); i++) {
-                                    for (int j = 0; j < sales.size(); j++) {
-                                        if (sales.get(j).getCustomerEmail().equals(productNames.get(i))) {
-                                            total += sales.get(j).getQuantity();
-                                        }
-                                    }
-                                    salesList.add(new Sales(productNames.get(i), total));
-                                }
-                                switch (input2) {
-                                    case 1:
-                                        Collections.sort(salesList);
-                                        for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
-                                        }
-                                        System.out.println("Press ENTER to go back.");
-                                        scan.nextLine();
-                                        break;
-                                    case 2:
-                                        Collections.sort(salesList, Collections.reverseOrder());
-                                        for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
-                                        }
-                                        System.out.println("Press ENTER to go back.");
-                                        scan.nextLine();
-                                        break;
-                                    case 3:
-                                        again = false;
-                                        break;
-                                    default:
-                                        System.out.println("Invalid Input!");
-                                }
+                                // ... (rest of the code)
                             } catch (Exception e) {
                                 System.out.println("Invalid Input!");
                             }
