@@ -1,8 +1,13 @@
 arav@purdue.edu;pranay.nandkeolyar@gmail.com;BatCave;BatMobile;10000.000000;1
+arav@purdue.edu;grader@cs180.com;BatCave;BatMobile;10000.000000;3
 arav@purdue.edu;nikhil@purdue.edu;CornFields;Corn Maze Tickets;25.000000;1
 arav@purdue.edu;nikhil@purdue.edu;CornFields;Corn Maze Tickets;25.000000;1
 arav@purdue.edu;pranay.nandkeolyar@gmail.com;CornFields;Corn Maze Tickets;25.000000;10
 vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;Arts and Crafts;Canvas;50.000000;1
 vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;Arts and Crafts;Brush;15.000000;1
+vrinda@purdue.edu;grader@cs180.com;Arts and Crafts;Brush;15.000000;130
 vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;UW;Water Bottle;15.000000;10
 vrinda@purdue.edu;pranay.nandkeolyar@gmail.com;UW;Water Bottle;15.000000;100
+vrinda@purdue.edu;grader@cs180.com;UW;Water Bottle;15.000000;1
+grader2@cs180.com;grader@cs180.com;180 Shop;Arraylist;50.000000;5
+grader2@cs180.com;grader@cs180.com;Purdue Book Store;Textbook;500000.000000;3

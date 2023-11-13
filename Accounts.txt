@@ -1,4 +1,7 @@
 pranay.nandkeolyar@gmail.com;hello;C
 nikhil@purdue.edu;hello;C
+wolf180@purdue.edu;hello;C
+grader@cs180.com;test;C
 arav@purdue.edu;batman;S
 vrinda@purdue.edu;hello;S
+grader2@cs180.com;test;S
