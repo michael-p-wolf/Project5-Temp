@@ -1,1 +1,1 @@
-seller1@test.com;Store1
+seller2@test.com;store1;store3

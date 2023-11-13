@@ -411,10 +411,21 @@ public class Customer extends Person {
             String store = this.purchaseHistory.get(i).getStoreSelling();
             double price = this.purchaseHistory.get(i).getPrice();
             int quantity = this.purchaseHistory.get(i).getQuantity();
-            System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d",name, description, store, price, quantity);
+            System.out.printf("Name: %s\nDescription: %s\nStore Selling: %s\nPrice: %.2f\nQuantity Purchased: %d\n",name, description, store, price, quantity);
         }
-        System.out.println("Press ENTER to go Back");
-        scan.nextLine();
+        do {
+            System.out.println("[1]Return");
+            try {
+                int input = Integer.parseInt(scan.nextLine());
+                switch (input) {
+                    default -> {
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
+        } while (true);
     }
 
     public void storeDashboard(Scanner scan, ArrayList<Seller> sellers) {

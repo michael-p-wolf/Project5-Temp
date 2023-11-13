@@ -32,6 +32,7 @@ public class Seller extends Person {
                     if (sellers.get(i).getStores().get(j).getStoreName().equals(storeName)) {
                         System.out.println("A store with this name already exists!");
                         exists = true;
+                        return;
                     }
                 }
             }
@@ -183,7 +184,7 @@ public class Seller extends Person {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + ": " + salesList.get(i).getQuantity());
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
@@ -191,14 +192,14 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getCustomerEmail() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + ": " + salesList.get(i).getQuantity());
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
                                         break;
                                     case 3:
                                         again = false;
-                                        break;
+                                        return;
                                     default:
                                         System.out.println("Invalid Input!");
                                 }
@@ -212,28 +213,30 @@ public class Seller extends Person {
                         do {
                             System.out.println("How would you like to sort product?\n[1]Ascending\n[2]Descending\n[3]Cancel");
                             try {
+                                String currentName = "";
                                 int input2 = Integer.parseInt(scan.nextLine());
                                 ArrayList<Sales> salesList = new ArrayList<Sales>();
                                 ArrayList<String> productNames = new ArrayList<String>();
                                 for (int i = 0; i < sales.size(); i++) {
-                                    if (productNames.indexOf(sales.get(i).getCustomerEmail()) == -1) {
-                                        productNames.add(sales.get(i).getProductName());
-                                    }
-                                }
-                                int total = 0;
-                                for (int i = 0; i < productNames.size(); i++) {
-                                    for (int j = 0; j < sales.size(); j++) {
-                                        if (sales.get(j).getCustomerEmail().equals(productNames.get(i))) {
-                                            total += sales.get(j).getQuantity();
+                                    if (productNames.indexOf(sales.get(i).getProductName()) == -1) {
+                                        productNames.add(sales.get(i).getProductName());int total = 0;
+                                        for (int j = 0; j < productNames.size(); j++) {
+                                            for (int k = 0; k < sales.size(); k++) {
+                                                if (sales.get(k).getProductName().equals(productNames.get(j))) {
+                                                    total += sales.get(k).getQuantity();
+                                                    currentName = productNames.get(j);
+                                                }
+                                            }
                                         }
+                                        salesList.add(new Sales(currentName, total));
                                     }
-                                    salesList.add(new Sales(productNames.get(i), total));
                                 }
+
                                 switch (input2) {
                                     case 1:
                                         Collections.sort(salesList);
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + ": " + salesList.get(i).getQuantity());
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
@@ -241,19 +244,20 @@ public class Seller extends Person {
                                     case 2:
                                         Collections.sort(salesList, Collections.reverseOrder());
                                         for (int i = 0; i < salesList.size(); i++) {
-                                            System.out.println(salesList.get(i).getProductName() + salesList.get(i).getQuantity());
+                                            System.out.println(salesList.get(i).getCustomerEmail() + ": " +salesList.get(i).getQuantity());
                                         }
                                         System.out.println("Press ENTER to go back.");
                                         scan.nextLine();
                                         break;
                                     case 3:
                                         again = false;
-                                        break;
+                                        return;
                                     default:
                                         System.out.println("Invalid Input!");
                                 }
                             } catch (Exception e) {
                                 System.out.println("Invalid Input!");
+                                e.printStackTrace();
                             }
                         } while (again);
                     default:
@@ -321,6 +325,7 @@ public class Seller extends Person {
                                 break;
                             } else if (input2 == 4) {
                                 deleteStore(scan, stores.get(input-2));
+                                break;
                             } else if (input2 <= (stores.get(input-2).getProducts().size() + 5)) {
                                 do {
                                     System.out.println("Store: " + stores.get(input-2).getStoreName() + "\nProduct: " + stores.get(input-2).getProducts().get(input2 - 5).getName()
