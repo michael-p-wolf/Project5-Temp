@@ -85,23 +85,23 @@ public class Seller extends Person {
     }
 
     public void salesDashboard (Scanner scan, int input) {
-            for (int i = 0; i < sales.size(); i++) {
-                if (sales.get(i).getSellerEmail().equals(this.getEmail()) && sales.get(i).getStoreName().equals(stores.get(input).getStoreName())) {
-                    String storeName = sales.get(i).getStoreName();
-                    String customerEmail = sales.get(i).getCustomerEmail();
-                    String productName = sales.get(i).getProductName();
-                    double price = sales.get(i).getProductPrice();
-                    int quantity = sales.get(i).getQuantity();
-                    double revenue = price * quantity;
-                    int num = i;
+        for (int i = 0; i < sales.size(); i++) {
+            if (sales.get(i).getSellerEmail().equals(this.getEmail()) && sales.get(i).getStoreName().equals(stores.get(input).getStoreName())) {
+                String storeName = sales.get(i).getStoreName();
+                String customerEmail = sales.get(i).getCustomerEmail();
+                String productName = sales.get(i).getProductName();
+                double price = sales.get(i).getProductPrice();
+                int quantity = sales.get(i).getQuantity();
+                double revenue = price * quantity;
+                int num = i;
 
-                    System.out.printf("Sale #" + (num+2) + " for " + storeName +
-                            ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.",customerEmail, productName, price, quantity, revenue);
+                System.out.printf("Sale #" + (num+1) + " for " + storeName +
+                        ":\nCustomer: %s\nProduct: %s\nPrice: %f\nQuantity: %d\nTotal Revenue: %f\nPress Enter to go back.",customerEmail, productName, price, quantity, revenue);
 
-                }
             }
-            System.out.println("Press ENTER to go back");
-            scan.nextLine();
+        }
+        System.out.println("Press ENTER to go back");
+        scan.nextLine();
     }
 
     public void createProduct(Scanner scan, Store store) {
@@ -148,7 +148,7 @@ public class Seller extends Person {
         }
 
     }
-//Sellers can view a dashboard that lists statistics for each of their stores.
+    //Sellers can view a dashboard that lists statistics for each of their stores.
 //Data will include a list of customers with the number of items that they have purchased and a list of products with the number of sales.
 //Sellers can choose to sort the dashboard.
     public void dashboard(Scanner scan) {
@@ -224,21 +224,26 @@ public class Seller extends Person {
                             System.out.println("How would you like to sort product?\n[1]Ascending\n[2]Descending\n[3]Cancel");
                             try {
                                 int input2 = Integer.parseInt(scan.nextLine());
-                                ArrayList<Sales> salesList = new ArrayList<Sales>();
-                                ArrayList<String> productNames = new ArrayList<String>();
+                                ArrayList<Sales> salesList = new ArrayList<>();
+                                ArrayList<String> productNames = new ArrayList<>();
+
                                 for (int i = 0; i < sales.size(); i++) {
                                     if (!productNames.contains(sales.get(i).getProductName())) {
                                         productNames.add(sales.get(i).getProductName());
                                     }
                                 }
-                                int total = 0;
+
                                 for (int i = 0; i < productNames.size(); i++) {
-                                    for (int j = 0; j < sales.size(); j++) {
-                                        if (sales.get(j).getProductName().equals(productNames.get(i))) {
-                                            total += sales.get(j).getQuantity();
+
+                                    int total = 0;
+                                    for (Sales sale : sales) {
+                                        if (sale.getProductName().equals(productNames.get(i))) {
+                                            total += sale.getQuantity();
                                         }
                                     }
-                                    salesList.add(new Sales(total, productNames.get(i)));
+                                    Product dummyProduct = new Product(productNames.get(i), "", "", 0, 0);
+                                    salesList.add(new Sales(this.getEmail(),total, dummyProduct));
+
                                 }
                                 boolean somethingToPrint = false;
                                 switch (input2) {
@@ -276,6 +281,7 @@ public class Seller extends Person {
                                 System.out.println("Invalid Input!");
                             }
                         } while (again);
+                        break;
                     case 3:
                         return;
                     default:
@@ -292,18 +298,18 @@ public class Seller extends Person {
         System.out.println("Number of products currently in customers shopping carts");
         String output = "";
         int totalQuantity;
-        for (int i = 0; i < this.stores.size(); i++) {
-            for (int j = 0; j < this.stores.get(i).getProducts().size(); j++) {
+        for (Store store : stores) {
+            for (Product p : store.getProducts()) {
                 totalQuantity = 0;
-                for (int k = 0; k < customers.size(); k++) {
-                    for (int l = 0; l < customers.get(k).getCart().size(); l++) {
-                        if (this.stores.get(i).getProducts().get(j).equals(customers.get(k).getCart().get(l))) {
-                            totalQuantity += customers.get(k).getCart().get(l).getQuantity();
+                for (Customer customer : customers) {
+                    for (CartObject cart : customer.getCart()) {
+                        if (cart.getName().equals(p.getName())) {
+                            totalQuantity += cart.getCartQuantity();
                         }
                     }
 
                 }
-                output += "\n" + this.stores.get(i).getProducts().get(j).getName() + "\nTotal in cart: " + totalQuantity + "\n";
+                output += "\n" + p.getName() + "\nTotal in cart: " + totalQuantity + "\n";
             }
 
         }

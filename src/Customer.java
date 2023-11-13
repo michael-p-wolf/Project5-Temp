@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 public class Customer extends Person {
     private ArrayList<CartObject> cart;
@@ -37,7 +38,7 @@ public class Customer extends Person {
                 int quantity = Integer.parseInt(scan.nextLine());
                 if (quantity <= p.getQuantity()) {
                     double totalCost = quantity * p.getPrice();
-                    System.out.printf("Purchase %d of %s for $%.2f?\n[1]Confirm\n[2]Cancel",quantity, p.getName(), totalCost);
+                    System.out.printf("Purchase %d of %s for $%.2f?\n[1]Confirm\n[2]Cancel\n",quantity, p.getName(), totalCost);
                     try {
                         int input = Integer.parseInt(scan.nextLine());
                         switch (input) {
@@ -45,7 +46,10 @@ public class Customer extends Person {
                                 p.setQuantity(p.getQuantity()-quantity);
                                 this.purchaseHistory.add(p);
                                 store.getSoldProducts().add(p);
+
                                 seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), p.getName(), p.getPrice(), quantity));
+                                System.out.println("Purchase Successful!");
+                                return;
                             case 2:
                                 return;
                             default:
@@ -54,6 +58,7 @@ public class Customer extends Person {
 
                     } catch (Exception e) {
                         System.out.println("Invalid input!");
+                        e.printStackTrace();
                     }
                 } else {
                     System.out.println("Not enough stock available!");
@@ -76,13 +81,13 @@ public class Customer extends Person {
                 int quantity = Integer.parseInt(scan.nextLine());
                 if (quantity <= p.getQuantity()) {
                     double totalCost = quantity * p.getPrice();
-                    System.out.printf("Add %d of %s for $%.2f to cart?\n[1]Confirm\n[2]Cancel",quantity, p.getName(), totalCost);
+                    System.out.printf("Add %d of %s for $%.2f to cart?\n[1]Confirm\n[2]Cancel\n",quantity, p.getName(), totalCost);
                     try {
                         int input = Integer.parseInt(scan.nextLine());
                         switch (input) {
                             case 1:
-                                p.setQuantity(p.getQuantity()-quantity);
                                 this.cart.add(new CartObject(p.getName(),p.getStoreSelling(),p.getDescription(),p.getPrice(),quantity));
+                                return;
                             case 2:
                                 return;
                             default:
@@ -146,46 +151,104 @@ public class Customer extends Person {
     public void displayMarket(Scanner scan, ArrayList<Seller> sellers) {
         do {
             int productCount = 0;
+            ArrayList<Product> products = new ArrayList<>();
+
+            // Add all products to the 'products' list for sorting
             for (int i = 0; i < sellers.size(); i++) {
                 for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                    for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                        System.out.println("[" + (productCount + 2) + "]" + sellers.get(i).getStores().get(j).getProducts().get(k).getName() + "\nStore:" + sellers.get(i).getStores().get(j).getStoreName() + "\nPrice: " + sellers.get(i).getStores().get(j).getProducts().get(k).getPrice());
-                        productCount++;
-                    }
+                    products.addAll(sellers.get(i).getStores().get(j).getProducts());
                 }
-            }
-            if (productCount != 0) {
-                System.out.println("[1]Go Back");
-                try {
-                    int input = Integer.parseInt(scan.nextLine());
-                    if (input == 1) {
-                        return;
-                    } else if (input <= productCount + 2) {
-                        productCount = 0;
-                        for (int i = 0; i < sellers.size(); i++) {
-                            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                                    if (productCount == input - 2) {
-                                        this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
-                                        return;
-                                    }
-                                    productCount++;
-                                }
-                            }
-                        }
-                    } else {
-                        System.out.println("Invalid input!");
-                    }
-                } catch (Exception e) {
-                    System.out.println("Invalid input!");
-                }
-            }
-            else {
-                System.out.println("No items are available currently.");
-                return;
             }
 
+            // Sort products by quantity or price
+            System.out.println("[1]Sort by Quantity");
+            System.out.println("[2]Sort by Price");
+            System.out.println("[3]Go Back");
+
+            try {
+                int sortOption = Integer.parseInt(scan.nextLine());
+
+                switch (sortOption) {
+                    case 1:
+                        // Sort by quantity
+                        Collections.sort(products, Comparator.comparingInt(Product::getQuantity));
+                        break;
+                    case 2:
+                        // Sort by price
+                        Collections.sort(products, Comparator.comparingDouble(Product::getPrice));
+                        break;
+                    case 3:
+                        return; // Go back
+                    default:
+                        System.out.println("Invalid input!");
+                        continue;
+                }
+
+                // Display sorted products
+                for (Product product : products) {
+                    System.out.println("[" + (productCount + 2) + "]" + product.getName() +
+                            "\nStore:" + product.getStoreSelling() +
+                            "\nPrice: " + product.getPrice() +
+                            "\nQuantity " + product.getQuantity());
+
+                    productCount++;
+                }
+
+                if (productCount != 0) {
+                    System.out.println("[1]Go Back");
+                    try {
+                        int input = Integer.parseInt(scan.nextLine());
+                        if (input == 1) {
+                            return;
+                        } else if (input <= productCount + 2) {
+                            productCount = 0;
+                            // Find the selected product after sorting
+                            for (Product sortedProduct : products) {
+                                if (productCount == input - 2) {
+                                    // Assuming productPage method takes care of displaying details
+                                    this.productPage(scan, sortedProduct, getSellerForProduct(sortedProduct, sellers), getStoreForProduct(sortedProduct, sellers));
+                                    return;
+                                }
+                                productCount++;
+                            }
+                        } else {
+                            System.out.println("Invalid input!");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Invalid input!");
+                    }
+                } else {
+                    System.out.println("No items are available currently.");
+                    return;
+                }
+
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+            }
         } while (true);
+    }
+
+    // Helper methods to get Seller and Store for a Product
+    private Seller getSellerForProduct(Product product, ArrayList<Seller> sellers) {
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                if (store.getProducts().contains(product)) {
+                    return seller;
+                }
+            }
+        }
+        return null; // Handle accordingly based on your requirements
+    }
+
+    private Store getStoreForProduct(Product product, ArrayList<Seller> sellers) {
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                if (store.getProducts().contains(product)) {
+                    return store;
+                }
+            }
+        }
+        return null; // Handle accordingly based on your requirements
     }
     public void productPage(Scanner scan, Product product, Seller seller, Store store) {
         do {
@@ -211,60 +274,55 @@ public class Customer extends Person {
         } while (true);
     }
     public void search(Scanner scan, ArrayList<Seller> sellers) {
-        int resultsCount = 0;
-        for (int i = 0; i < sellers.size(); i++) {
-            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                    System.out.println("[" + (resultsCount + 2) + "]" + sellers.get(i).getStores().get(j).getProducts().get(k).getName() + "\nStore:" + sellers.get(i).getStores().get(j).getStoreName() + "\nPrice: " + sellers.get(i).getStores().get(j).getProducts().get(k).getPrice());
-                    resultsCount++;
-                }
-            }
-        }
-        if (resultsCount != 0) {
+        while (true) {
+            // Collect search results
+            ArrayList<Product> searchResults = new ArrayList<>();
+            int resultCount = 1;
+
             System.out.println("What would you like to search for?");
             String search = scan.nextLine();
-            System.out.println("[1]Go Back");
-            for (int i = 0; i < sellers.size(); i++) {
-                for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                    for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                        String name = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
-                        String description = sellers.get(i).getStores().get(j).getProducts().get(k).getDescription();
-                        String storeName = sellers.get(i).getStores().get(j).getStoreName();
-                        if (name.contains(search) || description.contains(search) || storeName.contains(search)) {
-                            System.out.println("[" + (resultsCount + 2) + "]" + name);
-                            resultsCount++;
+
+            for (Seller seller : sellers) {
+                for (Store store : seller.getStores()) {
+                    for (Product product : store.getProducts()) {
+                        if (product.getName().contains(search) || product.getDescription().contains(search) || store.getStoreName().contains(search)) {
+                            System.out.println("[" + resultCount + "]" + product.getName() + "\nStore:" + store.getStoreName() + "\nPrice: " + product.getPrice());
+                            searchResults.add(product);
+                            resultCount++;
                         }
                     }
                 }
             }
+
+            if (searchResults.isEmpty()) {
+                System.out.println("No products matching the search criteria.");
+                return;
+            }
+
+            // Process user input
+            System.out.println("[0] Go Back");
+            System.out.println("Select a product:");
+
             try {
                 int input = Integer.parseInt(scan.nextLine());
-                if (input == 1) {
+                if (input == 0) {
                     return;
-                } else if (input <= resultsCount + 2) {
-                    resultsCount = 0;
-                    for (int i = 0; i < sellers.size(); i++) {
-                        for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                            for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                                if (resultsCount == input - 2) {
-                                    this.productPage(scan, sellers.get(i).getStores().get(j).getProducts().get(k), sellers.get(i), sellers.get(i).getStores().get(j));
-                                    break;
-                                }
-                                resultsCount++;
-                            }
-                        }
-                    }
+                } else if (input <= searchResults.size()) {
+                    Product selectedProduct = searchResults.get(input - 1);
+                    Store store = getStoreFromName(selectedProduct.getStoreSelling(), sellers);
+                    Seller s = getSellerFromSellerName(store.getSeller(), sellers);
+                    this.productPage(scan, selectedProduct, s, store);
+                    return;
                 } else {
                     System.out.println("Invalid input!");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input!");
             }
-        } else {
-            System.out.println("No products are available currently");
-            return;
         }
     }
+
+
     //if a seller changes the price while the product is in the cart, the cart price will remain the same
     public void shoppingCart(Scanner scan, ArrayList<Seller> sellers) {
         do {
@@ -274,7 +332,7 @@ public class Customer extends Person {
                 index = i;
                 double totalPrice = cart.get(i).getPrice() * cart.get(i).getCartQuantity();
                 grandTotal += totalPrice;
-                System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() + "\nTotal Cost: " + totalPrice);
+                System.out.println("[" + (index + 1) + "]" + cart.get(i).getName() + "\nQuantity: " + cart.get(i).getCartQuantity() +  "\nTotal Price: " + totalPrice);
             }
             int totalInput = index+cart.size() + 2;
             System.out.println("Grand Total: " + grandTotal + "\n[" + (totalInput - 1) + "]Purchase Cart\n[" + (totalInput) + "]Empty Cart\n[" + (totalInput + 1) + "]Go Back");
@@ -303,7 +361,7 @@ public class Customer extends Person {
                         int input2 = Integer.parseInt(scan.nextLine());
                         switch (input2) {
                             case 1:
-                                this.purchaseCart();
+                                this.purchaseCart(sellers);
                                 break;
                             case 2:
                                 return;
@@ -314,7 +372,7 @@ public class Customer extends Person {
                         System.out.println("Invalid input!");
                     }
                 } else if (input <= (totalInput - 2)) {
-                    this.cartProductPage(scan, this.cart.get(input),sellers);
+                    this.cartProductPage(scan, this.cart.get(input - 1),sellers);
                 } else {
                     System.out.println("Invalid Input!");
                 }
@@ -325,32 +383,91 @@ public class Customer extends Person {
     }
     public void removeFromCart(CartObject o, ArrayList<Seller> sellers) {
         this.cart.remove(o);
-        for (int i = 0; i < sellers.size(); i++) {
-            for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
-                for (int k = 0; k < sellers.get(i).getStores().get(j).getProducts().size(); k++) {
-                    String productName = sellers.get(i).getStores().get(j).getProducts().get(k).getName();
-                    String storeSelling = sellers.get(i).getStores().get(j).getProducts().get(k).getStoreSelling();
-                    if (o.getName().equals(productName) && o.getStoreSelling().equals(storeSelling)) {
-                        sellers.get(i).getStores().get(j).getProducts().get(k).setQuantity(sellers.get(i).getStores().get(j).getProducts().get(k).getQuantity() + o.getCartQuantity());
-                    }
-                }
-            }
-        }
     }
     public void emptyCart(ArrayList<Seller> sellers) {
         for (int i = 0; i < this.cart.size(); i++) {
             this.removeFromCart(this.cart.get(i),sellers);
         }
     }
-    public void purchaseCart() {
-        for (int i = 0; i < this.cart.size(); i++) {
-            this.purchaseHistory.add(this.cart.get(i));
+    public void purchaseCart(ArrayList<Seller> sellers) {
+        for (CartObject p : cart) {
+            //this.purchaseHistory.add(p);
+            Product p2 = getProductInCart(p.getName(), sellers);
+            if (p2.getQuantity() - p.getQuantity() < 0) {
+                System.out.println("Out of Stock!");
+                return;
+            }
+            p2.setQuantity(p2.getQuantity()-p.getCartQuantity());
+            this.purchaseHistory.add(p);
+            Store store = getStoreFromName(p.getStoreSelling(), sellers);
+            store.getSoldProducts().add(p);
+            Seller seller = getSellerFromName(store.getStoreName(), sellers);
+            seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), p.getName(), p.getPrice(), p.getCartQuantity()));
         }
         this.cart = new ArrayList<CartObject>();
     }
-    public void purchaseFromCart(CartObject o) {
-        this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
+
+    private Product getProductInCart(String name, ArrayList<Seller> sellers) {
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                for (Product p : store.getProducts()) {
+                    if (p.getName().equals(name)) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Store getStoreFromName(String name, ArrayList<Seller> sellers) {
+        for (Seller s : sellers) {
+            for (Store store : s.getStores()) {
+                if (store.getStoreName().equals(name)) {
+                    store.setSellerEmail(s.getEmail());
+                    return store;
+                }
+            }
+        }
+        return null;
+    }
+
+
+
+    private Seller getSellerFromName(String name, ArrayList<Seller> sellers) {
+        for (Seller s : sellers) {
+            for (Store store : s.getStores()) {
+                if (store.getStoreName().equals(name)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Seller getSellerFromSellerName(String name, ArrayList<Seller> sellers) {
+        for (int i = 0; i < sellers.size(); i++) {
+            if (sellers.get(i).getEmail().equals(name)) {
+                return sellers.get(i);
+            }
+        }
+        return null;
+    }
+
+    public void purchaseFromCart(CartObject o, ArrayList<Seller> sellers) {
         this.cart.remove(o);
+        //this.purchaseHistory.add(p);
+        Product p2 = getProductInCart(o.getName(), sellers);
+        if (p2.getQuantity() - o.getQuantity() < 0) {
+            System.out.println("Out of Stock!");
+            return;
+        }
+        p2.setQuantity(p2.getQuantity()-o.getCartQuantity());
+        this.purchaseHistory.add(new Product(o.getName(), o.getStoreSelling(), o.getDescription(), o.cartQuantity, o.getPrice()));
+        Store store = getStoreFromName(o.getStoreSelling(), sellers);
+        store.getSoldProducts().add(o);
+        Seller seller = getSellerFromName(store.getStoreName(), sellers);
+        seller.getSales().add(new Sales(seller.getEmail(), this.getEmail(), store.getStoreName(), o.getName(), o.getPrice(), o.getCartQuantity()));
     }
     public void cartProductPage (Scanner scan, CartObject o, ArrayList<Seller> sellers) {
         String name = o.getName();
@@ -370,7 +487,7 @@ public class Customer extends Person {
                             int input2 = Integer.parseInt(scan.nextLine());
                             switch (input2) {
                                 case 1:
-                                    purchaseFromCart(o);
+                                    purchaseFromCart(o, sellers);
                                     break;
                                 case 2:
                                     return;
@@ -491,23 +608,23 @@ public class Customer extends Person {
                                 int input2 = Integer.parseInt(scan.nextLine());
                                 switch (input2) {
                                     case 1:
-                                        ArrayList<Sales> talliedSales = this.salesByStore(sellers);
+                                        ArrayList<Store> talliedSales = this.salesByStore(sellers);
                                         Collections.sort(talliedSales);
                                         for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
                                                     talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                                    talliedSales.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
                                         return;
                                     case 2:
-                                        talliedSales = this.salesByStore(sellers);
-                                        Collections.sort(talliedSales, Collections.reverseOrder());
-                                        for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
-                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        ArrayList<Store> talliedSales2 = this.salesByStore(sellers);
+                                        Collections.sort(talliedSales2, Collections.reverseOrder());
+                                        for (int i = 0; i < talliedSales2.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
+                                                    talliedSales2.get(i).getStoreName(), talliedSales2.get(i).getSellerEmail(),
+                                                    talliedSales2.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
@@ -519,7 +636,6 @@ public class Customer extends Person {
                                 }
                             } catch (Exception e) {
                                 System.out.println("Invalid input!");
-                                e.printStackTrace();
                             }
                         } while (true);
                     case 2:
@@ -529,23 +645,23 @@ public class Customer extends Person {
                                 int input2 = Integer.parseInt(scan.nextLine());
                                 switch (input2) {
                                     case 1:
-                                        ArrayList<Sales> talliedSales = this.personalSalesByStore();
+                                        ArrayList<Store> talliedSales = this.personalSalesByStore(sellers);
                                         Collections.sort(talliedSales);
                                         for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
                                                     talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                                    talliedSales.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
                                         return;
                                     case 2:
-                                        talliedSales = this.personalSalesByStore();
-                                        Collections.sort(talliedSales, Collections.reverseOrder());
-                                        for (int i = 0; i < talliedSales.size(); i++) {
-                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\nTotal Revenue: %.2f",
-                                                    talliedSales.get(i).getStoreName(), talliedSales.get(i).getSellerEmail(),
-                                                    talliedSales.get(i).getQuantity(),talliedSales.get(i).getProductPrice());
+                                        ArrayList<Store> talliedSales2 = this.personalSalesByStore(sellers);
+                                        Collections.sort(talliedSales2, Collections.reverseOrder());
+                                        for (int i = 0; i < talliedSales2.size(); i++) {
+                                            System.out.printf("Store: %s\nOwner: %s\nTotal Quantity: %d\n",
+                                                    talliedSales2.get(i).getStoreName(), talliedSales2.get(i).getSellerEmail(),
+                                                    talliedSales2.get(i).getSoldProducts().size());
                                         }
                                         System.out.println("Press ENTER to continue.\n");
                                         scan.nextLine();
@@ -571,46 +687,29 @@ public class Customer extends Person {
         } while (true);
     }
 
-    public ArrayList<Sales> salesByStore (ArrayList<Seller> sellers) {
-        int totalSales = 0;
-        double totalRevenue = 0;
-        String currentSellerName = "";
-        String currentStoreName ="";
-        ArrayList<Sales> talliedSales = new ArrayList<Sales>();
-        for (int i = 0; i < sellers.size(); i++) {
-            currentSellerName = sellers.get(i).getEmail();
-            for (int j = 0; j < sellers.get(i).getSales().size(); j++) {
-                totalSales += sellers.get(i).getSales().get(j).getQuantity();
-                totalRevenue += (sellers.get(i).getSales().get(j).getQuantity() * sellers.get(i).getSales().get(j).getProductPrice());
-                currentStoreName = sellers.get(i).getStores().get(j).getStoreName();
+    public ArrayList<Store> salesByStore (ArrayList<Seller> sellers) {
+        ArrayList<Store> stores = new ArrayList<>();
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                store.setSeller(seller);
+                stores.add(store);
             }
-            talliedSales.add(new Sales(currentSellerName, currentStoreName, totalRevenue, totalSales));
         }
-        return talliedSales;
+        return stores;
     }
 
-    public ArrayList<Sales> personalSalesByStore () {
-        ArrayList<Sales> talliedSales = new ArrayList<Sales>();
-        ArrayList<String> storeName = new ArrayList<String>();
-        int totalQuantity = 0;
-        double totalRevenue = 0;
-        String currentSellerName = "";
-        String currentStoreName ="";
-        for (int i = 0; i < this.purchaseHistory.size(); i++) {
-            if (storeName.indexOf(this.purchaseHistory.get(i).getName()) == -1) {
-                storeName.add(this.purchaseHistory.get(i).getName());
-            }
-        }
-        for (int i = 0; i < storeName.size(); i++) {
-            currentStoreName = storeName.get(i);
-            for (int j = 0; j < this.purchaseHistory.size(); j++) {
-                if (storeName.get(i).equals(this.purchaseHistory.get(j).getStoreSelling())) {
-                    totalQuantity += this.purchaseHistory.get(j).getQuantity();
-                    totalRevenue += this.purchaseHistory.get(j).getPrice() * this.purchaseHistory.get(j).getQuantity();
+    public ArrayList<Store> personalSalesByStore (ArrayList<Seller> sellers) {
+        ArrayList<Store> stores = new ArrayList<>();
+        for (Seller seller : sellers) {
+            for (Store store : seller.getStores()) {
+                for (Product p : this.getPurchaseHistory()) {
+                    if (p.getStoreSelling().equals(store.getStoreName()) && !stores.contains(store)) {
+                        store.setSeller(seller);
+                        stores.add(store);
+                    }
                 }
-                talliedSales.add(new Sales("", currentStoreName,totalRevenue, totalQuantity));
             }
         }
-        return talliedSales;
+        return stores;
     }
 }

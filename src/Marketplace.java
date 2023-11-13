@@ -43,7 +43,7 @@ public class Marketplace {
                     System.out.println("Goodbye!");
                     return;
                 default:
-                    System.out.println("Invalid input!");
+                    System.out.println("Invalid Input!");
             }
         } while (true);
     }
@@ -217,7 +217,7 @@ public class Marketplace {
                     default: System.out.println("Invalid Input!");
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input!");
+                System.out.println("Invalid Input!");
             }
 
         } while (true);
@@ -284,8 +284,8 @@ public class Marketplace {
 
                 while (cartLine != null) {
                     String[] cartSplit = cartLine.split(";");
-                    int quantity = Integer.parseInt(cartSplit[3]);
-                    double price = Double.parseDouble(cartSplit[4]);
+                    int quantity = Integer.parseInt(cartSplit[4]);
+                    double price = Double.parseDouble(cartSplit[3]);
                     CartObject currentCartObject = new CartObject(cartSplit[0], cartSplit[1], cartSplit[2], price, quantity);
                     currentCustomer.addToCart(currentCartObject);
                     cartLine = bfrcart.readLine();
@@ -361,7 +361,9 @@ public class Marketplace {
                                 String[] salesSplit = salesLine.split(";");
                                 double price = Double.parseDouble(salesSplit[4]);
                                 int quantity = Integer.parseInt(salesSplit[5]);
-                                currentSeller.addSales(new Sales(salesSplit[0],salesSplit[1],salesSplit[2],salesSplit[3],price,quantity));
+                                if (salesSplit[0].equals(currentSeller.getEmail()) && salesSplit[2].equals(currentStore.getStoreName())) {
+                                    currentSeller.addSales(new Sales(salesSplit[0], salesSplit[1], salesSplit[2], salesSplit[3], price, quantity));
+                                }
                                 salesLine = bfr5.readLine();
                             }
                         }
