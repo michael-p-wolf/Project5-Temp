@@ -5,8 +5,8 @@ Made by L36 Group 2
 <summary>How to Run and Compile 🚀</summary>
   <br>
 <ol>
-  <li>Compile</li>
-  <li>Run</li>
+  <li>Compile all files in src</li>
+  <li>If you would like to login to an existing account, we have created a seller and customer account for you.  Customer: grader@cs180.com Pass: test  Seller: grader2@cs180.com Pass: test.  Please feel free to add new accounts as you wish!</li>
   <li>Great success</li>
 </ol>
 
@@ -40,10 +40,10 @@ Made by L36 Group 2
 
 - **Store** - The store class is a crucial part of the program that manages and stores its list of products and allows customers to buy them. It has a list of products and sold products to help keep track of everything going on in the marketplace. It stores information like the seller's email, the store file, the store name, and the seller's name along with the lists of products. The store can also create, edit, and remove products as well as update its own information. The getter methods return everything in the constructor and make sure that access to its information is possible. Stores can also compare themselves to other stores by sales. **Testing** What needed to be tested was the creation, editing, and removal of products as well as the store information being updated properly. Also what is needed to be set is to see if the compare method can correctly compare stores based on sales. **Relation with other classes** The store class has an array of lists of products and sold products which allows it to modify the products within the store. Also, the store gets managed by the seller class because a store is always assigned a seller to work under. 
   
-- Product -
+- Product - The product class represents the products with a marketplace that are bought by customers, managed by stores, and sold by sellers. It has a lot of attributes compared to the other classes. The list of attributes includes name, store selling, purchaser, description, quantity, price, and cart quantity. There are getters and setters for all of these to access product information across classes to help sort and set certain aspects of each product. There is also an equal method to check if products are equal based on their name. There is an updated product method to update product information. **Testing** We tested if you can use the methods to change the aspects of the products. Also, we need to see if the equals method can accurately compare two products. **Relation with other classes** The product class is used in many other classes. The store class manages its own products, sells the products, and the customer buys the products. Also, the sales class stores what products are sold and the information about the sale.
 
   
 >>>>>>> b49d2d8f446d58f9e9b86cb5cc4b35f02506bb16
 # Submissions:
-- Vocareum:
-- BrightSpace:
+- Vocareum: Michael Wolf
+- BrightSpace: Michael Wolf
