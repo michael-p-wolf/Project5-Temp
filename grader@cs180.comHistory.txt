@@ -1,0 +1,5 @@
+Brush;Arts and Crafts;Paint Brush;19;15.00
+Water Bottle;UW;to drink water;899;15.00
+BatMobile;BatCave;1000000;1;10000.00
+Textbook;Purdue Book Store;This is the worst thing to buy at a bookstore;2;500000.00
+Arraylist;180 Shop;a dynamic data structure;5;50.00

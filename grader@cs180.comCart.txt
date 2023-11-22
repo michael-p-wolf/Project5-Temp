@@ -1,0 +1,2 @@
+Jersey;Purdue Book Store;wear this to support the Big10's worst football team!;120.00;45
+String;180 Shop;a collection of characters;20.00;4

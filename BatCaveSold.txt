@@ -1,0 +1,2 @@
+BatMobile;BatCave;1000000;4;10000.00
+BatMobile;BatCave;1000000;1;10000.00
