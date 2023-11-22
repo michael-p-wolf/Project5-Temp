@@ -1,10 +1,11 @@
 import java.util.List;
 import java.util.Scanner;
+
 /**
  * Boilermaker Bazaar Bonanza
  * <p>
- * The product class represents the products with a marketplace that are 
- * bought by customers, managed by stores, and sold by sellers. 
+ * The product class represents the products with a marketplace that are
+ * bought by customers, managed by stores, and sold by sellers.
  *
  * @author Michael Wolf, Lab Sec 36
  * @author Pranay Nandkeolyar, Lab Sec 36
@@ -30,12 +31,14 @@ public class Product {
         this.quantity = quantity;
         this.price = price;
     }
+
     public Product(String name, String storeSelling, String description, double price) {
         this.name = name;
         this.storeSelling = storeSelling;
         this.description = description;
         this.price = price;
     }
+
     public String getName() {
         return name;
     }
@@ -77,7 +80,7 @@ public class Product {
     }
 
     public String toString() {
-        return String.format("%s;%s;%s;%d;%.2f", this.name, this.storeSelling, this.description, this.quantity,this.price);
+        return String.format("%s;%s;%s;%d;%.2f", this.name, this.storeSelling, this.description, this.quantity, this.price);
     }
 
     public void editProduct(Scanner scan) {
@@ -114,7 +117,7 @@ public class Product {
             System.out.println("What would you like to change the price to?");
             try {
                 double price = Double.parseDouble(scan.nextLine());
-                System.out.println("Set price of " + this.name + " to " + price +"?\n[1]Confirm\n[2]Cancel");
+                System.out.println("Set price of " + this.name + " to " + price + "?\n[1]Confirm\n[2]Cancel");
                 int input = Integer.parseInt(scan.nextLine());
                 switch (input) {
                     case 1:
@@ -136,7 +139,7 @@ public class Product {
             System.out.println("What would you like to change the name to?");
             try {
                 String name = scan.nextLine();
-                System.out.println("Set name of " + this.name + " to " + name +"?\n[1]Confirm\n[2]Cancel");
+                System.out.println("Set name of " + this.name + " to " + name + "?\n[1]Confirm\n[2]Cancel");
                 int input = Integer.parseInt(scan.nextLine());
                 switch (input) {
                     case 1:
@@ -158,7 +161,7 @@ public class Product {
             System.out.println("What would you like to change the quantity to?");
             try {
                 int quantity = Integer.parseInt(scan.nextLine());
-                System.out.println("Set quantity of " + this.name + " to " + quantity +"?\n[1]Confirm\n[2]Cancel");
+                System.out.println("Set quantity of " + this.name + " to " + quantity + "?\n[1]Confirm\n[2]Cancel");
                 int input = Integer.parseInt(scan.nextLine());
                 switch (input) {
                     case 1:
@@ -180,7 +183,7 @@ public class Product {
             System.out.println("What would you like to change the Description to?");
             try {
                 String description = scan.nextLine();
-                System.out.println("Set description of " + this.name + " to " + description +"?\n[1]Confirm\n[2]Cancel");
+                System.out.println("Set description of " + this.name + " to " + description + "?\n[1]Confirm\n[2]Cancel");
                 int input = Integer.parseInt(scan.nextLine());
                 switch (input) {
                     case 1:
@@ -207,7 +210,7 @@ public class Product {
         }
     }
 
-    public void updateProduct (Product update) {
+    public void updateProduct(Product update) {
         this.name = update.getName();
         this.storeSelling = update.storeSelling;
         this.description = update.description;

@@ -1,7 +1,7 @@
 /**
  * Boilermaker Bazaar Bonanza
  * <p>
- * The sales class is meant to store information and handle product 
+ * The sales class is meant to store information and handle product
  * sales for the seller and the customer.
  *
  * @author Michael Wolf, Lab Sec 36
@@ -38,16 +38,16 @@ public class Sales implements Comparable<Sales> {
     }
 
     public int compareTo(Sales sales) {
-            return Double.compare(this.quantity, sales.quantity);
+        return Double.compare(this.quantity, sales.quantity);
     }
 
-    public Sales(String customerEmail,int quantity, Product product) {
+    public Sales(String customerEmail, int quantity, Product product) {
         this.customerEmail = customerEmail;
         this.quantity = quantity;
         this.product = product;
     }
 
-    public Sales(String customerEmail,int quantity) {
+    public Sales(String customerEmail, int quantity) {
         this.customerEmail = customerEmail;
         this.quantity = quantity;
     }
@@ -56,6 +56,7 @@ public class Sales implements Comparable<Sales> {
         return product;
 
     }
+
     public String getSellerEmail() {
         return sellerEmail;
     }
@@ -104,7 +105,7 @@ public class Sales implements Comparable<Sales> {
         this.quantity = quantity;
     }
 
-    public String toString () {
-        return String.format("%s;%s;%s;%s;%f;%d",this.sellerEmail, this.customerEmail, this.storeName, this.productName, this.productPrice, this.quantity);
+    public String toString() {
+        return String.format("%s;%s;%s;%s;%f;%d", this.sellerEmail, this.customerEmail, this.storeName, this.productName, this.productPrice, this.quantity);
     }
 }

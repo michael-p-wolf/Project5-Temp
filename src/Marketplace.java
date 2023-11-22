@@ -1,12 +1,13 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 /**
  * Boilermaker Bazaar Bonanza
  * <p>
- * This is the main class where all of the different classes come together. 
- * It stores objects of Sellers and Customers and keeps track of who is the active 
- * seller and customer through the variables activeCustomer and activeSeller. 
+ * This is the main class where all of the different classes come together.
+ * It stores objects of Sellers and Customers and keeps track of who is the active
+ * seller and customer through the variables activeCustomer and activeSeller.
  *
  * @author Michael Wolf, Lab Sec 36
  * @author Pranay Nandkeolyar, Lab Sec 36
@@ -93,7 +94,7 @@ public class Marketplace {
                             emailExists = true;
                             if (customers.get(i).getPassword().equals(pass)) {
                                 activeCustomer = customers.get(i);
-                                Customer update  = customerHome(scan, activeCustomer);
+                                Customer update = customerHome(scan, activeCustomer);
                                 activeCustomer.updateCustomer(update);
                                 return;
                             } else {
@@ -109,13 +110,12 @@ public class Marketplace {
                                 Seller update = sellerHome(scan, activeSeller);
                                 activeSeller.updateSeller(update);
                                 return;
-                            }
-                            else {
+                            } else {
                                 System.out.println("Your password is incorrect!");
                             }
                         }
                     }
-                    if(!emailExists) {
+                    if (!emailExists) {
                         System.out.println("This email is not associated with an account!");
                         return;
                     }
@@ -131,7 +131,8 @@ public class Marketplace {
             }
         } while (true);
     }
-    public static void createAccountScreen (Scanner scan) throws IOException {
+
+    public static void createAccountScreen(Scanner scan) throws IOException {
         String email;
         String pass;
         String confirmPass;
@@ -228,7 +229,8 @@ public class Marketplace {
                         break;
                     case 8:
                         return customer;
-                    default: System.out.println("Invalid Input!");
+                    default:
+                        System.out.println("Invalid Input!");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid Input!");
@@ -282,7 +284,7 @@ public class Marketplace {
 
     }
 
-    public void readFiles () throws IOException {
+    public void readFiles() throws IOException {
         BufferedReader bfr = new BufferedReader(new FileReader(new File("Accounts.txt")));
         String line = bfr.readLine();
         while (line != null) {
@@ -366,7 +368,6 @@ public class Marketplace {
                             }
 
 
-
                             currentSeller.addStore(currentStore);
 
                             String salesLine = bfr5.readLine();
@@ -425,7 +426,6 @@ public class Marketplace {
                 sellerOutput += ";" + sellers.get(i).getStores().get(j).getStoreName();
             }
             pws.println(sellerOutput);
-
 
 
             for (int j = 0; j < sellers.get(i).getStores().size(); j++) {
