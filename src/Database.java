@@ -1,7 +1,20 @@
 import javax.xml.crypto.Data;
 import java.io.*;
 import java.util.ArrayList;
-
+/**
+ * Boilermaker Bazaar Bonanza
+ * <p>
+ * Database is a crucial class in our program. Its main functionality is reading and storing data
+ * from all of the different files there are. it reads through Accounts.txt and fills information
+ * in lists of customers and sellers.
+ *
+ * @author Michael Wolf, Lab Sec 36
+ * @author Pranay Nandkeolyar, Lab Sec 36
+ * @author Jacob Stamper, Lab Sec 36
+ * @author Benjamin Emini, Lab Sec 36
+ * @author Simrat Thind, Lab Sec 36
+ * @version November 13th, 2023
+ **/
 public class Database {
 
     private static ArrayList<Seller> sellers = new ArrayList<Seller>();
